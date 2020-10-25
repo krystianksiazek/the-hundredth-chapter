@@ -1,12 +1,12 @@
 <template>
-  <div class="homeWrapper">
-    <h1>Home Page</h1>
+  <div class="loginWrapper">
+    <h1>Login Page</h1>
   </div>
 </template>
 
 <script>
 
 export default {
-  name: 'home',
+  name: 'login',
 };
 </script>
