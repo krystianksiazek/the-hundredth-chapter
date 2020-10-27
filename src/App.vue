@@ -20,8 +20,6 @@ export default {
 </script>
 
 <style lang="scss">
-html {
-}
 body {
   background-color: #777777;
   margin: 0;
