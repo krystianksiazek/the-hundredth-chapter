@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-navbar class="upperNavbar" toggleable="lg" type="dark">
-      <b-navbar-brand class="logo" href="#"></b-navbar-brand>
+      <b-navbar-brand class="logo" :to="'/'"></b-navbar-brand>
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
@@ -12,30 +12,34 @@
         <b-navbar-nav class="ml-auto">
           <b-nav-item-dropdown right>
             <template #button-content>
-              <img src="..\assets\Icons\heart.png" alt="">
+              <span class="favorite"></span>
+              <img class="favoriteImg" src="..\assets\Icons\heart.png" alt="">
             </template>
             <b-dropdown-item href="#">Profile</b-dropdown-item>
             <b-dropdown-item href="#">Sign Out</b-dropdown-item>
           </b-nav-item-dropdown>
           <b-nav-item-dropdown right>
             <template #button-content>
-              <img src="..\assets\Icons\basket.png" alt="">
+              <span class="basket"></span>
+              <img class="basketImg" src="..\assets\Icons\basket.png" alt="">
             </template>
-            <b-dropdown-item href="#">Profile</b-dropdown-item>
-            <b-dropdown-item href="#">Sign Out</b-dropdown-item>
+            <b-dropdown-item>Profile</b-dropdown-item>
+            <b-dropdown-item>Sign Out</b-dropdown-item>
           </b-nav-item-dropdown>
           <b-nav-item-dropdown right>
             <template #button-content>
-              <img src="..\assets\Icons\user.png" alt="">
+              <span class="user"></span>
+              <img class="userImg" src="..\assets\Icons\user.png" alt="">
             </template>
-            <b-dropdown-item href="#">Profile</b-dropdown-item>
-            <b-dropdown-item href="#">Sign Out</b-dropdown-item>
+            <b-dropdown-item>Profile</b-dropdown-item>
+            <b-dropdown-item v-b-toggle.nav-collapse :to="'register'">Register</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
     <b-navbar class="lowerNavbar" toggleable="lg" type="dark">
       <b-collapse id="nav-collapse" is-nav>
+        <b-navbar-nav class="ml-left">
         <b-nav-item-dropdown>
           <template #button-content>
             Categories
@@ -43,12 +47,13 @@
           <b-dropdown-item href="#">Cat 1</b-dropdown-item>
           <b-dropdown-item href="#">cat 2</b-dropdown-item>
         </b-nav-item-dropdown>
+        </b-navbar-nav>
         <b-nav-item href="#">News</b-nav-item>
         <b-nav-item href="#">Bestsellers</b-nav-item>
         <b-nav-item href="#">Top Rated</b-nav-item>
         <b-nav-item href="#">Recommended</b-nav-item>
         <b-nav-item href="#">Promotions</b-nav-item>
-      </b-collapse>
+        </b-collapse>
     </b-navbar>
   </div>
 </template>
@@ -60,12 +65,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+a {
+  text-decoration: none;
+}
+button {
+  border: none;
+}
 .upperNavbar, .lowerNavbar {
   background-color: grey;
   padding: 5px;
   list-style: none;
 }
 .lowerNavbar {
+  text-align: center;
   // @media (max-width: 991px)
   // {
   //   display: none;
@@ -99,7 +111,11 @@ export default {
     content: "100th chapter";
   }
 }
+.logo:hover {
+  color: white;
+}
 .logo {
+  text-decoration: none;
   color: grey;
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
   font-size: 42px;
@@ -118,5 +134,38 @@ export default {
 img {
   height: 50px;
   width: 50px;
+}
+.favoriteImg, .basketImg, .userImg {
+  opacity: 0.5;
+  @media (max-width: 991px)
+  {
+    display: none;
+  }
+}
+.favorite:before {
+  @media (max-width: 991px)
+  {
+    content: "Favorites";
+  }
+}
+.basket:before {
+  @media (max-width: 991px)
+  {
+    content: "Cart";
+  }
+}
+.user:before {
+  @media (max-width: 991px)
+  {
+    content: "Profile";
+  }
+}
+.nav-item {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+}
+li {
+  text-align: center;
 }
 </style>
