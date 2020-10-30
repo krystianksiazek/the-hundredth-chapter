@@ -1,20 +1,17 @@
 <template>
   <div id="app">
-    <Header />
-      <router-link to="/">Home</router-link>
-      <router-link to="/login">Login</router-link>
-      <router-link to="/register">Register</router-link>
+    <Navbar />
     <router-view />
   </div>
 </template>
 
 <script>
-import Header from '@/components/header.vue';
+import Navbar from '@/components/navbar.vue';
 
 export default {
   name: 'App',
   components: {
-    Header,
+    Navbar,
   },
 };
 </script>
