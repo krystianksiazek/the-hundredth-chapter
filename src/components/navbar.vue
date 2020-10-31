@@ -6,7 +6,7 @@
       <b-collapse v-model="firstExtended" id="nav-collapse" is-nav>
         <b-navbar-nav>
           <b-nav-form>
-            <b-form-input size="sm" class="bookSearch" placeholder="Search books"></b-form-input>
+            <b-form-input size="sm" class="bookSearch" placeholder="Tyuły, autorzy"></b-form-input>
           </b-nav-form>
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto">
@@ -31,8 +31,8 @@
               <span class="user"></span>
               <img class="userImg" src="..\assets\Icons\user.png" alt="">
             </template>
-            <b-dropdown-item>Profile</b-dropdown-item>
-            <b-dropdown-item :to="'register'">Register</b-dropdown-item>
+            <b-dropdown-item>Profil</b-dropdown-item>
+            <b-dropdown-item :to="'register'">Rejestracja</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-collapse>
@@ -129,11 +129,11 @@
           </b-nav-item-dropdown> -->
         </b-navbar-nav>
         <b-nav-item :to="'/'">Kategorie</b-nav-item>
-        <b-nav-item :to="'/'">News</b-nav-item>
-        <b-nav-item :to="'/'">Bestsellers</b-nav-item>
-        <b-nav-item :to="'/'">Top Rated</b-nav-item>
-        <b-nav-item :to="'/'">Recommended</b-nav-item>
-        <b-nav-item :to="'/'">Promotions</b-nav-item>
+        <b-nav-item :to="'/'">Nowości</b-nav-item>
+        <b-nav-item :to="'/'">Bestsellery</b-nav-item>
+        <b-nav-item :to="'/'">Najlepiej oceniane</b-nav-item>
+        <b-nav-item :to="'/'">Rekomendacje</b-nav-item>
+        <b-nav-item :to="'/'">Promocje</b-nav-item>
         </b-collapse>
     </b-navbar>
   </div>
