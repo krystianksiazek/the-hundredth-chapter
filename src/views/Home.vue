@@ -1,6 +1,6 @@
 <template>
   <div class="homeWrapper">
-    <h1>Home Page</h1>
+    <h1>Home</h1>
   </div>
 </template>
 
@@ -10,3 +10,9 @@ export default {
   name: 'home',
 };
 </script>
+
+<style lang="scss" scoped>
+  .homeWrapper {
+    padding-top: 50px;
+  }
+</style>
