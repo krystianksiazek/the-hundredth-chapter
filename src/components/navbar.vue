@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div class="sticky-top" id="navbarWrapper">
     <b-navbar class="upperNavbar" toggleable="lg" type="dark">
       <b-navbar-brand class="logo" @click="toggle(3)" :to="'/'"></b-navbar-brand>
-      <b-navbar-toggle @click="toggle(1)" target="nav-collapse"></b-navbar-toggle>
-      <b-collapse v-model="firstExtended" id="nav-collapse" is-nav>
+      <b-navbar-toggle @click="toggle(1)" target="upperNav"></b-navbar-toggle>
+      <b-collapse v-model="firstExtended" id="upperNav" is-nav>
         <b-navbar-nav>
           <b-nav-form>
             <b-form-input size="sm" class="bookSearch" placeholder="Tyuły, autorzy"></b-form-input>
@@ -20,7 +20,7 @@
           </b-nav-item-dropdown>
           <b-nav-item-dropdown right>
             <template #button-content>
-              <span class="basket"></span>
+              <span class="basket"></span><span class="itemsInCartIndicator">{{ itemsInCart }}</span>
               <img class="basketImg" src="..\assets\Icons\basket.png" alt="">
             </template>
             <b-dropdown-item>Profile</b-dropdown-item>
@@ -38,13 +38,13 @@
       </b-collapse>
     </b-navbar>
     <b-navbar class="lowerNavbar" toggleable="lg" type="dark">
-      <b-navbar-toggle @click="toggle(2)" target="nav-collapse2" class="menuExtender">
+      <b-navbar-toggle @click="toggle(2)" target="lowerNav" class="menuExtender">
         <template #default="{ expanded }">
           <p v-if="expanded">↑ MENU ↑</p>
           <p v-else>↓ MENU ↓</p>
         </template>
       </b-navbar-toggle>
-      <b-collapse v-model="secondExtended" id="nav-collapse2" is-nav>
+      <b-collapse v-model="secondExtended" id="lowerNav" is-nav>
         <b-navbar-nav class="ml-left">
           <!-- Temporarily not used - problems with styling bootstrap elements
             <b-nav-item-dropdown id="dropdownParent" text="Kategorie">
@@ -128,12 +128,12 @@
             </b-dropdown> 
           </b-nav-item-dropdown> -->
         </b-navbar-nav>
-        <b-nav-item :to="'/'">Kategorie</b-nav-item>
-        <b-nav-item :to="'/'">Nowości</b-nav-item>
-        <b-nav-item :to="'/'">Bestsellery</b-nav-item>
-        <b-nav-item :to="'/'">Najlepiej oceniane</b-nav-item>
-        <b-nav-item :to="'/'">Rekomendacje</b-nav-item>
-        <b-nav-item :to="'/'">Promocje</b-nav-item>
+        <b-nav-item class="navButton" :to="'/'">Kategorie</b-nav-item>
+        <b-nav-item class="navButton" :to="'/'">Nowości</b-nav-item>
+        <b-nav-item class="navButton" :to="'/'">Bestsellery</b-nav-item>
+        <b-nav-item class="navButton" :to="'/'">Najlepiej oceniane</b-nav-item>
+        <b-nav-item class="navButton" :to="'/'">Rekomendacje</b-nav-item>
+        <b-nav-item class="navButton" :to="'/'">Promocje</b-nav-item>
         </b-collapse>
     </b-navbar>
   </div>
@@ -146,9 +146,15 @@ export default {
     return {
       firstExtended: false,
       secondExtended: false,
+      isDropdownChildVisible: false,
       code: 0,
-      isDropdownChildVisible: false
+      itemsInCart: 0,
     };
+  },
+  created() {
+    if(window.innerWidth > 991) {
+      window.addEventListener('scroll', this.scrollListener);
+    }
   },
   mounted() {
       this.$root.$on('bv::dropdown::show', bvEvent => {
@@ -181,6 +187,17 @@ export default {
         default:
           console.log("Try looking up for a hint.");
       }
+    },
+    scrollListener:
+    function scrollFunction() {
+      var $ = require('jquery');
+      if (document.body.scrollTop > 0 || document.documentElement.scrollTop > 0) {
+        $('.lowerNavbar').addClass('lowerNavbarHider');
+        $('.navButton').addClass('navButtonHider');
+      } else {
+        $('.lowerNavbar').removeClass('lowerNavbarHider');
+        $('.navButton').removeClass('navButtonHider');
+      }
     }
   }
 };
@@ -210,6 +227,10 @@ li {
 ul {
   padding: 0;
 }
+#navbarWrapper {
+  top: -1px;
+  margin-top: -1px;
+}
 .btn-group, .btn-group-vertical {
   display: block;
 }
@@ -224,6 +245,10 @@ ul {
 .dropdown.b-dropdown:last-child {
   margin-bottom: -8px;
 }
+.upperNavbar {
+  // position: sticky;
+  
+}
 .upperNavbar, .lowerNavbar {
   background-color: grey;
   padding: 5px;
@@ -232,6 +257,12 @@ ul {
 }
 .lowerNavbar {
   text-align: center;
+  max-height: 65.5px;
+  transition: max-height 0.25s ease-in;
+  @media (max-width: 991px)
+  {
+    max-height: 100%;
+  }
 }
 .navbar-nav {
   text-align: center;
@@ -265,7 +296,7 @@ ul {
 }
 .logo {
   text-decoration: none;
-  color: grey;
+  color: darkgray;
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
   font-size: 42px;
   margin: 0;
@@ -308,5 +339,34 @@ ul {
 }
 .menuExtender {
   margin: auto;
+}
+.lowerNavbarHider {
+  padding: 0;
+  max-height: 0;
+  transition: max-height 0.25s ease-out;
+  overflow: hidden;
+}
+.navButton {
+  opacity: 1;
+  transition: opacity 0.25s ease-in;
+}
+.navButtonHider {
+  opacity: 0;
+  transition: opacity 0.15s ease-out;
+}
+.itemsInCartIndicator {
+  font-size: 25px;
+  font-weight: bold;
+  line-height: normal;
+  width: 35px;
+  height: 35px;
+  bottom: 0;
+  right: 20px;
+  position: absolute;
+  z-index: 99;
+  color: #404040;
+  border-radius: 50%;
+  border: 3px solid #777777;
+  background: #808080;
 }
 </style>
