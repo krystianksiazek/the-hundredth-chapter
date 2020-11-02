@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Navbar />
+    <Navbar :sendIsMobile="isMobile" />
     <router-view />
   </div>
 </template>
@@ -13,6 +13,22 @@ export default {
   components: {
     Navbar,
   },
+  data() {
+    return {
+      isMobile: null,
+    }
+  },
+  created() {
+    this.mobileChecker();
+    window.addEventListener('resize', this.mobileChecker);
+  },
+  methods: {
+    mobileChecker() {
+      if(window.innerWidth > 991) {
+        this.isMobile = false;
+      } else this.isMobile = true;
+    }
+  }
 };
 </script>
 
