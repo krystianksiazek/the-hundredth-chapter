@@ -20,9 +20,18 @@
           </b-nav-item-dropdown>
           <b-nav-item-dropdown right>
             <template #button-content>
-              <span class="basket"></span><span class="itemsInCartIndicator">{{ itemsInCart }}</span>
+              <span class="basket">
+                <span v-if="itemsInCart > 0 && sendIsMobile === true">
+                  ({{ itemsInCart }})
+                </span>
+              </span>
+              <span v-if="itemsInCart > 0 && sendIsMobile === false" class="itemsInCartIndicator">
+                {{ itemsInCart }}
+              </span>
               <img class="basketImg" src="..\assets\Icons\basket.png" alt="">
             </template>
+            <h5 class="dropdown-header">Dropdown header</h5>
+            <b-dropdown-divider></b-dropdown-divider>
             <b-dropdown-item>Profile</b-dropdown-item>
             <b-dropdown-item>Sign Out</b-dropdown-item>
           </b-nav-item-dropdown>
@@ -142,19 +151,21 @@
 <script>
 export default {
   name: 'navbar',
+  props: [
+    'sendIsMobile',
+  ],
   data() {
     return {
       firstExtended: false,
       secondExtended: false,
       isDropdownChildVisible: false,
       code: 0,
-      itemsInCart: 0,
+      itemsInCart: 10,
     };
   },
   created() {
-    if(window.innerWidth > 991) {
-      window.addEventListener('scroll', this.scrollListener);
-    }
+    console.log(this.sendIsMobile);
+    window.addEventListener('scroll', this.scrollListener);
   },
   mounted() {
       this.$root.$on('bv::dropdown::show', bvEvent => {
@@ -191,7 +202,7 @@ export default {
     scrollListener:
     function scrollFunction() {
       var $ = require('jquery');
-      if (document.body.scrollTop > 0 || document.documentElement.scrollTop > 0) {
+      if (document.body.scrollTop > 0 || document.documentElement.scrollTop > 0 && this.sendIsMobile === false) {
         $('.lowerNavbar').addClass('lowerNavbarHider');
         $('.navButton').addClass('navButtonHider');
       } else {
@@ -209,7 +220,7 @@ a {
   color: rgba(255, 255, 255, 0.6);
 }
 a:hover {
-  color: rgba(255, 255, 255, 0.8);
+  color:  rgba(255, 255, 255, 0.8);
 }
 a:active {
   color: rgba(255, 255, 255, 1);
@@ -227,33 +238,18 @@ li {
 ul {
   padding: 0;
 }
+h5 {
+  text-align: center;
+}
 #navbarWrapper {
   top: -1px;
   margin-top: -1px;
-}
-.btn-group, .btn-group-vertical {
-  display: block;
-}
-.dropdown.b-dropdown {
-  text-align: center;
-  background-color: #6c757d;
-  width: 100%;
-}
-.dropdown.b-dropdown:first-child {
-  margin-top: -8px;
-}
-.dropdown.b-dropdown:last-child {
-  margin-bottom: -8px;
-}
-.upperNavbar {
-  // position: sticky;
-  
 }
 .upperNavbar, .lowerNavbar {
   background-color: grey;
   padding: 5px;
   list-style: none;
-  font-size: 27px;
+  font-size: 24px;
 }
 .lowerNavbar {
   text-align: center;
@@ -355,7 +351,7 @@ ul {
   transition: opacity 0.15s ease-out;
 }
 .itemsInCartIndicator {
-  font-size: 25px;
+  font-size: 24px;
   font-weight: bold;
   line-height: normal;
   width: 35px;
@@ -366,7 +362,7 @@ ul {
   z-index: 99;
   color: #404040;
   border-radius: 50%;
-  border: 3px solid #777777;
+  border: 3px solid #404040;
   background: #808080;
 }
 </style>
