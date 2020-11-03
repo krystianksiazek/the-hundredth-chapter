@@ -12,7 +12,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .homeWrapper {
-    padding-top: 50px;
-  }
 </style>
