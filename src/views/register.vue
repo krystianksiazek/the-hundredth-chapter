@@ -3,12 +3,6 @@
     <div class="registerForm">
       <h1>Registration form</h1>
       <div class="registerFormPart">
-        <input id="username" type="text" name="username" required />
-        <label for="username" class="labelWrapper">
-          <span class="labelContent">Username <span id="usernameError" class="error"></span></span>
-        </label>
-      </div>
-      <div class="registerFormPart">
         <input id="email" type="email" name="email" required />
         <label for="email" class="labelWrapper">
           <span class="labelContent">E-mail <span id="emailError" class="error"></span></span>
@@ -27,11 +21,23 @@
           </span></span>
         </label>
       </div>
-      <div class="registerRegulations">
-        <input id="regulations" type="checkbox" name="regulations" required />
-        <label for="regulations">
-          <span>regulations</span>
+      <div class="registerFormPart">
+        <input id="name" type="text" name="name" required />
+        <label for="name" class="labelWrapper">
+          <span class="labelContent">Imię <span id="nameError" class="error"></span></span>
         </label>
+      </div>
+      <div class="registerFormPart">
+        <input id="surname" type="text" name="surname" required />
+        <label for="surname" class="labelWrapper">
+          <span class="labelContent">Nazwisko <span id="nameError" class="error"></span></span>
+        </label>
+      </div>
+      <div class="registerRegulations">
+        <b-form-checkbox v-model="isRegulationsChecked" name="check-button" switch>
+         <b v-if="isRegulationsChecked === false">Nie akceptuję regulaminu</b>
+         <b v-if="isRegulationsChecked === true">Akceptuję regulamin</b>
+        </b-form-checkbox>
       </div>
       <div class="errorAndSubmit">
         <button @click='onSubmit()' class="submit">SUBMIT</button>
@@ -51,7 +57,7 @@ export default {
   name: 'register',
   data() {
     return {
-      isValidUsername: false,
+      isValidName: false,
       isValidEmail: false,
       isValidPassword: false,
       isValidRepeatPassword: false,
@@ -62,41 +68,41 @@ export default {
   mounted() {
     /* eslint-disable global-require */
     const $ = require('jquery');
-    const username = $('#username');
+    const name = $('#name');
     const email = $('#email');
     const password = $('#password');
     const repeatPassword = $('#repeatPassword');
     const regulations = $('#regulations');
-    const errorFieldUsername = $('#usernameError');
+    const errorFieldName = $('#nameError');
     const errorFieldEmail = $('#emailError');
     const errorFieldPassword = $('#passwordError');
     const errorFieldPasswords = $('#passwordsError');
     // const errorFieldRegulations = $('#regulationsError');
-    username.focusout(() => {
-      if (username.val() !== '') {
-        if (username.val().length >= 8) {
-          if (this.validUsername(username.val()) === true) {
-            username.addClass('valid');
-            username.removeClass('invalid');
-            this.isValidUsername = true;
-            errorFieldUsername.text('');
+    name.focusout(() => {
+      if (name.val() !== '') {
+        if (name.val().length >= 2) {
+          if (this.validName(name.val()) === true) {
+            name.addClass('valid');
+            name.removeClass('invalid');
+            this.isValidName = true;
+            errorFieldName.text('');
           } else {
-            username.addClass('invalid');
-            username.removeClass('valid');
-            this.isValidUsername = false;
-            errorFieldUsername.text(' can only contain letters and numbers');
+            name.addClass('invalid');
+            name.removeClass('valid');
+            this.isValidName = false;
+            errorFieldName.text(' can only contain letters and numbers');
           }
         } else {
-          username.addClass('invalid');
-          username.removeClass('valid');
-          this.isValidUsername = false;
-          errorFieldUsername.text(' must have min 8 characters');
+          name.addClass('invalid');
+          name.removeClass('valid');
+          this.isValidName = false;
+          errorFieldName.text(' musi mieć conajmniej 2 znaki');
         }
       } else {
-        username.removeClass('valid');
-        username.removeClass('invalid');
-        this.isValidUsername = false;
-        errorFieldUsername.text('');
+        name.removeClass('valid');
+        name.removeClass('invalid');
+        this.isValidName = false;
+        errorFieldName.text('');
       }
     });
     email.focusout(() => {
@@ -183,18 +189,11 @@ export default {
         this.isValidRepeatPassword = false;
       }
     });
-    regulations.change(() => {
-      if (regulations.prop('checked') === true) {
-        this.isRegulationsChecked = true;
-      } else {
-        this.isRegulationsChecked = false;
-      }
-    });
   },
   methods: {
-    validUsername(username) {
-      const tester = /^([a-zA-Z0-9])+$/;
-      return (tester.test(username));
+    validName(name) {
+      const tester = /^([a-zA-Z])+$/;
+      return (tester.test(name));
     },
     validEmail(email) {
       /* eslint-disable no-useless-escape */
@@ -203,21 +202,45 @@ export default {
     },
     onSubmit() {
       const $ = require('jquery');
-      const errorOnSubmit = $('#errorOnSubmit');
-      if (this.isValidUsername === true && this.isValidEmail === true
+      
+      if (this.isValidName === true && this.isValidEmail === true
       && this.isValidPassword === true && this.isValidRepeatPassword === true
       && this.isPasswordMatch === true && this.isRegulationsChecked === true) {
-        console.log($('#username').val());
+        console.log($('#name').val());
         console.log($('#email').val());
         console.log($('#password').val());
-        errorOnSubmit.text('');
+        this.showError(0);
+      } else if (this.isValidName === true && this.isValidEmail === true
+      && this.isValidPassword === true && this.isValidRepeatPassword === true
+      && this.isPasswordMatch === true && this.isRegulationsChecked === false) {
+        this.showError(2);
       } else {
-        errorOnSubmit.text('Please fill all fields correctly');
+        this.showError(1);
+      }
+    },
+    showError(errCode) {
+      const $ = require('jquery');
+      const errorOnSubmit = $('#errorOnSubmit');
+      switch (errCode) {
+        case 0:
+          errorOnSubmit.text('');
+          break;
+        case 1:
+          errorOnSubmit.text('Please fill all fields correctly');
         setTimeout(() => {
           errorOnSubmit.text('');
         }, 5000);
+          break;
+        case 2:
+          errorOnSubmit.text('Please accept regulations');
+        setTimeout(() => {
+          errorOnSubmit.text('');
+        }, 5000);
+          break;
+        default:
+          break;
       }
-    },
+    }
   },
 };
 </script>
@@ -238,7 +261,6 @@ h1 {
   justify-content: space-around;
   align-items: center;
   flex-direction: column;
-  margin-top: 20px;
 }
 .registerFormPart {
   width: 350px;
@@ -251,7 +273,7 @@ h1 {
   // height: 100%;
   width: 100%;
   background-color: rgba($color: #000000, $alpha: 0);
-  padding-top: 25px;
+  padding-top: 20px;
   color: white;
   border: none;
   font-size: 20px;
@@ -268,15 +290,15 @@ h1 {
   color: grey;
 }
 .valid + label[for=email],
-.valid + label[for=username],
 .valid + label[for=password],
-.valid + label[for=repeatPassword] {
+.valid + label[for=repeatPassword],
+.valid + label[for=name] {
   border-bottom: 2px solid green;
 }
 .invalid + label[for=email],
-.invalid + label[for=username],
 .invalid + label[for=password],
-.invalid + label[for=repeatPassword] {
+.invalid + label[for=repeatPassword],
+.invalid + label[for=name] {
   border-bottom: 2px solid red;
 }
 .registerFormPart label::after {
@@ -299,7 +321,7 @@ h1 {
 .registerFormPart input:focus + .labelWrapper .labelContent,
 .registerFormPart input:valid + .labelWrapper .labelContent,
 .registerFormPart .hasValue + .labelWrapper .labelContent {
-  transform: translateY(-150%);
+  transform: translateY(-80%);
   font-size: 14px;
   color: white;
 }
@@ -316,5 +338,8 @@ h1 {
 }
 .error {
   color: red;
+}
+.labelWrapper {
+  margin-bottom: 2px;
 }
 </style>
