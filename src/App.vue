@@ -1,7 +1,9 @@
 <template>
   <div id="app">
     <Navbar :sendIsMobile="isMobile" />
-    <router-view />
+    <div class="contentWrapper">
+      <router-view />
+    </div>
   </div>
 </template>
 
@@ -40,5 +42,9 @@ body {
 #app {
   color: white;
   font-family: Avenir, Helvetica, Arial, sans-serif;
+}
+.contentWrapper {
+  padding: 10px;
+  text-align: center;
 }
 </style>
