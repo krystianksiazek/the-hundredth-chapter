@@ -1,7 +1,7 @@
 <template>
   <div class="registerWrapper">
     <div class="registerForm">
-      <h1>Registration form</h1>
+      <h1>Rejestracja</h1>
       <div class="registerFormPart">
         <input id="email" type="email" name="email" required />
         <label for="email" class="labelWrapper">
@@ -11,13 +11,13 @@
       <div class="registerFormPart">
         <input id="password" type="password" name="password" required />
         <label for="password" class="labelWrapper">
-          <span class="labelContent">Password <span id="passwordError" class="error"></span></span>
+          <span class="labelContent">Hasło <span id="passwordError" class="error"></span></span>
         </label>
       </div>
       <div class="registerFormPart">
         <input id="repeatPassword" type="password" name="repeatPassword" required />
         <label for="repeatPassword" class="labelWrapper">
-          <span class="labelContent">Repeat password <span id="passwordsError" class="error">
+          <span class="labelContent">Powtórz hasło <span id="passwordsError" class="error">
           </span></span>
         </label>
       </div>
@@ -30,7 +30,7 @@
       <div class="registerFormPart">
         <input id="surname" type="text" name="surname" required />
         <label for="surname" class="labelWrapper">
-          <span class="labelContent">Nazwisko <span id="nameError" class="error"></span></span>
+          <span class="labelContent">Nazwisko <span id="surnameError" class="error"></span></span>
         </label>
       </div>
       <div class="registerRegulations">
@@ -40,7 +40,7 @@
         </b-form-checkbox>
       </div>
       <div class="errorAndSubmit">
-        <button @click='onSubmit()' class="submit">SUBMIT</button>
+        <b-button @click='onSubmit()' class="submit" variant="dark">Załóż konto!</b-button>
         <p id="regulationsError" class="error"></p>
         <p id="errorOnSubmit" class="error"></p>
       </div>
@@ -57,54 +57,29 @@ export default {
   name: 'register',
   data() {
     return {
-      isValidName: false,
       isValidEmail: false,
       isValidPassword: false,
       isValidRepeatPassword: false,
       isPasswordMatch: false,
+      isValidName: false,
+      isValidSurname: false,
       isRegulationsChecked: false,
     };
   },
   mounted() {
     /* eslint-disable global-require */
     const $ = require('jquery');
-    const name = $('#name');
     const email = $('#email');
     const password = $('#password');
     const repeatPassword = $('#repeatPassword');
+    const name = $('#name');
+    const surname = $('#surname');
     const regulations = $('#regulations');
-    const errorFieldName = $('#nameError');
     const errorFieldEmail = $('#emailError');
     const errorFieldPassword = $('#passwordError');
     const errorFieldPasswords = $('#passwordsError');
-    // const errorFieldRegulations = $('#regulationsError');
-    name.focusout(() => {
-      if (name.val() !== '') {
-        if (name.val().length >= 2) {
-          if (this.validName(name.val()) === true) {
-            name.addClass('valid');
-            name.removeClass('invalid');
-            this.isValidName = true;
-            errorFieldName.text('');
-          } else {
-            name.addClass('invalid');
-            name.removeClass('valid');
-            this.isValidName = false;
-            errorFieldName.text(' can only contain letters and numbers');
-          }
-        } else {
-          name.addClass('invalid');
-          name.removeClass('valid');
-          this.isValidName = false;
-          errorFieldName.text(' musi mieć conajmniej 2 znaki');
-        }
-      } else {
-        name.removeClass('valid');
-        name.removeClass('invalid');
-        this.isValidName = false;
-        errorFieldName.text('');
-      }
-    });
+    const errorFieldName = $('#nameError');
+    const errorFieldSurname = $('#surnameError');
     email.focusout(() => {
       if (email.val() !== '') {
         email.addClass('hasValue');
@@ -117,7 +92,7 @@ export default {
           email.addClass('invalid');
           email.removeClass('valid');
           this.isValidEmail = false;
-          errorFieldEmail.text(' address is incorrect');
+          errorFieldEmail.text(' adres jest nie prawidłowy');
         }
       } else {
         email.removeClass('hasValue');
@@ -143,14 +118,14 @@ export default {
             } else {
               password.addClass('invalid');
               password.removeClass('valid');
-              errorFieldPassword.text('Passwords must be identical');
+              errorFieldPassword.text('Hasła muszą być identyczne');
               this.isValidPassword = false;
             }
           }
         } else {
           password.addClass('invalid');
           password.removeClass('valid');
-          errorFieldPassword.text(' must contains min 8 characters');
+          errorFieldPassword.text(' musi składać się co najmniej z 8 znaków');
           this.isValidPassword = false;
         }
       } else {
@@ -172,13 +147,13 @@ export default {
           } else {
             repeatPassword.addClass('invalid');
             repeatPassword.removeClass('valid');
-            errorFieldPasswords.text('Passwords must be identical');
+            errorFieldPasswords.text('Hasła muszą być identyczne');
             this.isPasswordMatch = false;
           }
         } else {
           repeatPassword.addClass('invalid');
           repeatPassword.removeClass('valid');
-          errorFieldPasswords.text(' must contains min 8 characters');
+          errorFieldPasswords.text(' musi składać się co najmniej z 8 znaków');
           this.isValidRepeatPassword = false;
         }
       } else {
@@ -187,6 +162,60 @@ export default {
         errorFieldPasswords.text('');
         this.isPasswordMatch = false;
         this.isValidRepeatPassword = false;
+      }
+    });
+    name.focusout(() => {
+      if (name.val() !== '') {
+        if (name.val().length >= 2) {
+          if (this.validName(name.val()) === true) {
+            name.addClass('valid');
+            name.removeClass('invalid');
+            this.isValidName = true;
+            errorFieldName.text('');
+          } else {
+            name.addClass('invalid');
+            name.removeClass('valid');
+            this.isValidName = false;
+            errorFieldName.text(' może składać się tylko z liter');
+          }
+        } else {
+          name.addClass('invalid');
+          name.removeClass('valid');
+          this.isValidName = false;
+          errorFieldName.text(' musi mieć co najmniej 2 znaki');
+        }
+      } else {
+        name.removeClass('valid');
+        name.removeClass('invalid');
+        this.isValidName = false;
+        errorFieldName.text('');
+      }
+    });
+    surname.focusout(() => {
+      if (surname.val() !== '') {
+        if (surname.val().length >= 2) {
+          if (this.validName(surname.val()) === true) {
+            surname.addClass('valid');
+            surname.removeClass('invalid');
+            this.isValidSurname = true;
+            errorFieldSurname.text('');
+          } else {
+            surname.addClass('invalid');
+            surname.removeClass('valid');
+            this.isValidSurname = false;
+            errorFieldSurname.text(' może składać się tylko z liter');
+          }
+        } else {
+          surname.addClass('invalid');
+          surname.removeClass('valid');
+          this.isValidSurname = false;
+          errorFieldSurname.text(' musi mieć conajmniej 2 znaki');
+        }
+      } else {
+        surname.removeClass('valid');
+        surname.removeClass('invalid');
+        this.isValidSurname = false;
+        errorFieldSurname.text('');
       }
     });
   },
@@ -203,16 +232,18 @@ export default {
     onSubmit() {
       const $ = require('jquery');
       
-      if (this.isValidName === true && this.isValidEmail === true
-      && this.isValidPassword === true && this.isValidRepeatPassword === true
-      && this.isPasswordMatch === true && this.isRegulationsChecked === true) {
+      if (this.isValidName === true && this.isValidSurname === true 
+      && this.isValidEmail === true && this.isValidPassword === true 
+      && this.isValidRepeatPassword === true && this.isPasswordMatch === true 
+      && this.isRegulationsChecked === true) {
         console.log($('#name').val());
         console.log($('#email').val());
         console.log($('#password').val());
         this.showError(0);
-      } else if (this.isValidName === true && this.isValidEmail === true
-      && this.isValidPassword === true && this.isValidRepeatPassword === true
-      && this.isPasswordMatch === true && this.isRegulationsChecked === false) {
+      } else if (this.isValidName === true  && this.isValidSurname === true
+       && this.isValidEmail === true && this.isValidPassword === true 
+       && this.isValidRepeatPassword === true && this.isPasswordMatch === true 
+       && this.isRegulationsChecked === false) {
         this.showError(2);
       } else {
         this.showError(1);
@@ -226,13 +257,13 @@ export default {
           errorOnSubmit.text('');
           break;
         case 1:
-          errorOnSubmit.text('Please fill all fields correctly');
+          errorOnSubmit.text('Proszę wypełnić wszystkie pola poprawnie!');
         setTimeout(() => {
           errorOnSubmit.text('');
         }, 5000);
           break;
         case 2:
-          errorOnSubmit.text('Please accept regulations');
+          errorOnSubmit.text('Proszę zaakceptować regulamin');
         setTimeout(() => {
           errorOnSubmit.text('');
         }, 5000);
@@ -292,13 +323,15 @@ h1 {
 .valid + label[for=email],
 .valid + label[for=password],
 .valid + label[for=repeatPassword],
-.valid + label[for=name] {
+.valid + label[for=name],
+.valid + label[for=surname] {
   border-bottom: 2px solid green;
 }
 .invalid + label[for=email],
 .invalid + label[for=password],
 .invalid + label[for=repeatPassword],
-.invalid + label[for=name] {
+.invalid + label[for=name],
+.invalid + label[for=surname] {
   border-bottom: 2px solid red;
 }
 .registerFormPart label::after {
