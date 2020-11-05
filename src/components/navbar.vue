@@ -6,43 +6,55 @@
       <b-collapse v-model="firstExtended" id="upperNav" is-nav>
         <b-navbar-nav>
           <b-nav-form>
-            <b-form-input size="sm" class="bookSearch" placeholder="Tyuły, autorzy"></b-form-input>
+            <b-form-input size="sm" class="bookSearch" placeholder="Szukaj..."></b-form-input>
           </b-nav-form>
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto">
-          <b-nav-item-dropdown right>
-            <template #button-content>
-              <span class="favorite"></span>
-              <img class="favoriteImg" src="..\assets\Icons\heart.png" alt="">
-            </template>
-            <b-dropdown-item href="#">Profile</b-dropdown-item>
-            <b-dropdown-item href="#">Sign Out</b-dropdown-item>
-          </b-nav-item-dropdown>
-          <b-nav-item-dropdown right>
-            <template #button-content>
-              <span class="basket">
-                <span v-if="itemsInCart > 0 && sendIsMobile === true">
-                  ({{ itemsInCart }})
+          <b-nav-item right @click.stop>
+            <div class="dropdown">
+              <button @click="dropMenu('favoriteDropdown', 'toggle'), dropMenu('basketDropdown', 'close'), dropMenu('userDropdown', 'close')" class="dropbtn">
+                <span class="favorite"></span>
+               <img class="favoriteImg" src="..\assets\Icons\heart.png" alt="">
+              </button>
+              <div id="favoriteDropdown" class="dropdown-content">
+                <router-link @click.native="toggle(2), dropMenu('favoriteDropdown', 'close')" to="/">Ulubione</router-link>
+                <router-link @click.native="toggle(2), dropMenu('favoriteDropdown', 'close')" to="register">Elo</router-link>
+              </div>
+            </div>
+          </b-nav-item>
+          <b-nav-item right @click.stop>
+            <div class="dropdown">
+              <button @click="dropMenu('basketDropdown', 'toggle'), dropMenu('userDropdown', 'close'), dropMenu('favoriteDropdown', 'close')" class="dropbtn">
+                <span class="basket">
+                  <span v-if="itemsInCart > 0 && sendIsMobile === true">
+                    ({{ itemsInCart }})
+                  </span>
                 </span>
-              </span>
-              <span v-if="itemsInCart > 0 && sendIsMobile === false" class="itemsInCartIndicator">
-                {{ itemsInCart }}
-              </span>
-              <img class="basketImg" src="..\assets\Icons\basket.png" alt="">
-            </template>
-            <h5 class="dropdown-header">Dropdown header</h5>
-            <b-dropdown-divider></b-dropdown-divider>
-            <b-dropdown-item>Profile</b-dropdown-item>
-            <b-dropdown-item>Sign Out</b-dropdown-item>
-          </b-nav-item-dropdown>
-          <b-nav-item-dropdown right>
-            <template #button-content>
-              <span class="user"></span>
-              <img class="userImg" src="..\assets\Icons\user.png" alt="">
-            </template>
-            <b-dropdown-item>Profil</b-dropdown-item>
-            <b-dropdown-item :to="'register'">Rejestracja</b-dropdown-item>
-          </b-nav-item-dropdown>
+                <span v-if="itemsInCart > 0 && sendIsMobile === false" class="itemsInCartIndicator">
+                  {{ itemsInCart }}
+                </span>
+                <img class="basketImg" src="..\assets\Icons\basket.png" alt="">
+              </button>
+              <div id="basketDropdown" class="dropdown-content">
+                <router-link @click.native="toggle(2), dropMenu('basketDropdown', 'close')" to="/">Koszyk</router-link>
+              </div>
+            </div>
+          </b-nav-item>
+          <b-nav-item right @click.stop>
+            <div class="dropdown">
+              <button 
+              @click="dropMenu('userDropdown', 'toggle'), dropMenu('basketDropdown', 'close'), dropMenu('favoriteDropdown', 'close')" 
+              class="dropbtn"
+              v-b-popover.hover.bottom="{variant: 'primary', content: 'Popover content'}" title="Info variant">
+                <span class="user"></span>
+                <img class="userImg" src="..\assets\Icons\user.png" alt="">
+              </button>
+              <div id="userDropdown" class="dropdown-content">
+                <router-link @click.native="toggle(2), dropMenu('userDropdown', 'close')" to="/">Logowanie</router-link>
+                <router-link @click.native="toggle(2), dropMenu('userDropdown', 'close')" to="register">Rejestracja</router-link>
+              </div>
+            </div>
+          </b-nav-item>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
@@ -54,89 +66,6 @@
         </template>
       </b-navbar-toggle>
       <b-collapse v-model="secondExtended" id="lowerNav" is-nav>
-        <b-navbar-nav class="ml-left">
-          <!-- Temporarily not used - problems with styling bootstrap elements
-            <b-nav-item-dropdown id="dropdownParent" text="Kategorie">
-            <b-dropdown id="dropdownChild"
-              
-              dropright
-              split 
-              split-href="/beleterystyka">
-              <a slot="button-content">
-                Beletrystyka
-              </a>
-              <b-dropdown-item href="#">Drop 2</b-dropdown-item>
-              <b-dropdown-item href="#">Drop 2</b-dropdown-item>
-              <b-dropdown-item href="#">Drop 2</b-dropdown-item>
-            </b-dropdown>
-            <b-dropdown id="dropdownChild"
-              dropright
-              split 
-              split-href="/beleterystyka">
-              <a slot="button-content">
-                Literatura faktu, publicystyka
-              </a>
-              <b-dropdown-item href="#">Drop 2</b-dropdown-item>
-              <b-dropdown-item href="#">Drop 2</b-dropdown-item>
-              <b-dropdown-item href="#">Drop 2</b-dropdown-item>
-            </b-dropdown>
-            <b-dropdown id="dropdownChild"
-              dropright
-              split 
-              split-href="/beleterystyka">
-              <a slot="button-content">
-                Literatura popularnonaukowa
-              </a>
-              <b-dropdown-item href="#">Drop 2</b-dropdown-item>
-              <b-dropdown-item href="#">Drop 2</b-dropdown-item>
-              <b-dropdown-item href="#">Drop 2</b-dropdown-item>
-            </b-dropdown>
-            <b-dropdown id="dropdownChild"
-              dropright
-              split 
-              split-href="/beleterystyka">
-              <a slot="button-content">
-                Literatura dziecięca
-              </a>
-              <b-dropdown-item href="#">Drop 2</b-dropdown-item>
-              <b-dropdown-item href="#">Drop 2</b-dropdown-item>
-              <b-dropdown-item href="#">Drop 2</b-dropdown-item>
-            </b-dropdown>
-            <b-dropdown id="dropdownChild"
-              dropright
-              split 
-              split-href="/beleterystyka">
-              <a slot="button-content">
-                Komiksy
-              </a>
-              <b-dropdown-item href="#">Drop 2</b-dropdown-item>
-              <b-dropdown-item href="#">Drop 2</b-dropdown-item>
-              <b-dropdown-item href="#">Drop 2</b-dropdown-item>
-            </b-dropdown>
-            <b-dropdown id="dropdownChild"
-              dropright
-              split 
-              split-href="/beleterystyka">
-              <a slot="button-content">
-                Poezja, dramat, satyra
-              </a>
-              <b-dropdown-item href="#">Drop 2</b-dropdown-item>
-              <b-dropdown-item href="#">Drop 2</b-dropdown-item>
-              <b-dropdown-item href="#">Drop 2</b-dropdown-item>
-            </b-dropdown>
-            <b-dropdown id="dropdownChild"
-              dropright
-              split 
-              split-href="/beleterystyka">
-              <a slot="button-content">
-                Pozostałe
-              </a>
-              <b-dropdown-item href="#">Drop 2</b-dropdown-item>
-              <b-dropdown-item href="#">Drop 2</b-dropdown-item>
-              <b-dropdown-item href="#">Drop 2</b-dropdown-item>
-            </b-dropdown> 
-          </b-nav-item-dropdown> -->
-        </b-navbar-nav>
         <b-nav-item class="navButton" :to="'/'">Kategorie</b-nav-item>
         <b-nav-item class="navButton" :to="'/'">Nowości</b-nav-item>
         <b-nav-item class="navButton" :to="'/'">Bestsellery</b-nav-item>
@@ -158,30 +87,26 @@ export default {
     return {
       firstExtended: false,
       secondExtended: false,
-      isDropdownChildVisible: false,
-      code: 0,
       itemsInCart: 10,
     };
   },
   created() {
-    console.log(this.sendIsMobile);
     window.addEventListener('scroll', this.scrollListener);
   },
   mounted() {
-      this.$root.$on('bv::dropdown::show', bvEvent => {
-        if(bvEvent.componentId === 'dropdownChild') {
-          this.isDropdownChildVisible = true;
+    window.onclick = function(event) {
+      if (event.target.matches('.link') || !event.target.matches('.dropbtn')) {
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        var i;
+      for (i = 0; i < dropdowns.length; i++) {
+        var openDropdown = dropdowns[i];
+        if (openDropdown.classList.contains('show')) {
+          openDropdown.classList.remove('show');
         }
-    	})
-      this.$root.$on('bv::dropdown::hide', bvEvent => {
-        if(bvEvent.componentId === 'dropdownChild') {
-          this.isDropdownChildVisible = false;
-        }
-        if(this.isDropdownChildVisible) {
-          bvEvent.preventDefault()
-        }
-    	});
-    },
+      }
+      }
+    }
+  },
   methods: {
     toggle(code) {
       switch (code) {
@@ -198,6 +123,11 @@ export default {
         default:
           console.log("Try looking up for a hint.");
       }
+    },
+    dropMenu(section, action) {
+      if(action == 'close') document.getElementById(section).classList.remove("show");
+      else if(action == 'toggle') document.getElementById(section).classList.toggle("show");
+      else document.getElementById(section).classList.add("show");
     },
     scrollListener:
     function scrollFunction() {
@@ -228,10 +158,6 @@ a:active {
 button {
   border: none;
 }
-img {
-  height: 50px;
-  width: 50px;
-}
 li {
   text-align: center;
 }
@@ -246,7 +172,7 @@ h5 {
   margin-top: -1px;
 }
 .upperNavbar, .lowerNavbar {
-  background-color: grey;
+  background-color: #557a95;
   padding: 5px;
   list-style: none;
   font-size: 24px;
@@ -288,11 +214,11 @@ h5 {
   }
 }
 .logo:hover {
-  color: white;
+  color: #FEFFFF;
 }
 .logo {
   text-decoration: none;
-  color: darkgray;
+  color: #DEF2F1;
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
   font-size: 42px;
   margin: 0;
@@ -309,28 +235,36 @@ h5 {
   }
 }
 .favoriteImg, .basketImg, .userImg {
+  height: 50px;
+  width: 50px;
   opacity: 0.5;
+  pointer-events: none;
   @media (max-width: 991px)
   {
     display: none;
   }
 }
+.favorite, .basket, .user {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 27px;
+  pointer-events: none;
+}
 .favorite:before {
   @media (max-width: 991px)
   {
-    content: "Favorites";
+    content: "Ulubione";
   }
 }
 .basket:before {
   @media (max-width: 991px)
   {
-    content: "Cart";
+    content: "Koszyk";
   }
 }
 .user:before {
   @media (max-width: 991px)
   {
-    content: "Profile";
+    content: "Profil";
   }
 }
 .menuExtender {
@@ -357,12 +291,68 @@ h5 {
   width: 35px;
   height: 35px;
   bottom: 0;
-  right: 20px;
+  right: 0;
   position: absolute;
   z-index: 99;
-  color: #404040;
+  color: #DEF2F1;
   border-radius: 50%;
-  border: 3px solid #404040;
-  background: #808080;
+  border: 3px solid #163d3c;
+  background: #557a95;
+}
+.dropbtn {
+  background-color: transparent;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 10px;
+  outline: none;
+  cursor: pointer;
+  @media (max-width: 991px)
+  {
+    display: block;
+    width: 100%;
+  }
+}
+.dropbtn:hover, .dropbtn:focus {
+  background-color: #4c6e86;
+}
+.dropdown {
+  position: relative;
+  display: inline-block;
+  @media (max-width: 991px)
+  {
+    float: none;
+    display: block;
+    width: 100%;
+  }
+}
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #7395ae;
+  border-radius: 10px;
+  min-width: 160px;
+  overflow: hidden;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  left: -95px;
+  margin-top: 10px;
+  @media (max-width: 991px)
+  {
+    position: relative;
+    left: 0;
+  }
+}
+.dropdown-content a {
+  color: rgb(226, 226, 226);
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+.dropdown a:hover {
+  background-color: #7aa0bb;
+}
+.show {
+  display: block;
 }
 </style>
