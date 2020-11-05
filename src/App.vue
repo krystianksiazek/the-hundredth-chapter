@@ -36,7 +36,7 @@ export default {
 
 <style lang="scss">
 body {
-  background-color: #777777;
+  background-color: #7395ae;
   margin: 0;
 }
 #app {
