@@ -45,9 +45,9 @@
         <p id="errorOnSubmit" class="error"></p>
       </div>
     </div>
-    <b-button v-b-popover.hover.top="'I am popover directive content!'" title="Popover Title">
-    Hover Me
-  </b-button>
+    <b-button v-b-popover.hover.bottom="{ variant: 'info',  content: 'Popover content' }" title="Info variant">
+      Test        
+    </b-button>
   </div>
 </template>
 
@@ -281,7 +281,7 @@ h1 {
   text-align: center;
 }
 .registerForm {
-  background-color: #0a0c0c;
+  background-color: #b0a295;
   border: 1px solid grey;
   border-radius: 10px;
   padding: 20px;
