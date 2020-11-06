@@ -8,8 +8,12 @@
 
 export default {
   name: 'home',
-};
+  mounted() {
+
+  }
+}
 </script>
 
 <style lang="scss" scoped>
+
 </style>
