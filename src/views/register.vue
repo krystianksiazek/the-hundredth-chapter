@@ -40,7 +40,7 @@
         </b-form-checkbox>
       </div>
       <div class="errorAndSubmit">
-        <b-button @click='onSubmit()' class="submit" variant="dark">Załóż konto!</b-button>
+        <b-button @click='onSubmit()' class="submit" variant="dark">Załóż konto</b-button>
         <p id="regulationsError" class="error"></p>
         <p id="errorOnSubmit" class="error"></p>
       </div>
