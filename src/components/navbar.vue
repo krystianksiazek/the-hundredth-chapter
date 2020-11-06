@@ -13,7 +13,7 @@
           <b-nav-item right @click.stop>
             <div class="dropdown">
               <button @click="dropMenu('favoriteDropdown', 'toggle'), dropMenu('basketDropdown', 'close'), dropMenu('userDropdown', 'close')" class="dropbtn">
-                <span class="favorite"></span>
+                <span class="favorite"></span><span v-if="sendIsMobile === true" class="arrow down"></span>
                <img class="favoriteImg" src="..\assets\Icons\heart.png" alt="">
               </button>
               <div id="favoriteDropdown" class="dropdown-content">
@@ -32,7 +32,7 @@
                 </span>
                 <span v-if="itemsInCart > 0 && sendIsMobile === false" class="itemsInCartIndicator">
                   {{ itemsInCart }}
-                </span>
+                </span><span v-if="sendIsMobile === true" class="arrow down"></span>
                 <img class="basketImg" src="..\assets\Icons\basket.png" alt="">
               </button>
               <div id="basketDropdown" class="dropdown-content">
@@ -44,9 +44,8 @@
             <div class="dropdown">
               <button 
               @click="dropMenu('userDropdown', 'toggle'), dropMenu('basketDropdown', 'close'), dropMenu('favoriteDropdown', 'close')" 
-              class="dropbtn"
-              v-b-popover.hover.bottom="{variant: 'primary', content: 'Popover content'}" title="Info variant">
-                <span class="user"></span>
+              class="dropbtn">
+                <span class="user"></span><span v-if="sendIsMobile === true" class="arrow down"></span>
                 <img class="userImg" src="..\assets\Icons\user.png" alt="">
               </button>
               <div id="userDropdown" class="dropdown-content">
@@ -61,8 +60,8 @@
     <b-navbar class="lowerNavbar" toggleable="lg" type="dark">
       <b-navbar-toggle @click="toggle(2)" target="lowerNav" class="menuExtender">
         <template #default="{ expanded }">
-          <p v-if="expanded">↑ MENU ↑</p>
-          <p v-else>↓ MENU ↓</p>
+          <p v-if="expanded">MENU<span class="arrow up"></span></p>
+          <p v-else>MENU<span class="arrow down"></span></p>
         </template>
       </b-navbar-toggle>
       <b-collapse v-model="secondExtended" id="lowerNav" is-nav>
@@ -100,8 +99,8 @@ export default {
         var i;
       for (i = 0; i < dropdowns.length; i++) {
         var openDropdown = dropdowns[i];
-        if (openDropdown.classList.contains('show')) {
-          openDropdown.classList.remove('show');
+        if (openDropdown.classList.contains('showDropdown')) {
+          openDropdown.classList.remove('showDropdown');
         }
       }
       }
@@ -125,9 +124,9 @@ export default {
       }
     },
     dropMenu(section, action) {
-      if(action == 'close') document.getElementById(section).classList.remove("show");
-      else if(action == 'toggle') document.getElementById(section).classList.toggle("show");
-      else document.getElementById(section).classList.add("show");
+      if(action == 'close') document.getElementById(section).classList.remove("showDropdown");
+      else if(action == 'toggle') document.getElementById(section).classList.toggle("showDropdown");
+      else document.getElementById(section).classList.add("showDropdown");
     },
     scrollListener:
     function scrollFunction() {
@@ -149,14 +148,9 @@ a {
   text-decoration: none;
   color: rgba(255, 255, 255, 0.6);
 }
-a:hover {
-  color:  rgba(255, 255, 255, 0.8);
-}
-a:active {
-  color: rgba(255, 255, 255, 1);
-}
 button {
   border: none;
+  outline: 0;
 }
 li {
   text-align: center;
@@ -185,6 +179,10 @@ h5 {
   {
     max-height: 100%;
   }
+}
+.lowerNavbar a:hover {
+  // text-decoration: underline;
+  color:  rgba(255, 255, 255, 0.8);
 }
 .navbar-nav {
   text-align: center;
@@ -215,6 +213,7 @@ h5 {
 }
 .logo:hover {
   color: #FEFFFF;
+  text-decoration: none;
 }
 .logo {
   text-decoration: none;
@@ -313,9 +312,6 @@ h5 {
     width: 100%;
   }
 }
-.dropbtn:hover, .dropbtn:focus {
-  background-color: #4c6e86;
-}
 .dropdown {
   position: relative;
   display: inline-block;
@@ -327,13 +323,14 @@ h5 {
   }
 }
 .dropdown-content {
-  display: none;
+  // display: none;
   position: absolute;
   background-color: #7395ae;
   border-radius: 10px;
-  min-width: 160px;
+  max-height: 0;
+  transition: max-height 0.15s ease-out;
   overflow: hidden;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
   z-index: 1;
   left: -95px;
   margin-top: 10px;
@@ -344,15 +341,35 @@ h5 {
   }
 }
 .dropdown-content a {
-  color: rgb(226, 226, 226);
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.6);
   padding: 12px 16px;
   text-decoration: none;
   display: block;
 }
 .dropdown a:hover {
-  background-color: #7aa0bb;
+  color:  rgba(255, 255, 255, 0.8);
+  // background-color: #7aa0bb;
+  // text-decoration: underline;
 }
-.show {
+.showDropdown {
   display: block;
+  max-height: 500px;
+  transition: max-height 0.25s ease-in;
+}
+.arrow {
+  border: solid #7395ae;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 5px;
+  margin-left: 5px;
+  margin-bottom: 5px;
+}
+.down {
+  transform: rotate(45deg);
+}
+.up {
+  transform: rotate(225deg);
+  margin-bottom: 0;
 }
 </style>
