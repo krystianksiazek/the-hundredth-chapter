@@ -49,12 +49,12 @@
               dropdownExtendedChecker('basketDropdown')" 
               class="dropbtn">
                 <span class="basket">
-                  <span v-if="itemsInCart > 0 && sendIsMobile === true">
-                    ({{ itemsInCart }})
+                  <span v-if="store.itemsInCart > 0 && sendIsMobile === true">
+                    ({{ store.itemsInCart }})
                   </span>
                 </span>
-                <span v-if="itemsInCart > 0 && sendIsMobile === false" class="itemsInCartIndicator">
-                  {{ itemsInCart }}
+                <span v-if="store.itemsInCart > 0 && sendIsMobile === false" class="itemsInCartIndicator">
+                  {{ store.itemsInCart }}
                 </span>
                 <span v-if="sendIsMobile === true">
                   <span v-if="whihDropdownIsExtended === 'basketDropdown' && isExtended" class="arrow up"></span>
@@ -125,6 +125,13 @@
 </template>
 
 <script>
+import Vue from 'vue';
+
+const store = Vue.observable({
+  itemsInCart: 0
+})
+//TODO try to do it with vuex
+Vue.prototype.store = store
 export default {
   name: 'navbar',
   props: [
@@ -136,7 +143,7 @@ export default {
       secondExtended: false,
       itemsInCart: 10,
       whihDropdownIsExtended: null,
-      isExtended: false
+      isExtended: false,
     };
   },
   created() {
@@ -190,6 +197,7 @@ export default {
     },
     dropdownExtendedChecker(id) {
       var $ = require('jquery');
+      var target = $('#'+id);
       if(id === 'closing') {
         this.whihDropdownIsExtended = 'none';
         this.isExtended = false;
@@ -205,6 +213,7 @@ export default {
     }
   }
 };
+
 </script>
 
 <style lang="scss" scoped>
