@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import Vuex from "vuex";
 import jQuery from 'jquery';
 import BootstrapVue from 'bootstrap-vue'
 import Popper from 'vue-popperjs';
@@ -18,5 +19,13 @@ Vue.use(Popper)
 new Vue({
   router,
   store,
+  Vuex,
   render: (h) => h(App),
 }).$mount('#app');
+
+export default new Vuex.Store({
+ state: {},
+ getters: {},
+ mutations: {},
+ actions: {}
+});
