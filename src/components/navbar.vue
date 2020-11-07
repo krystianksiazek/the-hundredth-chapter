@@ -26,8 +26,18 @@
                <img class="favoriteImg" src="..\assets\Icons\heart.png" alt="">
               </button>
               <div id="favoriteDropdown" class="dropdown-content">
-                <router-link @click.native="toggle(2), dropMenu('favoriteDropdown', 'close')" to="/">Ulubione</router-link>
-                <router-link @click.native="toggle(2), dropMenu('favoriteDropdown', 'close')" to="register">Elo</router-link>
+                <router-link @click.native="toggle(2), 
+                dropMenu('favoriteDropdown', 'close'),
+                dropdownExtendedChecker('closing')" 
+                to="/">
+                  Ulubione
+                </router-link>
+                <router-link @click.native="toggle(2), 
+                dropMenu('favoriteDropdown', 'close'),
+                dropdownExtendedChecker('closing')" 
+                to="register">
+                  Elo
+                </router-link>
               </div>
             </div>
           </b-nav-item>
@@ -53,7 +63,12 @@
                 <img class="basketImg" src="..\assets\Icons\basket.png" alt="">
               </button>
               <div id="basketDropdown" class="dropdown-content">
-                <router-link @click.native="toggle(2), dropMenu('basketDropdown', 'close')" to="/">Koszyk</router-link>
+                <router-link @click.native="toggle(2), 
+                dropMenu('basketDropdown', 'close'),
+                dropdownExtendedChecker('closing')" 
+                to="/">
+                  Koszyk
+                </router-link>
               </div>
             </div>
           </b-nav-item>
@@ -72,8 +87,18 @@
                 <img class="userImg" src="..\assets\Icons\user.png" alt="">
               </button>
               <div id="userDropdown" class="dropdown-content">
-                <router-link @click.native="toggle(2), dropMenu('userDropdown', 'close')" to="/">Logowanie</router-link>
-                <router-link @click.native="toggle(2), dropMenu('userDropdown', 'close')" to="register">Rejestracja</router-link>
+                <router-link @click.native="toggle(2), 
+                dropMenu('userDropdown', 'close'), 
+                dropdownExtendedChecker('closing')" 
+                to="/">
+                  Logowanie
+                </router-link>
+                <router-link @click.native="toggle(2), 
+                dropMenu('userDropdown', 'close'), 
+                dropdownExtendedChecker('closing')" 
+                to="register">
+                  Rejestracja
+                </router-link>
               </div>
             </div>
           </b-nav-item>
@@ -165,18 +190,17 @@ export default {
     },
     dropdownExtendedChecker(id) {
       var $ = require('jquery');
-      var target = $('#'+id);
+      if(id === 'closing') {
+        this.whihDropdownIsExtended = 'none';
+        this.isExtended = false;
+      } else var target = $('#'+id);
       if (target.hasClass('showDropdown')) {
         this.whihDropdownIsExtended = id;
         this.isExtended = true;
-        console.log(this.whihDropdownIsExtended);
-        console.log(this.isExtended);
       }
       else {
         this.whihDropdownIsExtended = 'none';
         this.isExtended = false;
-        console.log(this.whihDropdownIsExtended);
-        console.log(this.isExtended);
       }
     }
   }
