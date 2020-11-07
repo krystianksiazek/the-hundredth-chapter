@@ -12,8 +12,17 @@
         <b-navbar-nav class="ml-auto">
           <b-nav-item right @click.stop>
             <div class="dropdown">
-              <button @click="dropMenu('favoriteDropdown', 'toggle'), dropMenu('basketDropdown', 'close'), dropMenu('userDropdown', 'close')" class="dropbtn">
-                <span class="favorite"></span><span v-if="sendIsMobile === true" class="arrow down"></span>
+              <button @click="dropMenu('favoriteDropdown', 'toggle'), 
+              dropMenu('basketDropdown', 'close'), 
+              dropMenu('userDropdown', 'close')
+              dropdownExtendedChecker('favoriteDropdown')"
+              class="dropbtn">
+                <span class="favorite"></span>
+                <span v-if="sendIsMobile === true">
+                  <span v-if="whihDropdownIsExtended === 'favoriteDropdown' && isExtended" class="arrow up"></span>
+                  <span v-else class="arrow down"></span>
+                </span>
+                <span id="arrowFavorite" v-if="sendIsMobile === true"></span>
                <img class="favoriteImg" src="..\assets\Icons\heart.png" alt="">
               </button>
               <div id="favoriteDropdown" class="dropdown-content">
@@ -24,7 +33,11 @@
           </b-nav-item>
           <b-nav-item right @click.stop>
             <div class="dropdown">
-              <button @click="dropMenu('basketDropdown', 'toggle'), dropMenu('userDropdown', 'close'), dropMenu('favoriteDropdown', 'close')" class="dropbtn">
+              <button @click="dropMenu('basketDropdown', 'toggle'), 
+              dropMenu('userDropdown', 'close'), 
+              dropMenu('favoriteDropdown', 'close')
+              dropdownExtendedChecker('basketDropdown')" 
+              class="dropbtn">
                 <span class="basket">
                   <span v-if="itemsInCart > 0 && sendIsMobile === true">
                     ({{ itemsInCart }})
@@ -32,7 +45,11 @@
                 </span>
                 <span v-if="itemsInCart > 0 && sendIsMobile === false" class="itemsInCartIndicator">
                   {{ itemsInCart }}
-                </span><span v-if="sendIsMobile === true" class="arrow down"></span>
+                </span>
+                <span v-if="sendIsMobile === true">
+                  <span v-if="whihDropdownIsExtended === 'basketDropdown' && isExtended" class="arrow up"></span>
+                  <span v-else class="arrow down"></span>
+                </span>
                 <img class="basketImg" src="..\assets\Icons\basket.png" alt="">
               </button>
               <div id="basketDropdown" class="dropdown-content">
@@ -42,10 +59,16 @@
           </b-nav-item>
           <b-nav-item right @click.stop>
             <div class="dropdown">
-              <button 
-              @click="dropMenu('userDropdown', 'toggle'), dropMenu('basketDropdown', 'close'), dropMenu('favoriteDropdown', 'close')" 
+              <button @click="dropMenu('userDropdown', 'toggle'), 
+              dropMenu('basketDropdown', 'close'), 
+              dropMenu('favoriteDropdown', 'close')
+              dropdownExtendedChecker('userDropdown')" 
               class="dropbtn">
-                <span class="user"></span><span v-if="sendIsMobile === true" class="arrow down"></span>
+                <span class="user"></span>
+                <span v-if="sendIsMobile === true">
+                  <span v-if="whihDropdownIsExtended === 'userDropdown' && isExtended" class="arrow up"></span>
+                  <span v-else class="arrow down"></span>
+                </span>
                 <img class="userImg" src="..\assets\Icons\user.png" alt="">
               </button>
               <div id="userDropdown" class="dropdown-content">
@@ -87,6 +110,8 @@ export default {
       firstExtended: false,
       secondExtended: false,
       itemsInCart: 10,
+      whihDropdownIsExtended: null,
+      isExtended: false
     };
   },
   created() {
@@ -124,12 +149,11 @@ export default {
       }
     },
     dropMenu(section, action) {
-      if(action == 'close') document.getElementById(section).classList.remove("showDropdown");
+      if (action == 'close') document.getElementById(section).classList.remove("showDropdown");
       else if(action == 'toggle') document.getElementById(section).classList.toggle("showDropdown");
       else document.getElementById(section).classList.add("showDropdown");
     },
-    scrollListener:
-    function scrollFunction() {
+    scrollListener() {
       var $ = require('jquery');
       if (document.body.scrollTop > 0 || document.documentElement.scrollTop > 0 && this.sendIsMobile === false) {
         $('.lowerNavbar').addClass('lowerNavbarHider');
@@ -137,6 +161,22 @@ export default {
       } else {
         $('.lowerNavbar').removeClass('lowerNavbarHider');
         $('.navButton').removeClass('navButtonHider');
+      }
+    },
+    dropdownExtendedChecker(id) {
+      var $ = require('jquery');
+      var target = $('#'+id);
+      if (target.hasClass('showDropdown')) {
+        this.whihDropdownIsExtended = id;
+        this.isExtended = true;
+        console.log(this.whihDropdownIsExtended);
+        console.log(this.isExtended);
+      }
+      else {
+        this.whihDropdownIsExtended = 'none';
+        this.isExtended = false;
+        console.log(this.whihDropdownIsExtended);
+        console.log(this.isExtended);
       }
     }
   }
@@ -325,6 +365,7 @@ h5 {
 .dropdown-content {
   // display: none;
   position: absolute;
+  right: 5px;
   background-color: #7395ae;
   border-radius: 10px;
   max-height: 0;
@@ -332,12 +373,11 @@ h5 {
   overflow: hidden;
   box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
   z-index: 1;
-  left: -95px;
   margin-top: 10px;
   @media (max-width: 991px)
   {
     position: relative;
-    left: 0;
+    right: 0;
   }
 }
 .dropdown-content a {
