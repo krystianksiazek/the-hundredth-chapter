@@ -69,6 +69,16 @@
                 to="/">
                   Koszyk
                 </router-link>
+                <a @click="clearCart(),
+                toggle(2),
+                dropMenu('basketDropdown', 'close'),
+                dropdownExtendedChecker('closing')" 
+                v-if="store.itemsInCart !== 0" class="clearCart">
+                  <span class="cross">
+                    ✖
+                  </span> 
+                  Wyczyść koszyk
+                </a>
               </div>
             </div>
           </b-nav-item>
@@ -141,7 +151,6 @@ export default {
     return {
       firstExtended: false,
       secondExtended: false,
-      itemsInCart: 10,
       whihDropdownIsExtended: null,
       isExtended: false,
     };
@@ -198,7 +207,7 @@ export default {
     dropdownExtendedChecker(id) {
       var $ = require('jquery');
       var target = $('#'+id);
-      if(id === 'closing') {
+      if (id === 'closing') {
         this.whihDropdownIsExtended = 'none';
         this.isExtended = false;
       } else var target = $('#'+id);
@@ -210,6 +219,9 @@ export default {
         this.whihDropdownIsExtended = 'none';
         this.isExtended = false;
       }
+    },
+    clearCart() {
+      store.itemsInCart = 0;
     }
   }
 };
@@ -397,6 +409,8 @@ h5 {
 }
 .dropdown-content {
   // display: none;
+  min-width: 160px;
+  cursor: context-menu;
   position: absolute;
   right: 5px;
   background-color: #7395ae;
@@ -444,5 +458,13 @@ h5 {
 .up {
   transform: rotate(225deg);
   margin-bottom: 0;
+}
+.clearCart {
+  font-size: 15px !important;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.cross {
+  color: rgb(180, 0, 0);
 }
 </style>
