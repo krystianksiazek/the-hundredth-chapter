@@ -8,7 +8,7 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import App from './App.vue';
 import router from './router';
-import store from './store';
+import store from './store/products';
 global.jQuery = jQuery;
 global.Popper = Popper;
 
@@ -22,10 +22,3 @@ new Vue({
   Vuex,
   render: (h) => h(App),
 }).$mount('#app');
-
-export default new Vuex.Store({
- state: {},
- getters: {},
- mutations: {},
- actions: {}
-});
