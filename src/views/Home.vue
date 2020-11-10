@@ -1,28 +1,41 @@
 <template>
-  <div class="homeWrapper">
-    <h1>Strona główna</h1>
-    <div>
-      <label for="sb-vertical">Dodawanie do koszyka</label><br>
-      <b-form-spinbutton class="quantity" v-model="basketValue" id="sb-vertical" min="0" max="99" inline></b-form-spinbutton><br>
-      <b-button class="addToCart" @click="updateCart()" :disabled="basketValue <= 0">Dodaj do koszyka</b-button>
-      <p>Rzeczy w koszyku: {{ store.itemsInCart }} {{ basketValue }} </p>
-    </div>
-  </div>
+<div>
+  <h1>Produkty</h1>
+  Duplikaty w koszyku: {{ this.$store.getters.duplicatesInCart }}
+  <b-container>
+    <b-row class="justify-content-center">
+      <Product
+        v-for="product in products"
+        :key="product.id"
+        :id="product.id"
+        :title="product.title"
+        :cover="product.cover"
+        :price="product.price"
+        :flag="product.flag"
+        :genere="product.genere"
+        :rate="product.rate"
+        :quantityInCart="product.quantityInCart"
+      />
+    </b-row>
+  </b-container>
+</div>
 </template>
 
 <script>
+import Product from '@/components/product.vue';
+
 export default {
   name: 'home',
-  data () {
-    return {
-      basketValue: 0,
-    }
+  components: {
+    Product
+  },
+  computed: {
+    products() {
+      return this.$store.getters.products;
+    },
   },
   methods: {
-    updateCart() {
-      this.store.itemsInCart += this.basketValue;
-      this.basketValue = 0;
-    }
+    
   },
   // methods: {
   //   increase() {
@@ -44,5 +57,14 @@ export default {
   border: 1px solid #2b3d4b;
   color: #fff;
   margin-bottom: 10px;
+}
+.homeWrapper {
+  display: grid;
+  grid-template-columns: auto auto auto auto auto auto;
+  grid-template-rows: auto auto; 
+  column-gap: 10px;
+  row-gap: 15px;
+  align-items: stretch;
+  justify-items: stretch;
 }
 </style>
