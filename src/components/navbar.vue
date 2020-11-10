@@ -23,7 +23,7 @@
                   <span v-else class="arrow down"></span>
                 </span>
                 <span id="arrowFavorite" v-if="sendIsMobile === true"></span>
-               <img class="favoriteImg" src="..\assets\Icons\heart.png" alt="">
+               <img class="favoriteImg" src="..\assets\Icons\heart.png">
               </button>
               <div id="favoriteDropdown" class="dropdown-content">
                 <router-link @click.native="toggle(2), 
@@ -49,36 +49,46 @@
               dropdownExtendedChecker('basketDropdown')" 
               class="dropbtn">
                 <span class="basket">
-                  <span v-if="store.itemsInCart > 0 && sendIsMobile === true">
-                    ({{ store.itemsInCart }})
+                  <span v-if="cartCount > 0 && sendIsMobile === true">
+                    {{ cartCount }}
                   </span>
                 </span>
-                <span v-if="store.itemsInCart > 0 && sendIsMobile === false" class="itemsInCartIndicator">
-                  {{ store.itemsInCart }}
+                <span v-if="cartCount > 0 && sendIsMobile === false" class="itemsInCartIndicator">
+                  {{ cartCount }}
                 </span>
                 <span v-if="sendIsMobile === true">
                   <span v-if="whihDropdownIsExtended === 'basketDropdown' && isExtended" class="arrow up"></span>
                   <span v-else class="arrow down"></span>
                 </span>
-                <img class="basketImg" src="..\assets\Icons\basket.png" alt="">
+                <img class="basketImg" src="..\assets\Icons\basket.png">
               </button>
               <div id="basketDropdown" class="dropdown-content">
-                <router-link @click.native="toggle(2), 
-                dropMenu('basketDropdown', 'close'),
-                dropdownExtendedChecker('closing')" 
-                to="/">
-                  Koszyk
-                </router-link>
+                <b-container>
+                  <b-row class="justify-content-center">
+                    <div v-for="(item, index) in cart" :key="index">
+                      <div>{{ item.name }}</div>
+                      <div>
+                        <img class="coverProduct" :src="item.cover" />
+                      </div>
+                      <div>{{ item.price + " zł"}}
+                      </div>
+                      <div>
+                        <b-button @click="removeItem(index, item.id)">Usuń z koszyka</b-button>
+                      </div>
+                    </div>
+                 </b-row>
+                </b-container>
                 <a @click="clearCart(),
                 toggle(2),
                 dropMenu('basketDropdown', 'close'),
                 dropdownExtendedChecker('closing')" 
-                v-if="store.itemsInCart !== 0" class="clearCart">
+                v-if="cartCount !== 0" class="clearCart">
                   <span class="cross">
                     ✖
                   </span> 
                   Wyczyść koszyk
                 </a>
+              {{ summaryPrice }}
               </div>
             </div>
           </b-nav-item>
@@ -94,7 +104,7 @@
                   <span v-if="whihDropdownIsExtended === 'userDropdown' && isExtended" class="arrow up"></span>
                   <span v-else class="arrow down"></span>
                 </span>
-                <img class="userImg" src="..\assets\Icons\user.png" alt="">
+                <img class="userImg" src="..\assets\Icons\user.png">
               </button>
               <div id="userDropdown" class="dropdown-content">
                 <router-link @click.native="toggle(2), 
@@ -135,13 +145,6 @@
 </template>
 
 <script>
-import Vue from 'vue';
-
-const store = Vue.observable({
-  itemsInCart: 0
-})
-//TODO try to do it with vuex
-Vue.prototype.store = store
 export default {
   name: 'navbar',
   props: [
@@ -171,6 +174,28 @@ export default {
       }
       }
     }
+  },
+  computed: {
+    StoreCart() {
+      return this.$store.getters.StoreCart;
+    },
+    cartCount() {
+      return this.StoreCart.length;
+    },
+    summaryPrice() {
+      // let summary = 0;
+      // for (let i = 0; i <= this.StoreCart.length; i++) {
+      //   summary = this.StoreCart.price;
+      // }
+      // return summary;
+    },
+    cart() {
+      return this.$store.getters.StoreCart.map(cartitems => {
+        return this.$store.getters.products.find(itemForSale => {
+          return cartitems === itemForSale.id;
+        });
+      });
+    },
   },
   methods: {
     toggle(code) {
@@ -221,8 +246,11 @@ export default {
       }
     },
     clearCart() {
-      store.itemsInCart = 0;
-    }
+      this.$store.dispatch("removeAllFromCart");
+    },
+    removeItem(index, id) {
+      this.$store.dispatch("removeFromCart", { index, id} );
+    },
   }
 };
 
@@ -410,6 +438,7 @@ h5 {
 .dropdown-content {
   // display: none;
   min-width: 160px;
+  opacity: 0;
   cursor: context-menu;
   position: absolute;
   right: 5px;
@@ -443,6 +472,7 @@ h5 {
   display: block;
   max-height: 500px;
   transition: max-height 0.25s ease-in;
+  opacity: 1;
 }
 .arrow {
   border: solid #7395ae;
@@ -466,5 +496,12 @@ h5 {
 }
 .cross {
   color: rgb(180, 0, 0);
+}
+#basketDropdown {
+  overflow: auto;
+  // padding: 20px;
+}
+.coverProduct {
+  height: 120px;
 }
 </style>
