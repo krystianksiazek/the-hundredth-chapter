@@ -2,8 +2,8 @@
   <div class="productWrapper">
     <div>{{ title }}</div>
     {{ quantityInCart }}
-    <img :src="cover" height="250" /><br>
-    <span>{{ price + " zł" }}</span><br>
+    <img :src="cover" height="250" />
+    <span>{{ price + " zł" }}</span>
     Ocena: {{ rate }} | Gatunek: {{ genere }}
     <div>
       <b-form-spinbutton class="quantity" v-model="basketValue" id="sb-vertical" min="0" max="99" inline></b-form-spinbutton><br>
@@ -28,18 +28,6 @@ export default {
       this.$store.dispatch("addToCart", { id, amount });
       this.basketValue = 1;
     },
-    showList() {
-      var modal = document.getElementById("shoppingList");
-      var btn = document.getElementById("show");
-      btn.onclick = function() {
-        modal.style.display = "block";
-      };
-      window.onclick = function(event) {
-        if (event.target == modal) {
-          modal.style.display = "none";
-        }
-      };
-    }
   }
 };
 </script>
@@ -55,7 +43,6 @@ export default {
     justify-content: center;
     align-items: center;
     width: 250px;
-    height: 400px;
     text-align: center;
 }
 </style>
