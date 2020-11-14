@@ -66,15 +66,17 @@
                 <b-container>
                   <b-row class="justify-content-center">
                     <div v-for="(item, index) in cart" :key="index">
+                      <div v-if="item.quantityInCart >= 1">
                       <div>{{ item.name }}</div>
                       <div>
-                        <img class="coverProduct" :src="item.cover" />
+                        <img class="coverProduct" :src="item.cover" /> 
                       </div>
-                      <div>{{ item.price + " zł"}}
+                      <div>x{{ item.quantityInCart }} = {{ item.price*item.quantityInCart + " zł"}}
                       </div>
                       <div>
                         <b-button @click="removeItem(index, item.id)">Usuń z koszyka</b-button>
                       </div>
+                    </div>
                     </div>
                  </b-row>
                 </b-container>
@@ -163,12 +165,12 @@ export default {
   },
   mounted() {
     window.onclick = function(event) {
-      if (event.target.matches('.link') || !event.target.matches('.dropbtn')) {
+      if(event.target.matches('.link') || !event.target.matches('.dropbtn')) {
         var dropdowns = document.getElementsByClassName("dropdown-content");
         var i;
-      for (i = 0; i < dropdowns.length; i++) {
+      for(i = 0; i < dropdowns.length; i++) {
         var openDropdown = dropdowns[i];
-        if (openDropdown.classList.contains('showDropdown')) {
+        if(openDropdown.classList.contains('showDropdown')) {
           openDropdown.classList.remove('showDropdown');
         }
       }
@@ -176,30 +178,23 @@ export default {
     }
   },
   computed: {
-    StoreCart() {
-      return this.$store.getters.StoreCart;
-    },
     cartCount() {
-      return this.StoreCart.length;
+      let counter = 0;
+      for(let i = 0; i < this.$store.getters.products.length; i++) {
+        counter += this.$store.getters.products[i].quantityInCart;
+      }
+      return counter;
     },
     summaryPrice() {
-      // let summary = 0;
-      // for (let i = 0; i <= this.StoreCart.length; i++) {
-      //   summary = this.StoreCart.price;
-      // }
-      // return summary;
+
     },
     cart() {
-      return this.$store.getters.StoreCart.map(cartitems => {
-        return this.$store.getters.products.find(itemForSale => {
-          return cartitems === itemForSale.id;
-        });
-      });
+      return this.$store.getters.products;
     },
   },
   methods: {
     toggle(code) {
-      switch (code) {
+      switch(code) {
         case 1:
          this.secondExtended = false;
         break;
@@ -215,13 +210,13 @@ export default {
       }
     },
     dropMenu(section, action) {
-      if (action == 'close') document.getElementById(section).classList.remove("showDropdown");
+      if(action == 'close') document.getElementById(section).classList.remove("showDropdown");
       else if(action == 'toggle') document.getElementById(section).classList.toggle("showDropdown");
       else document.getElementById(section).classList.add("showDropdown");
     },
     scrollListener() {
       var $ = require('jquery');
-      if (document.body.scrollTop > 0 || document.documentElement.scrollTop > 0 && this.sendIsMobile === false) {
+      if(document.body.scrollTop > 0 || document.documentElement.scrollTop > 0 && this.sendIsMobile === false) {
         $('.lowerNavbar').addClass('lowerNavbarHider');
         $('.navButton').addClass('navButtonHider');
       } else {
@@ -232,11 +227,11 @@ export default {
     dropdownExtendedChecker(id) {
       var $ = require('jquery');
       var target = $('#'+id);
-      if (id === 'closing') {
+      if(id === 'closing') {
         this.whihDropdownIsExtended = 'none';
         this.isExtended = false;
       } else var target = $('#'+id);
-      if (target.hasClass('showDropdown')) {
+      if(target.hasClass('showDropdown')) {
         this.whihDropdownIsExtended = id;
         this.isExtended = true;
       }
@@ -246,7 +241,9 @@ export default {
       }
     },
     clearCart() {
-      this.$store.dispatch("removeAllFromCart");
+      for(let i = 0; i < this.$store.getters.products.length; i++) {
+        this.$store.getters.products[i].quantityInCart = 0;
+      }
     },
     removeItem(index, id) {
       this.$store.dispatch("removeFromCart", { index, id} );
