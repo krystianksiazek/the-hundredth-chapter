@@ -10,7 +10,7 @@ export default new Vuex.Store({
       id: 1,
       title: "Harry Potter i Komnata Tajemnic ",
       cover: "https://cdn-lubimyczytac.pl/upload/books/308000/308636/532903-352x500.jpg",
-      price: "21,13",
+      price: 22.13,
       flag: "new",
       genere: "fantasy",
       rate: "8,5",
@@ -20,7 +20,7 @@ export default new Vuex.Store({
       id: 2,
       title: "Harry Potter i więzień Azkabanu",
       cover: "https://cdn-lubimyczytac.pl/upload/books/308000/308637/532904-352x500.jpg",
-      price: "22,30",
+      price: 22.30,
       flag: "new",
       genere: "fantasy",
       rate: "8,3",
@@ -30,7 +30,7 @@ export default new Vuex.Store({
       id: 3,
       title: "Harry Potter i Czara Ognia ",
       cover: "https://cdn-lubimyczytac.pl/upload/books/308000/308633/494236-352x500.jpg",
-      price: "20,43",
+      price: 20.43,
       flag: "new",
       genere: "fantasy",
       rate: "9,3",
@@ -40,7 +40,7 @@ export default new Vuex.Store({
       id: 4,
       title: "Harry Potter i Zakon Feniksa",
       cover: "https://cdn-lubimyczytac.pl/upload/books/308000/308635/532902-352x500.jpg",
-      price: "25,11",
+      price: 25.11,
       flag: "new",
       genere: "fantasy",
       rate: "7,3",
@@ -50,7 +50,7 @@ export default new Vuex.Store({
       id: 5,
       title: "Harry Potter i Książę Półkrwi",
       cover: "https://cdn-lubimyczytac.pl/upload/books/308000/308638/494222-352x500.jpg",
-      price: "19,79",
+      price: 19.79,
       flag: "new",
       genere: "fantasy",
       rate: "8,9",
@@ -60,7 +60,7 @@ export default new Vuex.Store({
       id: 6,
       title: "Harry Potter i Insygnia Śmierci ",
       cover: "https://cdn-lubimyczytac.pl/upload/books/310000/310990/494239-352x500.jpg",
-      price: "25,11",
+      price: 25.11,
       flag: "new",
       genere: "fantasy",
       rate: "8,1",
@@ -72,30 +72,10 @@ export default new Vuex.Store({
 },
   mutations: {
     ADD_TO_CART(state, { id, amount }) {
-      for(let i = 1; i<=amount; i++) {
-        state.StoreCart.push(id);
-      }
-      function count(array_elements) {
-      var current = null;
-      var cnt = 0;
-      for (var i = 0; i < array_elements.length; i++) {
-        if (array_elements[i] != current) {
-          if (cnt > 0) {
-            state.products[current-1].quantityInCart = cnt;
-          }
-          current = array_elements[i];
-          cnt = 1;
-        } else {
-            cnt++;
-          }
-      }
-      if (cnt > 0) {
-        state.products[current-1].quantityInCart = cnt;
-      }
-  }
-      let findDuplicates = arr => arr.filter((item, index) => arr.indexOf(item) != index);
-      // state.duplicatesInCart = findDuplicates(state.StoreCart);
-      count(state.StoreCart);
+      // for(let i = 1; i<=amount; i++) {
+        state.products[id-1].quantityInCart += amount;
+        // state.StoreCart.push(id);
+      // }
     },
     REMOVE_FROM_CART(state, { index, id }) {
       state.StoreCart.splice(index, 1);
