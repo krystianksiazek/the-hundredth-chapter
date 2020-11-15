@@ -1,12 +1,14 @@
 <template>
   <div class="productWrapper">
-    <div>{{ title }}</div>
-    {{ quantityInCart }}
-    <img :src="cover" height="250" />
-    <span>{{ price + " zł" }}</span>
-    Ocena: {{ rate }} | Gatunek: {{ genere }}
+    <div @click="$emit('run-modal', id)">
+      <div>{{ title }}</div>
+      <!-- {{ quantityInCart }} -->
+      <img :src="cover" height="250" /><br>
+      <span>{{ price + " zł" }}</span><br>
+      Ocena: {{ rate }} | Gatunek: {{ genere }}
+    </div>
     <div>
-      <b-form-spinbutton class="quantity" v-model="basketValue" id="sb-vertical" min="0" max="99" inline></b-form-spinbutton><br>
+      <b-form-spinbutton class="quantity" v-model="basketValue" id="sb-small" min="0" max="99"></b-form-spinbutton>
       <b-button class="addToCart" @click="addToCart(id, basketValue)" :disabled="basketValue <= 0">Dodaj do koszyka</b-button>
     </div>
   </div>
@@ -20,9 +22,7 @@ export default {
       basketValue: 1,
     }
   },
-  props: ["id", "title", "cover", "price", "flag", "genere", "rate", "quantityInCart"],
-
-  
+  props: ["id", "title", "cover", "price", "flag", "genere", "rate", "quantityInCart", "description", "sendModalOpen"],
   methods: {
     addToCart(id, amount) {
       this.$store.dispatch("addToCart", { id, amount });
