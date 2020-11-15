@@ -9,6 +9,8 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import App from './App.vue';
 import router from './router';
 import store from './store/products';
+import 'simplebar';
+import 'simplebar/dist/simplebar.css';
 global.jQuery = jQuery;
 global.Popper = Popper;
 
