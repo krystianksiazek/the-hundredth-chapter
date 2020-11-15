@@ -35,7 +35,11 @@ export default {
 </script>
 
 <style lang="scss">
+html {
+  scrollbar-color: #888 #3e3e3e;
+}
 body {
+  overflow-anchor: none;
   background-color: #7395ae;
   margin: 0;
 }
