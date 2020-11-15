@@ -1,7 +1,7 @@
 <template>
 <div>
+  <Modal v-if="modalOpen" :item = "modalData" @close-modal="modalOpen = false;" />
   <h1>Produkty</h1>
-  Duplikaty w koszyku: {{ this.$store.getters.duplicatesInCart }}
   <b-container>
     <b-row class="justify-content-center">
       <Product
@@ -15,19 +15,31 @@
         :genere="product.genere"
         :rate="product.rate"
         :quantityInCart="product.quantityInCart"
+        :description="product.description"
+        :sendModalOpen="modalOpen"
+        @run-modal="runModal"
       />
     </b-row>
   </b-container>
+  
 </div>
 </template>
 
 <script>
 import Product from '@/components/product.vue';
+import Modal from '@/components/modal.vue';
 
 export default {
   name: 'home',
   components: {
-    Product
+    Product,
+    Modal
+  },
+  data() {
+    return {
+      modalOpen: false,
+      modalData: null,
+    };
   },
   computed: {
     products() {
@@ -35,19 +47,11 @@ export default {
     },
   },
   methods: {
-    
+    runModal: function(id) {
+      this.modalOpen = true;
+      this.modalData = id;
+    }
   },
-  // methods: {
-  //   increase() {
-  //     this.store.itemsInCart += 1;
-  //   },
-  //   decrease() {
-  //     var $ = require('jquery');
-  //     if(this.store.itemsInCart === 0) {
-  //       $('.decrease').attr('disable');
-  //     } else this.store.itemsInCart -= 1;
-  //   }
-  // }
 }
 </script>
 
