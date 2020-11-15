@@ -3,6 +3,7 @@
     <b-navbar class="upperNavbar" toggleable="lg" type="dark">
       <b-navbar-brand class="logo" @click="toggle(3)" :to="'/'"></b-navbar-brand>
       <b-navbar-toggle @click="toggle(1)" target="upperNav"></b-navbar-toggle>
+        <span class="notification" v-if="cartCount > 0 && sendIsMobile === true"></span>
       <b-collapse v-model="firstExtended" id="upperNav" is-nav>
         <b-navbar-nav>
           <b-nav-form>
@@ -54,27 +55,37 @@
                   </span>
                 </span>
                 <span v-if="cartCount > 0 && sendIsMobile === false" class="itemsInCartIndicator">
-                  {{ cartCount }}
+                  <span v-if="cartCount > 99">
+                    ···
+                  </span>
+                  <span v-else>
+                    {{ cartCount }}
+                  </span>
                 </span>
                 <span v-if="sendIsMobile === true">
                   <span v-if="whihDropdownIsExtended === 'basketDropdown' && isExtended" class="arrow up"></span>
                   <span v-else class="arrow down"></span>
+                  <span class="notificationInCart" v-if="cartCount > 0 && sendIsMobile === true"></span>
                 </span>
                 <img class="basketImg" src="..\assets\Icons\basket.png">
               </button>
+              <!-- unfortunately I can't use siplebar on basketDropdown element because it affects cleanCart button -->
               <div id="basketDropdown" class="dropdown-content">
                 <b-container>
-                  <b-row class="justify-content-center">
-                    <div v-for="(item, index) in cart" :key="index">
-                      <div v-if="item.quantityInCart >= 1">
-                      <div>{{ item.name }}</div>
+                  <b-row class="products">
+                    <span v-if="cartCount === 0">Koszyk jest pusty :(</span>
+                    <!-- it’s not recommended to use v-if and v-for together... blah blah blah -->
+                    <div class="loopProducts" v-for="(item, index) in cart" :key="index" v-if="item.quantityInCart > 0">
+                      <div class="singleProduct">
+                      <div>{{ item.title }}</div>
                       <div>
                         <img class="coverProduct" :src="item.cover" /> 
                       </div>
-                      <div>x{{ item.quantityInCart }} = {{ item.price*item.quantityInCart + " zł"}}
-                      </div>
                       <div>
-                        <b-button @click="removeItem(index, item.id)">Usuń z koszyka</b-button>
+                        <span v-if="item.quantityInCart > 1">x{{ item.quantityInCart }} = </span>{{ (item.price*item.quantityInCart).toFixed(2) + " zł"}}
+                      </div>
+                      <div class="removeAllButtonWrapper">
+                        <b-button @click="removeItem(item.id)">Usuń z koszyka</b-button>
                       </div>
                     </div>
                     </div>
@@ -90,7 +101,6 @@
                   </span> 
                   Wyczyść koszyk
                 </a>
-              {{ summaryPrice }}
               </div>
             </div>
           </b-nav-item>
@@ -156,7 +166,7 @@ export default {
     return {
       firstExtended: false,
       secondExtended: false,
-      whihDropdownIsExtended: null,
+      whihDropdownIsExtended: 'none',
       isExtended: false,
     };
   },
@@ -164,16 +174,25 @@ export default {
     window.addEventListener('scroll', this.scrollListener);
   },
   mounted() {
+    //TODO let fix that
+    window.onclick = function(event) {
+	    if (!$(e.target).is('.panel-body')) {
+    	  $('.collapse').collapse('hide');	    
+      }
+    };
     window.onclick = function(event) {
       if(event.target.matches('.link') || !event.target.matches('.dropbtn')) {
         var dropdowns = document.getElementsByClassName("dropdown-content");
         var i;
-      for(i = 0; i < dropdowns.length; i++) {
-        var openDropdown = dropdowns[i];
-        if(openDropdown.classList.contains('showDropdown')) {
-          openDropdown.classList.remove('showDropdown');
+        for(i = 0; i < dropdowns.length; i++) {
+          var openDropdown = dropdowns[i];
+          if(openDropdown.classList.contains('showDropdown')) {
+            openDropdown.classList.remove('showDropdown');
+            //TODO let fix that too
+            this.isExtended = false;
+            this.whihDropdownIsExtended = 'none';
+          }
         }
-      }
       }
     }
   },
@@ -245,8 +264,8 @@ export default {
         this.$store.getters.products[i].quantityInCart = 0;
       }
     },
-    removeItem(index, id) {
-      this.$store.dispatch("removeFromCart", { index, id} );
+    removeItem(id) {
+      this.$store.dispatch("removeFromCart", id);
     },
   }
 };
@@ -435,7 +454,8 @@ h5 {
 .dropdown-content {
   // display: none;
   min-width: 160px;
-  opacity: 0;
+  // opacity: 0;
+  padding: 0;
   cursor: context-menu;
   position: absolute;
   right: 5px;
@@ -496,9 +516,53 @@ h5 {
 }
 #basketDropdown {
   overflow: auto;
-  // padding: 20px;
+  // padding: 10px 15px 10px 15px;
+  width: 20vw;
+  @media (max-width: 991px)
+  {
+    padding: 0;
+    width: auto;
+  }
 }
 .coverProduct {
   height: 120px;
+}
+.products {
+  margin: auto;
+}
+.loopProducts {
+  margin: auto;
+}
+.singleProduct {
+  border-bottom: 1px solid;
+  width: 15vw;
+  margin: auto;
+  @media (max-width: 991px)
+  {
+    width: auto;
+  }
+}
+.removeAllButtonWrapper {
+  margin-bottom: 10px;
+}
+.notification {
+  width: 10px;
+  height: 10px;
+  top: 10px;
+  right: 10px;
+  position: absolute;
+  z-index: 99;
+  border-radius: 50%;
+  background: #bb6363;
+}
+.notificationInCart {
+  width: 10px;
+  height: 10px;
+  top: 15px;
+  margin-left: 10px;
+  position: absolute;
+  z-index: 99;
+  border-radius: 50%;
+  background: #bb6363;
 }
 </style>
