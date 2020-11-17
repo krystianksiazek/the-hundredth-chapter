@@ -2,7 +2,7 @@
   <div class="sticky-top" id="navbarWrapper">
     <b-navbar class="upperNavbar" toggleable="lg" type="dark">
       <b-navbar-brand class="logo" @click="toggle(3)" :to="'/'"></b-navbar-brand>
-      <b-navbar-toggle @click="toggle(1)" target="upperNav"></b-navbar-toggle>
+      <b-navbar-toggle @click="toggle(1)" target="upperNav" class="menuExtenders"></b-navbar-toggle>
         <span class="notification" v-if="cartCount > 0 && sendIsMobile === true"></span>
       <b-collapse v-model="firstExtended" id="upperNav" is-nav>
         <b-navbar-nav>
@@ -13,7 +13,7 @@
         <b-navbar-nav class="ml-auto">
           <b-nav-item right @click.stop>
             <div class="dropdown">
-              <button @click="dropMenu('favoriteDropdown', 'toggle'), 
+              <button v-click-outside="outside" @click="dropMenu('favoriteDropdown', 'toggle'), 
               dropMenu('basketDropdown', 'close'), 
               dropMenu('userDropdown', 'close')
               dropdownExtendedChecker('favoriteDropdown')"
@@ -44,7 +44,7 @@
           </b-nav-item>
           <b-nav-item right @click.stop>
             <div class="dropdown">
-              <button @click="dropMenu('basketDropdown', 'toggle'), 
+              <button v-click-outside="outside" @click="dropMenu('basketDropdown', 'toggle'), 
               dropMenu('userDropdown', 'close'), 
               dropMenu('favoriteDropdown', 'close')
               dropdownExtendedChecker('basketDropdown')" 
@@ -73,7 +73,7 @@
               <div id="basketDropdown" class="dropdown-content">
                 <b-container>
                   <b-row class="products">
-                    <span v-if="cartCount === 0">Koszyk jest pusty :(</span>
+                    <span v-if="cartCount === 0">Koszyk jest pusty</span>
                     <!-- it’s not recommended to use v-if and v-for together... blah blah blah -->
                     <div class="loopProducts" v-for="(item, index) in cart" :key="index" v-if="item.quantityInCart > 0">
                       <div class="singleProduct">
@@ -91,6 +91,7 @@
                     </div>
                  </b-row>
                 </b-container>
+                <span v-if="cartCount > 0" class="basketSummary">Suma koszyka: {{ summaryPrice.toFixed(2) }}</span>
                 <a @click="clearCart(),
                 toggle(2),
                 dropMenu('basketDropdown', 'close'),
@@ -106,7 +107,7 @@
           </b-nav-item>
           <b-nav-item right @click.stop>
             <div class="dropdown">
-              <button @click="dropMenu('userDropdown', 'toggle'), 
+              <button v-click-outside="outside" @click="dropMenu('userDropdown', 'toggle'), 
               dropMenu('basketDropdown', 'close'), 
               dropMenu('favoriteDropdown', 'close')
               dropdownExtendedChecker('userDropdown')" 
@@ -138,7 +139,7 @@
       </b-collapse>
     </b-navbar>
     <b-navbar class="lowerNavbar" toggleable="lg" type="dark">
-      <b-navbar-toggle @click="toggle(2)" target="lowerNav" class="menuExtender">
+      <b-navbar-toggle @click="toggle(2)" target="lowerNav" class="menuExtender menuExtenders">
         <template #default="{ expanded }">
           <p v-if="expanded">MENU<span class="arrow up"></span></p>
           <p v-else>MENU<span class="arrow down"></span></p>
@@ -168,31 +169,31 @@ export default {
       secondExtended: false,
       whihDropdownIsExtended: 'none',
       isExtended: false,
+      clickOutside: 0,
+      clickInside: 0,
     };
   },
   created() {
     window.addEventListener('scroll', this.scrollListener);
   },
-  mounted() {
-    //TODO let fix that
-    window.onclick = function(event) {
-	    if (!$(e.target).is('.panel-body')) {
-    	  $('.collapse').collapse('hide');	    
-      }
-    };
-    window.onclick = function(event) {
-      if(event.target.matches('.link') || !event.target.matches('.dropbtn')) {
-        var dropdowns = document.getElementsByClassName("dropdown-content");
-        var i;
-        for(i = 0; i < dropdowns.length; i++) {
-          var openDropdown = dropdowns[i];
-          if(openDropdown.classList.contains('showDropdown')) {
-            openDropdown.classList.remove('showDropdown');
-            //TODO let fix that too
-            this.isExtended = false;
-            this.whihDropdownIsExtended = 'none';
+  directives: {
+    'click-outside': {
+      bind: function(el, binding, vNode) {
+        if(typeof binding.value !== 'function') {
+        	const compName = vNode.context.name;
+        }
+        const bubble = binding.modifiers.bubble;
+        const handler = (e) => {
+          if(bubble || (!el.contains(e.target) && el !== e.target)) {
+          	binding.value(e);
           }
         }
+        el.clickOutside = handler;
+        document.addEventListener('click', handler);
+			},
+      unbind: function(el, binding) {
+        document.removeEventListener('click', el.clickOutside);
+        el.clickOutside = null;
       }
     }
   },
@@ -205,13 +206,34 @@ export default {
       return counter;
     },
     summaryPrice() {
-
+      let summary = 0;
+      for(let i = 0; i < this.$store.getters.products.length; i++) {
+        if(this.$store.getters.products[i].quantityInCart >= 1) {
+          let multiply = this.$store.getters.products[i].quantityInCart;
+          summary += multiply*this.$store.getters.products[i].price;
+        }
+      }
+      return summary;
     },
     cart() {
       return this.$store.getters.products;
     },
   },
   methods: {
+    outside: function(e) {
+      this.clickOutside += 1;
+      if(event.target.matches('.link') || !event.target.matches('.dropbtn')) {
+        let dropdowns = document.getElementsByClassName("dropdown-content");
+        for(let i = 0; i < dropdowns.length; i++) {
+          let openDropdown = dropdowns[i];
+          if(openDropdown.classList.contains('showDropdown')) {
+            openDropdown.classList.remove('showDropdown');
+            this.isExtended = false;
+            this.whihDropdownIsExtended = 'none';
+          }
+        }
+      }
+    },
     toggle(code) {
       switch(code) {
         case 1:
@@ -224,8 +246,6 @@ export default {
           this.firstExtended = false;
           this.secondExtended = false;
         break;
-        default:
-          console.log("Try looking up for a hint.");
       }
     },
     dropMenu(section, action) {
@@ -234,7 +254,7 @@ export default {
       else document.getElementById(section).classList.add("showDropdown");
     },
     scrollListener() {
-      var $ = require('jquery');
+      let $ = require('jquery');
       if(document.body.scrollTop > 0 || document.documentElement.scrollTop > 0 && this.sendIsMobile === false) {
         $('.lowerNavbar').addClass('lowerNavbarHider');
         $('.navButton').addClass('navButtonHider');
@@ -244,12 +264,12 @@ export default {
       }
     },
     dropdownExtendedChecker(id) {
-      var $ = require('jquery');
-      var target = $('#'+id);
+      let $ = require('jquery');
+      let target = $('#'+id);
       if(id === 'closing') {
         this.whihDropdownIsExtended = 'none';
         this.isExtended = false;
-      } else var target = $('#'+id);
+      } else target = $('#'+id);
       if(target.hasClass('showDropdown')) {
         this.whihDropdownIsExtended = id;
         this.isExtended = true;
@@ -564,5 +584,8 @@ h5 {
   z-index: 99;
   border-radius: 50%;
   background: #bb6363;
+}
+.basketSummary {
+  margin: auto;
 }
 </style>
