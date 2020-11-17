@@ -4,7 +4,7 @@
       <div>{{ title }}</div>
       <!-- {{ quantityInCart }} -->
       <img :src="cover" height="250" /><br>
-      <span>{{ price + " zł" }}</span><br>
+      <span>{{ price.toFixed(2) + " zł" }}</span><br>
       Ocena: {{ rate }} | Gatunek: {{ genere }}
     </div>
     <div>
