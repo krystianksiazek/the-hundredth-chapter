@@ -146,7 +146,7 @@
         </template>
       </b-navbar-toggle>
       <b-collapse v-model="secondExtended" id="lowerNav" is-nav>
-        <b-nav-item class="navButton" :to="'/'">Kategorie</b-nav-item>
+        <b-nav-item class="navButton" :to="'/categories'">Kategorie</b-nav-item>
         <b-nav-item class="navButton" :to="'/'">Nowości</b-nav-item>
         <b-nav-item class="navButton" :to="'/'">Bestsellery</b-nav-item>
         <b-nav-item class="navButton" :to="'/'">Najlepiej oceniane</b-nav-item>
@@ -313,6 +313,7 @@ h5 {
 #navbarWrapper {
   top: -1px;
   margin-top: -1px;
+  z-index: 1;
 }
 .upperNavbar, .lowerNavbar {
   background-color: #557a95;
