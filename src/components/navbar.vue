@@ -67,7 +67,7 @@
                   <span v-else class="arrow down"></span>
                   <span class="notificationInCart" v-if="cartCount > 0 && sendIsMobile === true"></span>
                 </span>
-                <img class="basketImg" src="..\assets\Icons\basket.png">
+                <img class="basketImg" src="..\assets\Icons\shopping-cart.png">
               </button>
               <!-- unfortunately I can't use siplebar on basketDropdown element because it affects cleanCart button -->
               <div id="basketDropdown" class="dropdown-content">
