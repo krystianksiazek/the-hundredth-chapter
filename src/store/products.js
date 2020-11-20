@@ -13,8 +13,9 @@ export default new Vuex.Store({
       price: 22.13,
       flag: "Nowa",
       genere: "Fantastyka",
-      rate: "8,5",
+      rate: 4.75,
       quantityInCart: 0,
+      favorite: false,
       description: "Harry po pełnym przygód roku w Hogwarcie spędza nudne wakacje u Dursleyów i z utęsknieniem wyczekuje powrotu do szkoły. Sprawy jednak znacznie się komplikują, gdy pewnego dnia odwiedza go tajemniczy przybysz i ostrzega przed… powrotem do Szkoły Magii i Czarodziejstwa, gdzie ma dojść do strasznych wydarzeń. Czy Harry posłucha ostrzeżenia? Co złego ma się wydarzyć w Hogwarcie? Jakie tajemnice skrywa rodzina Malforya? I najważniejsze – czym jest i gdzie znajduje się tytułowa Komnata Tajemnic?"
     },
     {
@@ -24,8 +25,9 @@ export default new Vuex.Store({
       price: 22.30,
       flag: "Nowa",
       genere: "Fantastyka",
-      rate: "8,3",
+      rate: 4.87,
       quantityInCart: 0,
+      favorite: false,
       description: "Harry po pełnym przygód roku w Hogwarcie spędza nudne wakacje u Dursleyów i z utęsknieniem wyczekuje powrotu do szkoły. Sprawy jednak znacznie się komplikują, gdy pewnego dnia odwiedza go tajemniczy przybysz i ostrzega przed… powrotem do Szkoły Magii i Czarodziejstwa, gdzie ma dojść do strasznych wydarzeń. Czy Harry posłucha ostrzeżenia? Co złego ma się wydarzyć w Hogwarcie? Jakie tajemnice skrywa rodzina Malforya? I najważniejsze – czym jest i gdzie znajduje się tytułowa Komnata Tajemnic?"
     },
     {
@@ -35,8 +37,9 @@ export default new Vuex.Store({
       price: 20.43,
       flag: "Nowa",
       genere: "Fantastyka",
-      rate: "9,3",
+      rate: 4.50,
       quantityInCart: 0,
+      favorite: false,
       description: "Harry po pełnym przygód roku w Hogwarcie spędza nudne wakacje u Dursleyów i z utęsknieniem wyczekuje powrotu do szkoły. Sprawy jednak znacznie się komplikują, gdy pewnego dnia odwiedza go tajemniczy przybysz i ostrzega przed… powrotem do Szkoły Magii i Czarodziejstwa, gdzie ma dojść do strasznych wydarzeń. Czy Harry posłucha ostrzeżenia? Co złego ma się wydarzyć w Hogwarcie? Jakie tajemnice skrywa rodzina Malforya? I najważniejsze – czym jest i gdzie znajduje się tytułowa Komnata Tajemnic?"
     },
     {
@@ -46,8 +49,9 @@ export default new Vuex.Store({
       price: 25.11,
       flag: "Nowa",
       genere: "Fantastyka",
-      rate: "7,3",
+      rate: 4.63,
       quantityInCart: 0,
+      favorite: false,
       description: "Harry po pełnym przygód roku w Hogwarcie spędza nudne wakacje u Dursleyów i z utęsknieniem wyczekuje powrotu do szkoły. Sprawy jednak znacznie się komplikują, gdy pewnego dnia odwiedza go tajemniczy przybysz i ostrzega przed… powrotem do Szkoły Magii i Czarodziejstwa, gdzie ma dojść do strasznych wydarzeń. Czy Harry posłucha ostrzeżenia? Co złego ma się wydarzyć w Hogwarcie? Jakie tajemnice skrywa rodzina Malforya? I najważniejsze – czym jest i gdzie znajduje się tytułowa Komnata Tajemnic?"
     },
     {
@@ -57,8 +61,9 @@ export default new Vuex.Store({
       price: 19.79,
       flag: "Nowa",
       genere: "Fantastyka",
-      rate: "8,9",
+      rate: 4.58,
       quantityInCart: 0,
+      favorite: false,
       description: "Harry po pełnym przygód roku w Hogwarcie spędza nudne wakacje u Dursleyów i z utęsknieniem wyczekuje powrotu do szkoły. Sprawy jednak znacznie się komplikują, gdy pewnego dnia odwiedza go tajemniczy przybysz i ostrzega przed… powrotem do Szkoły Magii i Czarodziejstwa, gdzie ma dojść do strasznych wydarzeń. Czy Harry posłucha ostrzeżenia? Co złego ma się wydarzyć w Hogwarcie? Jakie tajemnice skrywa rodzina Malforya? I najważniejsze – czym jest i gdzie znajduje się tytułowa Komnata Tajemnic?"
     },
     {
@@ -68,8 +73,9 @@ export default new Vuex.Store({
       price: 25.11,
       flag: "Nowa",
       genere: "Fantastyka",
-      rate: "8,1",
+      rate: 3.95,
       quantityInCart: 0,
+      favorite: false,
       description: "Harry po pełnym przygód roku w Hogwarcie spędza nudne wakacje u Dursleyów i z utęsknieniem wyczekuje powrotu do szkoły. Sprawy jednak znacznie się komplikują, gdy pewnego dnia odwiedza go tajemniczy przybysz i ostrzega przed… powrotem do Szkoły Magii i Czarodziejstwa, gdzie ma dojść do strasznych wydarzeń. Czy Harry posłucha ostrzeżenia? Co złego ma się wydarzyć w Hogwarcie? Jakie tajemnice skrywa rodzina Malforya? I najważniejsze – czym jest i gdzie znajduje się tytułowa Komnata Tajemnic?"
     },
   ],
@@ -81,6 +87,9 @@ export default new Vuex.Store({
     REMOVE_FROM_CART(state, id) {
       state.products[id].quantityInCart -= 1;
     },
+    ADD_TO_FAVORITE(state, id) {
+      state.products[id].favorite = !state.products[id].favorite;
+    },
   },
   actions: {
     addToCart(context, { id, amount }) {
@@ -88,6 +97,9 @@ export default new Vuex.Store({
     },
     removeFromCart(context, id) {
       context.commit("REMOVE_FROM_CART", id);
+    },
+    addToFavorite(context, id) {
+      context.commit("ADD_TO_FAVORITE", id);
     },
   },
   getters: {
