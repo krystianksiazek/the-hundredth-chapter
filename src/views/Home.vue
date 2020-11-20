@@ -15,6 +15,7 @@
         :genere="product.genere"
         :rate="product.rate"
         :quantityInCart="product.quantityInCart"
+        :favorite="product.favorite"
         :description="product.description"
         :sendModalOpen="modalOpen"
         @run-modal="runModal"
