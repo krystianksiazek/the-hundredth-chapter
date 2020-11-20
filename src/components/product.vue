@@ -1,15 +1,24 @@
 <template>
   <div class="productWrapper">
     <div @click="$emit('run-modal', id)">
-      <div>{{ title }}</div>
-      <!-- {{ quantityInCart }} -->
-      <img :src="cover" height="250" /><br>
-      <span>{{ price.toFixed(2) + " zł" }}</span><br>
-      Ocena: {{ rate }} | Gatunek: {{ genere }}
+      <div class="bookTitle">{{ title }}</div>
+      <div class="hoverImage">
+        <div v-if="hover" class="hoverGenere">{{ genere }}</div>
+        <img @mouseover="hover = true" @mouseleave="hover = false" :src="cover" height="250" />
+        <div v-if="hover" class="hoverRate"><img src="../assets/Icons/star-fill.png" height="20" alt=""> {{ rate }}/10</div>
+      </div>
     </div>
-    <div>
+    <div class="addToCartSection">
+      <span class="bookPrice">{{ price.toFixed(2) + " zł" }}</span>
+      {{favorite}}
       <b-form-spinbutton class="quantity" v-model="basketValue" id="sb-small" min="0" max="99"></b-form-spinbutton>
-      <b-button class="addToCart" @click="addToCart(id, basketValue)" :disabled="basketValue <= 0">Dodaj do koszyka</b-button>
+      <b-button class="addToCart" @click="addToCart(id, basketValue)" :disabled="basketValue <= 0">
+        <img class="addToCartIco" src="../assets/Icons/basket-green.png" height="30" alt="">
+      </b-button>
+      <b-button @click="favoriteToggle" class="addToFavorites">
+        <img v-if="!favorite" class="addToFavoritesIco" src="../assets/Icons/heart-red.png" height="30" alt="">
+        <img v-if="favorite" class="addToFavoritesIco" src="../assets/Icons/heart-red-fill.png" height="30" alt="">
+      </b-button>
     </div>
   </div>
 </template>
@@ -20,29 +29,74 @@ export default {
   data () {
     return {
       basketValue: 1,
+      hover: false
     }
   },
-  props: ["id", "title", "cover", "price", "flag", "genere", "rate", "quantityInCart", "description", "sendModalOpen"],
+  props: ["id", "title", "cover", "price", "flag", "genere", "rate", "quantityInCart", "favorite", "description", "sendModalOpen"],
   methods: {
     addToCart(id, amount) {
       this.$store.dispatch("addToCart", { id, amount });
       this.basketValue = 1;
     },
+    favoriteToggle() {
+      this.$store.dispatch("addToFavorite", this.id);
+    }
   }
 };
 </script>
 
 <style lang="scss" scoped>
 .productWrapper {
-    padding: 10px;
-    background-color: #557a95;
-    border-radius: 5px;
-    margin: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 250px;
-    text-align: center;
+  position: relative;
+  padding: 10px;
+  background-color: #557a95;
+  border-radius: 5px;
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 250px;
+  text-align: center;
+}
+.addToCart {
+  margin-right: 10px;
+}
+.quantity {
+  margin-bottom: 5px;
+}
+.bookTitle {
+  font-weight: bold;
+}
+.hoverImage {
+  position: relative;
+  display: inline-block;
+}
+.hoverGenere, .hoverRate {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%);
+  width: 100%;
+  background-color: #7395ae;
+}
+.hoverGenere {
+  top: 0;
+}
+.hoverRate {
+  bottom: 0;
+}
+.bookPrice {
+  font-size: 20px;
+}
+.addToFavoritesIco, .addToCartIco {
+  filter: brightness(0);
+  opacity: 0.5;
+  transition: 0.25s ease-in-out;
+}
+.addToFavorites:hover > .addToFavoritesIco,
+.addToCart:hover > .addToCartIco {
+  filter: brightness(100%);
+  opacity: 1;
+  transition: 0.25s ease-in-out;
 }
 </style>
