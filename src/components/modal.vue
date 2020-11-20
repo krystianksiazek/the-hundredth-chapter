@@ -18,7 +18,8 @@
           <p class="description">
             {{ this.$store.getters.products[item].description }}
           </p>
-          {{ this.$store.getters.products[item].rate }}/10
+          {{ this.$store.getters.products[item].rate }}/5
+          {{ this.$store.getters.products[item].price }}
         </div>
       </div>
     </div>
