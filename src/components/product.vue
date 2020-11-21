@@ -10,15 +10,29 @@
     </div>
     <div class="addToCartSection">
       <span class="bookPrice">{{ price.toFixed(2) + " zł" }}</span>
-      {{favorite}}
       <b-form-spinbutton class="quantity" v-model="basketValue" id="sb-small" min="0" max="99"></b-form-spinbutton>
-      <b-button class="addToCart" @click="addToCart(id, basketValue)" :disabled="basketValue <= 0">
+      <b-button
+        :id="'addToCartBtn' + id"
+        class="addToCart"
+        @click="addToCart(id, basketValue)" 
+        :disabled="basketValue <= 0">
         <img class="addToCartIco" src="../assets/Icons/basket-green.png" height="30" alt="">
       </b-button>
-      <b-button @click="favoriteToggle" class="addToFavorites">
+      <b-tooltip :target="'addToCartBtn'+id" placement="bottomleft" variant="success" triggers="hover">
+        <strong>Dodaj do koszyka</strong>
+      </b-tooltip>
+      <b-button 
+        :id="'addToFavoritesBtn' + id"
+        v-bind:style= "[favorite ? {'title':'Dodaj do ulubionych'} : {'title':'Usuń z ulubionych'}]" 
+        @click="favoriteToggle" 
+        class="addToFavorites">
         <img v-if="!favorite" class="addToFavoritesIco" src="../assets/Icons/heart-red.png" height="30" alt="">
         <img v-if="favorite" class="addToFavoritesIco" src="../assets/Icons/heart-red-fill.png" height="30" alt="">
       </b-button>
+      <b-tooltip :target="'addToFavoritesBtn' + id" placement="bottomright" variant="danger" triggers="hover">
+        <span v-if="!favorite"><strong>Dodaj do ulubionych</strong></span>
+        <span v-if="favorite"><strong>Usuń z ulubionych</strong></span>
+      </b-tooltip>
     </div>
   </div>
 </template>
