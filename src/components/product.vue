@@ -18,7 +18,7 @@
         :disabled="basketValue <= 0">
         <img class="addToCartIco" src="../assets/Icons/basket-green.png" height="30" alt="">
       </b-button>
-      <b-tooltip :target="'addToCartBtn'+id" placement="bottomleft" variant="success" triggers="hover">
+      <b-tooltip :target="'addToCartBtn'+id" placement="bottomleft" variant="success" triggers="hover" :delay="{show: 800, hide: 50}" noninteractive>
         <strong>Dodaj do koszyka</strong>
       </b-tooltip>
       <b-button 
@@ -29,7 +29,7 @@
         <img v-if="!favorite" class="addToFavoritesIco" src="../assets/Icons/heart-red.png" height="30" alt="">
         <img v-if="favorite" class="addToFavoritesIco" src="../assets/Icons/heart-red-fill.png" height="30" alt="">
       </b-button>
-      <b-tooltip :target="'addToFavoritesBtn' + id" placement="bottomright" variant="danger" triggers="hover">
+      <b-tooltip :target="'addToFavoritesBtn' + id" placement="bottomright" variant="danger" triggers="hover" :delay="{show: 800, hide: 50}" noninteractive>
         <span v-if="!favorite"><strong>Dodaj do ulubionych</strong></span>
         <span v-if="favorite"><strong>Usuń z ulubionych</strong></span>
       </b-tooltip>
