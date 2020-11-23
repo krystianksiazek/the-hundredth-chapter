@@ -27,18 +27,22 @@
                <img class="favoriteImg" src="..\assets\Icons\heart.png">
               </button>
               <div id="favoriteDropdown" class="dropdown-content">
-                <router-link @click.native="toggle(2), 
-                dropMenu('favoriteDropdown', 'close'),
-                dropdownExtendedChecker('closing')" 
-                to="/">
-                  Ulubione
-                </router-link>
-                <router-link @click.native="toggle(2), 
-                dropMenu('favoriteDropdown', 'close'),
-                dropdownExtendedChecker('closing')" 
-                to="register">
-                  Elo
-                </router-link>
+                <b-container>
+                  <b-row class="products">
+                    <span v-if="favoriteBooks === 0">Nic tu nie ma</span>
+                    <div class="loopProducts" v-for="(item, index) in cart" :key="index" v-if="item.favorite === true">
+                      <div class="singleProduct">
+                        <div>{{ item.title }}</div>
+                        <div>
+                          <img class="coverProduct" :src="item.cover" /> 
+                        </div>
+                        <div>
+                          <span>{{ (item.price).toFixed(2) }}</span>
+                        </div>
+                      </div>
+                    </div>
+                 </b-row>
+                </b-container>
               </div>
             </div>
           </b-nav-item>
@@ -202,6 +206,15 @@ export default {
       let counter = 0;
       for(let i = 0; i < this.$store.getters.products.length; i++) {
         counter += this.$store.getters.products[i].quantityInCart;
+      }
+      return counter;
+    },
+    favoriteBooks() {
+      let counter = 0;
+      for(let i = 0; i < this.$store.getters.products.length; i++) {
+        if(this.$store.getters.products[i].favorite === true) {
+          counter += 1;
+        }
       }
       return counter;
     },
@@ -536,6 +549,16 @@ h5 {
   color: rgb(180, 0, 0);
 }
 #basketDropdown {
+  overflow: auto;
+  // padding: 10px 15px 10px 15px;
+  width: 20vw;
+  @media (max-width: 991px)
+  {
+    padding: 0;
+    width: auto;
+  }
+}
+#favoriteDropdown {
   overflow: auto;
   // padding: 10px 15px 10px 15px;
   width: 20vw;
