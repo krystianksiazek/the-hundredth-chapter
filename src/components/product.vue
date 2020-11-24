@@ -5,7 +5,7 @@
       <div class="hoverImage">
         <div v-if="hover" class="hoverGenere">{{ genere }}</div>
         <img @mouseover="hover = true" @mouseleave="hover = false" :src="cover" height="250" />
-        <div v-if="hover" class="hoverRate"><img src="../assets/Icons/star-fill.png" height="20" alt=""> {{ rate }}/10</div>
+        <div v-if="hover" class="hoverRate"><img src="../assets/Icons/star-fill.png" height="20" alt=""> {{ rate }}/5</div>
       </div>
     </div>
     <div class="addToCartSection">
