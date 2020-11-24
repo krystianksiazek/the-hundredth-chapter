@@ -11,134 +11,128 @@
           </b-nav-form>
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto">
-          <b-nav-item right @click.stop>
-            <div class="dropdown">
-              <button v-click-outside="outside" @click="dropMenu('favoriteDropdown', 'toggle'), 
-              dropMenu('basketDropdown', 'close'), 
-              dropMenu('userDropdown', 'close')
-              dropdownExtendedChecker('favoriteDropdown')"
-              class="dropbtn">
-                <span class="favorite"></span>
-                <span v-if="sendIsMobile === true">
-                  <span v-if="whihDropdownIsExtended === 'favoriteDropdown' && isExtended" class="arrow up"></span>
-                  <span v-else class="arrow down"></span>
-                </span>
-                <span id="arrowFavorite" v-if="sendIsMobile === true"></span>
-               <img class="favoriteImg" src="..\assets\Icons\heart.png">
-              </button>
-              <div id="favoriteDropdown" class="dropdown-content">
-                <b-container>
-                  <b-row class="products">
-                    <span v-if="favoriteBooks === 0">Nic tu nie ma</span>
-                    <div class="loopProducts" v-for="(item, index) in cart" :key="index" v-if="item.favorite === true">
-                      <div class="singleProduct">
-                        <div>{{ item.title }}</div>
-                        <div>
-                          <img class="coverProduct" :src="item.cover" /> 
-                        </div>
-                        <div>
-                          <span>{{ (item.price).toFixed(2) }}</span>
-                        </div>
-                      </div>
-                    </div>
-                 </b-row>
-                </b-container>
-              </div>
-            </div>
-          </b-nav-item>
-          <b-nav-item right @click.stop>
-            <div class="dropdown">
-              <button v-click-outside="outside" @click="dropMenu('basketDropdown', 'toggle'), 
-              dropMenu('userDropdown', 'close'), 
-              dropMenu('favoriteDropdown', 'close')
-              dropdownExtendedChecker('basketDropdown')" 
-              class="dropbtn">
-                <span class="basket">
-                  <span v-if="cartCount > 0 && sendIsMobile === true">
-                    {{ cartCount }}
-                  </span>
-                </span>
-                <span v-if="cartCount > 0 && sendIsMobile === false" class="itemsInCartIndicator">
-                  <span v-if="cartCount > 99">
-                    ···
-                  </span>
-                  <span v-else>
-                    {{ cartCount }}
-                  </span>
-                </span>
-                <span v-if="sendIsMobile === true">
-                  <span v-if="whihDropdownIsExtended === 'basketDropdown' && isExtended" class="arrow up"></span>
-                  <span v-else class="arrow down"></span>
-                  <span class="notificationInCart" v-if="cartCount > 0 && sendIsMobile === true"></span>
-                </span>
-                <img class="basketImg" src="..\assets\Icons\shopping-cart.png">
-              </button>
-              <!-- unfortunately I can't use siplebar on basketDropdown element because it affects cleanCart button -->
-              <div id="basketDropdown" class="dropdown-content">
-                <b-container>
-                  <b-row class="products">
-                    <span v-if="cartCount === 0">Koszyk jest pusty</span>
-                    <!-- it’s not recommended to use v-if and v-for together... blah blah blah -->
-                    <div class="loopProducts" v-for="(item, index) in cart" :key="index" v-if="item.quantityInCart > 0">
-                      <div class="singleProduct">
+          <div v-click-outside="outsideFavorite" class="dropdown">
+            <button @click="dropMenu('favoriteDropdown', 'toggle'), 
+            dropMenu('basketDropdown', 'close'), 
+            dropMenu('userDropdown', 'close')
+            dropdownExtendedChecker('favoriteDropdown')"
+            class="dropbtn">
+              <span class="favorite"></span>
+              <span v-if="sendIsMobile === true">
+                <span v-if="whihDropdownIsExtended === 'favoriteDropdown' && isExtended && isExtendedFav" class="arrow up"></span>
+                <span v-else class="arrow down"></span>
+              </span>
+              <span id="arrowFavorite" v-if="sendIsMobile === true"></span>
+              <img class="favoriteImg" src="..\assets\Icons\heart.png">
+            </button>
+            <div id="favoriteDropdown" class="dropdown-content">
+              <b-container>
+                <b-row class="products">
+                  <span v-if="favoriteBooks === 0">Nic tu nie ma</span>
+                  <div class="loopProducts" v-for="(item, index) in cart" :key="index" v-if="item.favorite === true">
+                    <div class="singleProduct">
                       <div>{{ item.title }}</div>
                       <div>
                         <img class="coverProduct" :src="item.cover" /> 
                       </div>
                       <div>
-                        <span v-if="item.quantityInCart > 1">x{{ item.quantityInCart }} = </span>{{ (item.price*item.quantityInCart).toFixed(2) + " zł"}}
-                      </div>
-                      <div class="removeAllButtonWrapper">
-                        <b-button @click="removeItem(item.id)">Usuń z koszyka</b-button>
+                        <span>{{ (item.price).toFixed(2) }}</span>
                       </div>
                     </div>
-                    </div>
-                 </b-row>
-                </b-container>
-                <span v-if="cartCount > 0" class="basketSummary">Suma koszyka: {{ summaryPrice.toFixed(2) }}</span>
-                <a @click="clearCart(),
-                toggle(2),
-                dropMenu('basketDropdown', 'close'),
-                dropdownExtendedChecker('closing')" 
-                v-if="cartCount !== 0" class="clearCart">
-                  <span class="cross">
-                    ✖
-                  </span> 
-                  Wyczyść koszyk
-                </a>
-              </div>
+                  </div>
+                </b-row>
+              </b-container>
             </div>
-          </b-nav-item>
-          <b-nav-item right @click.stop>
-            <div class="dropdown">
-              <button v-click-outside="outside" @click="dropMenu('userDropdown', 'toggle'), 
-              dropMenu('basketDropdown', 'close'), 
-              dropMenu('favoriteDropdown', 'close')
-              dropdownExtendedChecker('userDropdown')" 
-              class="dropbtn">
-                <span class="user"></span>
-                <span v-if="sendIsMobile === true">
-                  <span v-if="whihDropdownIsExtended === 'userDropdown' && isExtended" class="arrow up"></span>
-                  <span v-else class="arrow down"></span>
+          </div>
+          <div v-click-outside="outsideBasket"class="dropdown">
+            <button @click="dropMenu('basketDropdown', 'toggle'), 
+            dropMenu('userDropdown', 'close'), 
+            dropMenu('favoriteDropdown', 'close')
+            dropdownExtendedChecker('basketDropdown')" 
+            class="dropbtn">
+              <span class="basket">
+                <span v-if="cartCount > 0 && sendIsMobile === true">
+                  ({{ cartCount }})
                 </span>
-                <img class="userImg" src="..\assets\Icons\user.png">
-              </button>
-              <div id="userDropdown" class="dropdown-content">
-                <router-link @click.native="toggle(2), 
-                dropMenu('userDropdown', 'close'), 
-                dropdownExtendedChecker('closing')" 
-                to="/">
-                  Logowanie
-                </router-link>
-                <router-link @click.native="toggle(2), 
-                dropMenu('userDropdown', 'close'), 
-                dropdownExtendedChecker('closing')" 
-                to="register">
-                  Rejestracja
-                </router-link>
-              </div>
+              </span>
+              <span v-if="cartCount > 0 && sendIsMobile === false" class="itemsInCartIndicator">
+                <span v-if="cartCount > 99">
+                  ···
+                </span>
+                <span v-else>
+                  {{ cartCount }}
+                </span>
+              </span>
+              <span v-if="sendIsMobile === true">
+                <span v-if="whihDropdownIsExtended === 'basketDropdown' && isExtended && isExtendedBas" class="arrow up"></span>
+                <span v-else class="arrow down"></span>
+                <span class="notificationInCart" v-if="cartCount > 0 && sendIsMobile === true"></span>
+              </span>
+              <img class="basketImg" src="..\assets\Icons\shopping-cart.png">
+            </button>
+            <!-- unfortunately I can't use siplebar on basketDropdown element because it affects cleanCart button -->
+            <div id="basketDropdown" class="dropdown-content">
+              <b-container>
+                <b-row class="products">
+                  <span v-if="cartCount === 0">Koszyk jest pusty</span>
+                  <!-- it’s not recommended to use v-if and v-for together... blah blah blah -->
+                  <div class="loopProducts" v-for="(item, index) in cart" :key="index" v-if="item.quantityInCart > 0">
+                    <div class="singleProduct">
+                    <div>{{ item.title }}</div>
+                    <div>
+                      <img class="coverProduct" :src="item.cover" /> 
+                    </div>
+                    <div>
+                      <span v-if="item.quantityInCart > 1">x{{ item.quantityInCart }} = </span>{{ (item.price*item.quantityInCart).toFixed(2) + " zł"}}
+                    </div>
+                    <div class="removeAllButtonWrapper">
+                      <b-button @click="removeItem(item.id)">Usuń z koszyka</b-button>
+                    </div>
+                  </div>
+                  </div>
+                </b-row>
+              </b-container>
+              <span v-if="cartCount > 0" class="basketSummary">Suma koszyka: {{ summaryPrice.toFixed(2) }}</span>
+              <a @click="clearCart(),
+              toggle(2),
+              dropMenu('basketDropdown', 'close'),
+              dropdownExtendedChecker('closing')" 
+              v-if="cartCount !== 0" class="clearCart">
+                <span class="cross">
+                  ✖
+                </span> 
+                Wyczyść koszyk
+              </a>
             </div>
-          </b-nav-item>
+          </div>
+          <div v-click-outside="outsideUser" class="dropdown">
+            <button @click="dropMenu('userDropdown', 'toggle'), 
+            dropMenu('basketDropdown', 'close'), 
+            dropMenu('favoriteDropdown', 'close')
+            dropdownExtendedChecker('userDropdown')" 
+            class="dropbtn">
+              <span class="user"></span>
+              <span v-if="sendIsMobile === true">
+                <span v-if="whihDropdownIsExtended === 'userDropdown' && isExtended && isExtendedUsr" class="arrow up"></span>
+                <span v-else class="arrow down"></span>
+              </span>
+              <img class="userImg" src="..\assets\Icons\user.png">
+            </button>
+            <div id="userDropdown" class="dropdown-content">
+              <router-link @click.native="toggle(2), 
+              dropMenu('userDropdown', 'close'), 
+              dropdownExtendedChecker('closing')" 
+              to="/">
+                Logowanie
+              </router-link>
+              <router-link @click.native="toggle(2), 
+              dropMenu('userDropdown', 'close'), 
+              dropdownExtendedChecker('closing')" 
+              to="register">
+                Rejestracja
+              </router-link>
+            </div>
+          </div>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
@@ -158,6 +152,9 @@
         <b-nav-item class="navButton" :to="'/'">Promocje</b-nav-item>
         </b-collapse>
     </b-navbar>
+    {{isExtendedBas}}
+    {{isExtendedFav}}
+    {{isExtendedUsr}}
   </div>
 </template>
 
@@ -173,8 +170,10 @@ export default {
       secondExtended: false,
       whihDropdownIsExtended: 'none',
       isExtended: false,
-      clickOutside: 0,
-      clickInside: 0,
+      isExtendedFav: false,
+      isExtendedBas: false,
+      isExtendedUsr: false,
+      clickInside: false,
     };
   },
   created() {
@@ -233,20 +232,21 @@ export default {
     },
   },
   methods: {
-    outside: function(e) {
-      this.clickOutside += 1;
-      if(event.target.matches('.link') || !event.target.matches('.dropbtn')) {
-        let dropdowns = document.getElementsByClassName("dropdown-content");
-        for(let i = 0; i < dropdowns.length; i++) {
-          let openDropdown = dropdowns[i];
-          if(openDropdown.classList.contains('showDropdown')) {
-            openDropdown.classList.remove('showDropdown');
-            this.isExtended = false;
-            this.whihDropdownIsExtended = 'none';
-          }
-        }
-      }
-    },
+      outsideFavorite: function(e) {
+        let dropdowns = document.getElementById('favoriteDropdown');
+        dropdowns.classList.remove('showDropdown');
+        this.isExtendedFav = false;
+      },
+      outsideBasket: function(e) {
+        let dropdowns = document.getElementById('basketDropdown');
+        dropdowns.classList.remove('showDropdown');
+        this.isExtendedBas = false;
+      },
+      outsideUser: function(e) {
+        let dropdowns = document.getElementById('userDropdown');
+        dropdowns.classList.remove('showDropdown');
+        this.isExtendedUsr = false;
+      },
     toggle(code) {
       switch(code) {
         case 1:
@@ -284,6 +284,17 @@ export default {
         this.isExtended = false;
       } else target = $('#'+id);
       if(target.hasClass('showDropdown')) {
+        switch(id) {
+          case 'favoriteDropdown':
+            this.isExtendedFav = true;
+          break;
+          case 'basketDropdown':
+            this.isExtendedBas = true;
+          break;
+          case 'userDropdown':
+            this.isExtendedUsr = true;
+          break;
+        }
         this.whihDropdownIsExtended = id;
         this.isExtended = true;
       }
@@ -458,8 +469,9 @@ h5 {
   z-index: 99;
   color: #DEF2F1;
   border-radius: 50%;
-  border: 3px solid #163d3c;
+  border: 3px solid #2a3c49;
   background: #557a95;
+  pointer-events: none;
 }
 .dropbtn {
   background-color: transparent;
@@ -573,14 +585,17 @@ h5 {
 }
 .products {
   margin: auto;
+  padding: 10px;
 }
 .loopProducts {
   margin: auto;
 }
 .singleProduct {
-  border-bottom: 1px solid;
+  background-color: #557a95;
+  border-radius: 5px;
+  padding: 5px;
+  margin: 10px;
   width: 15vw;
-  margin: auto;
   @media (max-width: 991px)
   {
     width: auto;
