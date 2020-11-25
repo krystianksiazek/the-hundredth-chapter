@@ -152,9 +152,6 @@
         <b-nav-item class="navButton" :to="'/'">Promocje</b-nav-item>
         </b-collapse>
     </b-navbar>
-    {{isExtendedBas}}
-    {{isExtendedFav}}
-    {{isExtendedUsr}}
   </div>
 </template>
 
