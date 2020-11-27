@@ -8,9 +8,11 @@
         <div v-if="hover" class="hoverRate"><img src="../assets/Icons/star-fill.png" height="20" alt=""> {{ rate }}/5</div>
       </div>
     </div>
+    {{ author }}
     <div class="addToCartSection">
       <span class="bookPrice">{{ price.toFixed(2) + " zł" }}</span>
-      <b-form-spinbutton class="quantity" v-model="basketValue" id="sb-small" min="0" max="99"></b-form-spinbutton>
+      <!-- //TODO delete spinbutton and replace it with normal buttons -->
+      <b-form-spinbutton class="quantity" v-model="basketValue" id="sb-small" min="1" max="99"></b-form-spinbutton>
       <b-button
         :id="'addToCartBtn' + id"
         class="addToCart"
@@ -46,7 +48,7 @@ export default {
       hover: false
     }
   },
-  props: ["id", "title", "cover", "price", "flag", "genere", "rate", "quantityInCart", "favorite", "description", "sendModalOpen"],
+  props: ["id", "title", "author", "cover", "price", "flag", "genere", "rate", "quantityInCart", "favorite", "description", "sendModalOpen"],
   methods: {
     addToCart(id, amount) {
       this.$store.dispatch("addToCart", { id, amount });
