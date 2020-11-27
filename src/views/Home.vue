@@ -1,6 +1,6 @@
 <template>
 <div>
-  <Modal v-if="modalOpen" :item = "modalData" @close-modal="modalOpen = false;" />
+  <Modal v-if="modalOpen" :id = "modalData" @close-modal="modalOpen = false;" />
   <h1>Produkty</h1>
   <b-container>
     <b-row class="justify-content-center">
@@ -9,6 +9,7 @@
         :key="product.id"
         :id="product.id"
         :title="product.title"
+        :author="product.author"
         :cover="product.cover"
         :price="product.price"
         :flag="product.flag"
