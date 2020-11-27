@@ -28,6 +28,12 @@ const routes = [
     name: 'categories',
     component: categories,
   },
+  {
+    path: '/categories/:id',
+    name: 'category',
+    component: categories,
+    params: true,
+  },
 ];
 
 const router = new VueRouter({
