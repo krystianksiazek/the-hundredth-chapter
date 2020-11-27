@@ -3,44 +3,44 @@
     <div class="modalWrapper">
       <div class="titleAndClose">
         <span class="title">
-          {{ this.$store.getters.products[item].title }}
+          {{ book[id].title }}
         </span>
         <a class="close" @click="$emit('close-modal')" />
       </div>
       <div class="content">
         <a class="photoLink" target="_blank">
           <div class="photo"
-          v-bind:style="{ backgroundImage: 'url(' + this.$store.getters.products[item].cover + ')' }">
+          v-bind:style="{ backgroundImage: 'url(' + book[id].cover + ')' }">
           </div>
         </a>
         <div class="aboutPhoto">
-          <h1>{{ this.$store.getters.products[item].title }}</h1>
-          <p v-html="this.$store.getters.products[item].description" class="description">
+          <h1>{{ book[id].title }}</h1>
+          <p v-html="book[id].description" class="description">
           </p>
-          {{ this.$store.getters.products[item].rate }}/5
-          {{ this.$store.getters.products[item].price }}
+          {{ book[id].rate }}/5
+          {{ book[id].price }}
           <b-form-spinbutton class="quantity" v-model="basketValue" id="sb-small" min="0" max="99"></b-form-spinbutton>
           <b-button
-            :id="'addToCartBtnModal' + item"
+            :id="'addToCartBtnModal' + id"
             class="addToCart"
-            @click="addToCart(item, basketValue)" 
+            @click="addToCart(id, basketValue)" 
             :disabled="basketValue <= 0">
             <img class="addToCartIco" src="../assets/Icons/basket-green.png" height="30" alt="">
           </b-button>
-          <b-tooltip :target="'addToCartBtnModal' + item" placement="bottomleft" variant="success" triggers="hover" :delay="{show: 800, hide: 50}" noninteractive>
+          <b-tooltip :target="'addToCartBtnModal' + id" placement="bottomleft" variant="success" triggers="hover" :delay="{show: 800, hide: 50}" noninteractive>
             <strong>Dodaj do koszyka</strong>
           </b-tooltip>
           <b-button 
-            :id="'addToFavoritesBtnModal' + item"
-            v-bind:style= "[this.$store.getters.products[item].favorite ? {'title':'Dodaj do ulubionych'} : {'title':'Usuń z ulubionych'}]" 
-            @click="favoriteToggle(item)" 
+            :id="'addToFavoritesBtnModal' + id"
+            v-bind:style= "[book[id].favorite ? {'title':'Dodaj do ulubionych'} : {'title':'Usuń z ulubionych'}]" 
+            @click="favoriteToggle(id)" 
             class="addToFavorites">
-            <img v-if="!this.$store.getters.products[item].favorite" class="addToFavoritesIco" src="../assets/Icons/heart-red.png" height="30" alt="">
-            <img v-if="this.$store.getters.products[item].favorite" class="addToFavoritesIco" src="../assets/Icons/heart-red-fill.png" height="30" alt="">
+            <img v-if="!book[id].favorite" class="addToFavoritesIco" src="../assets/Icons/heart-red.png" height="30" alt="">
+            <img v-if="book[id].favorite" class="addToFavoritesIco" src="../assets/Icons/heart-red-fill.png" height="30" alt="">
           </b-button>
-          <b-tooltip :target="'addToFavoritesBtnModal' + item" placement="bottomright" variant="danger" triggers="hover" :delay="{show: 800, hide: 50}" noninteractive>
-            <span v-if="!this.$store.getters.products[item].favorite"><strong>Dodaj do ulubionych</strong></span>
-            <span v-if="this.$store.getters.products[item].favorite"><strong>Usuń z ulubionych</strong></span>
+          <b-tooltip :target="'addToFavoritesBtnModal' + id" placement="bottomright" variant="danger" triggers="hover" :delay="{show: 800, hide: 50}" noninteractive>
+            <span v-if="!book[id].favorite"><strong>Dodaj do ulubionych</strong></span>
+            <span v-if="book[id].favorite"><strong>Usuń z ulubionych</strong></span>
           </b-tooltip>
         </div>
       </div>
@@ -51,9 +51,14 @@
 export default {
   name: 'Modal',
   props: {
-    item: {
+    id: {
       type: Number,
       required: true,
+    }
+  },
+  computed: {
+    book() {
+      return this.$store.getters.products;
     }
   },
   methods: {
