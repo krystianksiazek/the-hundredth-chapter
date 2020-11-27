@@ -2,7 +2,13 @@
   <div class="sticky-top" id="navbarWrapper">
     <b-navbar class="upperNavbar" toggleable="lg" type="dark">
       <b-navbar-brand class="logo" @click="toggle(3)" :to="'/'"></b-navbar-brand>
-      <b-navbar-toggle @click="toggle(1)" target="upperNav" class="menuExtenders"></b-navbar-toggle>
+      <b-navbar-toggle @click="toggle(1)" target="upperNav" class="menuExtenders">
+        <span v-bind:class="{ toggle: firstExtended }">
+          <div class="line1"></div>
+          <div class="line2"></div>
+          <div class="line3"></div>
+        </span>
+        </b-navbar-toggle>
         <span class="notification" v-if="cartCount > 0 && sendIsMobile === true"></span>
       <b-collapse v-model="firstExtended" id="upperNav" is-nav>
         <b-navbar-nav>
@@ -29,14 +35,14 @@
               <b-container>
                 <b-row class="products">
                   <span v-if="favoriteBooks === 0">Nic tu nie ma</span>
-                  <div class="loopProducts" v-for="(item, index) in cart" :key="index" v-if="item.favorite === true">
+                  <div class="loopProducts" v-for="(book, index) in cart" :key="index" v-if="book.favorite === true">
                     <div class="singleProduct">
-                      <div>{{ item.title }}</div>
+                      <div>{{ book.title }}</div>
                       <div>
-                        <img class="coverProduct" :src="item.cover" /> 
+                        <img class="coverProduct" :src="book.cover" /> 
                       </div>
                       <div>
-                        <span>{{ (item.price).toFixed(2) }}</span>
+                        <span>{{ (book.price).toFixed(2) }}</span>
                       </div>
                     </div>
                   </div>
@@ -44,7 +50,7 @@
               </b-container>
             </div>
           </div>
-          <div v-click-outside="outsideBasket"class="dropdown">
+          <div v-click-outside="outsideBasket" class="dropdown">
             <button @click="dropMenu('basketDropdown', 'toggle'), 
             dropMenu('userDropdown', 'close'), 
             dropMenu('favoriteDropdown', 'close')
@@ -76,17 +82,17 @@
                 <b-row class="products">
                   <span v-if="cartCount === 0">Koszyk jest pusty</span>
                   <!-- it’s not recommended to use v-if and v-for together... blah blah blah -->
-                  <div class="loopProducts" v-for="(item, index) in cart" :key="index" v-if="item.quantityInCart > 0">
+                  <div class="loopProducts" v-for="(book, index) in cart" :key="index" v-if="book.quantityInCart > 0">
                     <div class="singleProduct">
-                    <div>{{ item.title }}</div>
+                    <div>{{ book.title }}</div>
                     <div>
-                      <img class="coverProduct" :src="item.cover" /> 
+                      <img class="coverProduct" :src="book.cover" /> 
                     </div>
                     <div>
-                      <span v-if="item.quantityInCart > 1">x{{ item.quantityInCart }} = </span>{{ (item.price*item.quantityInCart).toFixed(2) + " zł"}}
+                      <span v-if="book.quantityInCart > 1">x{{ book.quantityInCart }} = </span>{{ (book.price*book.quantityInCart).toFixed(2) + " zł"}}
                     </div>
                     <div class="removeAllButtonWrapper">
-                      <b-button @click="removeItem(item.id)">Usuń z koszyka</b-button>
+                      <b-button @click="removeItem(book.id)">Usuń z koszyka</b-button>
                     </div>
                   </div>
                   </div>
@@ -229,21 +235,21 @@ export default {
     },
   },
   methods: {
-      outsideFavorite: function(e) {
-        let dropdowns = document.getElementById('favoriteDropdown');
-        dropdowns.classList.remove('showDropdown');
-        this.isExtendedFav = false;
-      },
-      outsideBasket: function(e) {
-        let dropdowns = document.getElementById('basketDropdown');
-        dropdowns.classList.remove('showDropdown');
-        this.isExtendedBas = false;
-      },
-      outsideUser: function(e) {
-        let dropdowns = document.getElementById('userDropdown');
-        dropdowns.classList.remove('showDropdown');
-        this.isExtendedUsr = false;
-      },
+    outsideFavorite: function(e) {
+      let dropdowns = document.getElementById('favoriteDropdown');
+      dropdowns.classList.remove('showDropdown');
+      this.isExtendedFav = false;
+    },
+    outsideBasket: function(e) {
+      let dropdowns = document.getElementById('basketDropdown');
+      dropdowns.classList.remove('showDropdown');
+      this.isExtendedBas = false;
+    },
+    outsideUser: function(e) {
+      let dropdowns = document.getElementById('userDropdown');
+      dropdowns.classList.remove('showDropdown');
+      this.isExtendedUsr = false;
+    },
     toggle(code) {
       switch(code) {
         case 1:
@@ -310,7 +316,6 @@ export default {
     },
   }
 };
-
 </script>
 
 <style lang="scss" scoped>
@@ -623,5 +628,24 @@ h5 {
 }
 .basketSummary {
   margin: auto;
+}
+.line1, .line2, .line3 {
+  width: 30px;
+  height: 4px;
+  background-color: #7395ae;
+  margin: 4px 0;
+  transition: 0.4s;
+  border-radius: 2px;
+}
+.toggle .line1 {
+  transform: rotate(-45deg) translate(-5.5px, 5.5px);
+}
+
+.toggle .line2 {
+  opacity: 0;
+}
+
+.toggle .line3 {
+  transform: rotate(45deg) translate(-5.5px, -5.5px);
 }
 </style>
