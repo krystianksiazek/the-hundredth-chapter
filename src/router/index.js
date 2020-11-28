@@ -4,6 +4,7 @@ import home from '../views/home.vue';
 import login from '../views/login.vue';
 import register from '../views/register.vue';
 import categories from '../views/categories.vue';
+import category from '../views/category.vue';
 
 Vue.use(VueRouter);
 
@@ -29,14 +30,15 @@ const routes = [
     component: categories,
   },
   {
-    path: '/categories/:id',
+    path: '/categories/category/:id',
     name: 'category',
-    component: categories,
+    component: category,
     params: true,
   },
 ];
 
 const router = new VueRouter({
+  mode: 'history',
   routes,
 });
 
