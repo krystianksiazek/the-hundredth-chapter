@@ -3,10 +3,12 @@
     <h1>Categories</h1>
     <div v-for="category in categories" :key="category.cat">
       <ul>
-        <li @click="getProducts(category.cat)"><strong>{{category.cat}}</strong></li>
+        <router-link :to="{ name: 'category', params: { id: category.cat, name: category.cat }}" >
+          <li @click="getProducts(category.cat)"><strong>{{ category.cat }}</strong></li>
+        </router-link>
           <ul>
             <li v-for="subCat in category.subCat" :key="subCat">
-              <router-link :to="{ name: 'category', params: { id: subCat}}">
+              <router-link :to="{ name: 'category', params: { id: getId(subCat), name: subCat }}">
                 {{subCat}}
               </router-link>
             </li>
@@ -55,12 +57,12 @@ export default {
               "biznes, finanse", 
               "encyklopedie, słowniki", 
               "filozofia, etyka",
-              "flora i fauna",
+              "flora, fauna",
               "historia",
               "informatyka, matematyka",
               "językoznawstwo, nauka o literaturze",
-              "nauki przyrodnicze (fizyka, chemia, biologia, itd.)",
-              "nauki społeczne (psychologia, socjologia, itd.)",
+              "nauki przyrodnicze",
+              "nauki społeczne",
               "popularnonaukowa",
               "poradniki dla rodziców",
               "technika",
@@ -92,7 +94,7 @@ export default {
             subCat: [
               "poezja",
               "satyra",
-              "utwór dramatyczny (dramat, komedia, tragedia)",
+              "dramat, komedia, tragedia",
             ]
         },
         {
@@ -131,7 +133,14 @@ export default {
         }
       }
       this.products = insideProducts;
+    },
+    getId(id) {
+      let validId;
+      for(let i = 0; i <= id.length; i++) {
+        validId = (id.split(',').join('&')).split(' ').join('');
+      }
+      return validId;
     }
-  }
+  },
 };
 </script>
