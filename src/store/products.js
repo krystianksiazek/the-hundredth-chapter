@@ -1,11 +1,18 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import Api from "../service/api.js";
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
-  state: {
-    products: [
+const categories = {
+  state: () => [
+    {
+      categories: []
+    }
+  ]
+}
+const products = {
+  state: () => [
     {
       id: 0,
       title: "Harry Potter i Komnata Tajemnic ",
@@ -110,18 +117,22 @@ export default new Vuex.Store({
       favorite: false,
       description: "<p>Klasyczny tekst z adnotacjami uwspółcześniającymi ponadczasową wiedzę Grahama o inwestowaniu.</p><p>Najznakomitszy doradca inwestycyjny dwudziestego wieku, Benjamin Graham, uczył i inspirował ludzi na całym świecie. Jego filozofia „inwestowania wartościowego” – które chroni inwestorów przed podstawowymi błędami i uczy ich stosowania długofalowych strategii – od chwili pierwszego wydania uczyniła z Inteligentnego inwestora prawdziwą biblię giełdy papierów wartościowych.</p><p>Rozwój giełdy przez wiele lat potwierdzał mądrość strategii Grahama. Wydanie poprawione zachowuje integralność oryginalnego jego tekstu, a jednocześnie dodaje aktualne komentarze uznanego dziennikarza finansowego, Jasona Zweiga. Wnoszą spojrzenie z punktu widzenia współczesnego rynku, ukazują zbieżności pomiędzy przykładami podawanymi przez Grahama a nagłówkami obecnie wydawanych gazet finansowych. Pozwalają czytelnikom głębiej zrozumieć, w jaki sposób stosować reguły Grahama.</p><p>Obecne wydanie Inteligentnego inwestora to najważniejsza książka, jaką kiedykolwiek przeczytasz o osiąganiu zamierzonych celów finansowych. Jasno przedstawia podstawy, niezwykle skutecznego i popularnego podejścia do inwestowania.</p>"
     },
-  ],
-},
+  ]
+}
+export default new Vuex.Store({
   mutations: {
     ADD_TO_CART(state, { id, amount }) {
-      state.products[id].quantityInCart += amount;
+      store.state.b[id].quantityInCart += amount;
     },
     REMOVE_FROM_CART(state, id) {
-      state.products[id].quantityInCart -= 1;
+      store.state.b[id].quantityInCart -= 1;
     },
     ADD_TO_FAVORITE(state, id) {
-      state.products[id].favorite = !state.products[id].favorite;
+      store.state.b[id].favorite = !store.state.b[id].favorite;
     },
+    SET_CATEGORIES(state, categories) {
+      store.state.a = categories;
+    }
   },
   actions: {
     addToCart(context, { id, amount }) {
@@ -133,10 +144,23 @@ export default new Vuex.Store({
     addToFavorite(context, id) {
       context.commit("ADD_TO_FAVORITE", id);
     },
+    async loadCategories({commit}) {
+      let response = await Api().get('/categories');
+      commit('SET_CATEGORIES', response.data);
+    }
   },
   getters: {
-    products: (state) => state.products,
+    products() {
+      return store.state.b;
+    },
+    getCategories() {
+      return store.state.a;
+    }
   },
+})
+const store = new Vuex.Store({
   modules: {
-  },
+    a: categories,
+    b: products,
+  }
 });
