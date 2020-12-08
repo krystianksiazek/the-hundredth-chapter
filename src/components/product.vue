@@ -48,6 +48,9 @@ export default {
       hover: false
     }
   },
+  mounted () {
+    window.scrollTo(0, 0);
+  },
   props: ["id", "title", "author", "cover", "price", "flag", "genere", "rate", "quantityInCart", "favorite", "description", "sendModalOpen"],
   methods: {
     addToCart(id, amount) {
@@ -56,7 +59,7 @@ export default {
     },
     favoriteToggle() {
       this.$store.dispatch("addToFavorite", this.id);
-    }
+    },
   }
 };
 </script>
