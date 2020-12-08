@@ -49,6 +49,5 @@ body {
 }
 .contentWrapper {
   padding: 10px;
-  
 }
 </style>
