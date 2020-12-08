@@ -31,7 +31,7 @@
               <span id="arrowFavorite" v-if="sendIsMobile === true"></span>
               <img class="favoriteImg" src="..\assets\Icons\heart.png">
             </button>
-            <div id="favoriteDropdown" class="dropdown-content">
+            <div id="favoriteDropdown" class="dropdown-content" v-bind:style= "[favoriteBooks > 1 ? {overflow: 'auto'} : {overflow: 'hidden'}]">
               <b-container>
                 <b-row class="products">
                   <span v-if="favoriteBooks === 0">Nic tu nie ma</span>
@@ -77,7 +77,7 @@
               <img class="basketImg" src="..\assets\Icons\shopping-cart.png">
             </button>
             <!-- unfortunately I can't use siplebar on basketDropdown element because it affects cleanCart button -->
-            <div id="basketDropdown" class="dropdown-content">
+            <div id="basketDropdown" class="dropdown-content" v-bind:style= "[cartCount > 1 ? {overflow: 'auto'} : {overflow: 'hidden'}]">
               <b-container>
                 <b-row class="products">
                   <span v-if="cartCount === 0">Koszyk jest pusty</span>
@@ -134,7 +134,7 @@
               <router-link @click.native="toggle(2), 
               dropMenu('userDropdown', 'close'), 
               dropdownExtendedChecker('closing')" 
-              to="register">
+              to="/rejestracja">
                 Rejestracja
               </router-link>
             </div>
@@ -150,7 +150,7 @@
         </template>
       </b-navbar-toggle>
       <b-collapse v-model="secondExtended" id="lowerNav" is-nav>
-        <b-nav-item class="navButton" :to="'/categories'">Kategorie</b-nav-item>
+        <b-nav-item class="navButton" :to="'/kategorie'">Kategorie</b-nav-item>
         <b-nav-item class="navButton" :to="'/'">Nowości</b-nav-item>
         <b-nav-item class="navButton" :to="'/'">Bestsellery</b-nav-item>
         <b-nav-item class="navButton" :to="'/'">Najlepiej oceniane</b-nav-item>
@@ -573,7 +573,7 @@ h5 {
   }
 }
 #favoriteDropdown {
-  overflow: auto;
+  // overflow: auto;
   // padding: 10px 15px 10px 15px;
   width: 20vw;
   @media (max-width: 991px)
