@@ -1,12 +1,12 @@
 <template>
   <div>
     <Modal v-if="modalOpen" :id = "modalData" @close-modal="modalOpen = false;" />
-    <h3 v-if="!componentLoading">{{ prefix + ' => ' + suffix }} ({{products.length}})</h3>
+    <h3 v-if="!componentLoading">{{ prefix }} <span v-if="suffix != null"> => {{ suffix }} </span> ({{filterProducts.length}})</h3>
     <h4 v-if="componentLoading">Ładowanie...</h4>
-    <h4 v-if="!componentLoading && products.length === 0">Brak książek tej katergorii</h4>
+    <h4 v-if="!componentLoading && filterProducts.length === 0">Brak książek tej katergorii</h4>
     <b-container>
     <b-row class="justify-content-center">
-     <div v-for="(product, index) in products" :key="product.id">
+     <div v-for="(product, index) in filterProducts" :key="product.id">
       <div class="productWrapper">
         <div @click="runModal(product.id)">
           <div class="bookTitle">{{ product.title }}</div>
@@ -73,6 +73,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   name: 'category',
   data() {
@@ -94,17 +96,24 @@ export default {
     this.category();
   },
   computed: {
-    categories() {
-      return this.$store.getters.categories || null;
-    },
-    book() {
-      return this.$store.getters.products;
-    },
-    products() {
+    ...mapGetters(['products', 'categories']),
+    filterProducts() {
       const productReturn = [];
-      for (let i = 0; i < this.book.length; i++) {
-        if (((this.suffix).toLowerCase()).includes((this.book[i].genere).toLowerCase())) {
-          productReturn[i] = this.book[i];
+      if (this.suffix === null) {
+        for (let i = 0; i < this.categories[this.$route.params.id[0] - 1].subCat.length; i++) {
+          // console.log(this.categories[this.$route.params.id[0] - 1].subCat[i]);
+          for (let j = 0; j < this.products.length; j++) {
+            if (((this.categories[this.$route.params.id[0] - 1].subCat[i]).toLowerCase()).includes((this.products[j].genere).toLowerCase())) {
+              productReturn[j] = this.products[j];
+            }
+          }
+        }
+      }
+      else {
+        for (let i = 0; i < this.products.length; i++) {
+          if (((this.suffix).toLowerCase()).includes((this.products[i].genere).toLowerCase())) {
+            productReturn[i] = this.products[i];
+          }
         }
       }
       return productReturn.flat();
@@ -126,18 +135,21 @@ export default {
       }
       setTimeout(() => {
         this.prefix = this.categories[category].cat;
-        this.suffix = this.categories[category].subCat[subCategory];
+        if (split[1] > 0) {
+          this.suffix = this.categories[category].subCat[subCategory];
+        } else {
+          this.suffix = null;
+        }
         this.componentLoading = false;
         this.setBasketValue();
       }, 1500);
     },
     setBasketValue() {
-      for (let i = 0; i < this.products.length; i++) {
+      for (let i = 0; i < this.filterProducts.length; i++) {
         this.basketValue.push(1);
       }
     },
     addToCart(id, amount, index) {
-      console.log(amount);
       this.$store.dispatch('addToCart', { id, amount });
       this.basketValue[index] = 1;
       this.$forceUpdate();
