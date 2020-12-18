@@ -1,42 +1,51 @@
 <template>
+<b-container>
+  <b-row class="justify-content-center">
+    <div v-for="(product, index) in products" :key="product.id">
   <div class="productWrapper">
-    <div @click="$emit('run-modal', id)">
-      <div class="bookTitle">{{ title }}</div>
+    <div @click="$emit('run-modal', product.id)">
+      <div class="bookTitle">{{ product.title }}</div>
       <div class="hoverImage">
-        <div v-if="hover" class="hoverGenere">{{ genere }}</div>
-        <img @mouseover="hover = true" @mouseleave="hover = false" :src="cover" height="250" />
-        <div v-if="hover" class="hoverRate"><img src="../assets/Icons/star-fill.png" height="20" alt=""> {{ rate }}/5</div>
+        <div v-if="hover === product.id" class="hoverGenere">{{ product.genere }}</div>
+        <img @mouseover="hover = product.id"
+          @mouseleave="hover = null"
+          :src="product.cover"
+          height="250" />
+        <div v-if="hover === product.id" class="hoverRate"><img src="../assets/Icons/star-fill.png" height="20" alt=""> {{ product.rate }}/5</div>
       </div>
     </div>
-    {{ author }}
+    {{ product.author }}
     <div class="addToCartSection">
-      <span class="bookPrice">{{ price.toFixed(2) + " zł" }}</span>
+      <span class="bookPrice">{{ product.price.toFixed(2) + " zł" }}</span>
       <!-- //TODO delete spinbutton and replace it with normal buttons -->
-      <b-form-spinbutton class="quantity" v-model="basketValue" id="sb-small" min="1" max="99"></b-form-spinbutton>
+      <b-form-spinbutton class="quantity" v-model="basketValue[index]" id="sb-small" min="1" max="99"></b-form-spinbutton>
       <b-button
-        :id="'addToCartBtn' + id"
+        :id="'addToCartBtn' + product.id"
         class="addToCart"
-        @click="addToCart(id, basketValue)" 
-        :disabled="basketValue <= 0">
+        @click="addToCart(product.id, basketValue[index])"
+        :disabled="basketValue[index] <= 0">
         <img class="addToCartIco" src="../assets/Icons/basket-green.png" height="30" alt="">
       </b-button>
-      <b-tooltip :target="'addToCartBtn'+id" placement="bottomleft" variant="success" triggers="hover" :delay="{show: 800, hide: 50}" noninteractive>
+      <b-tooltip :target="'addToCartBtn'+product.id" placement="bottomleft" variant="success" triggers="hover" :delay="{show: 800, hide: 50}" noninteractive>
         <strong>Dodaj do koszyka</strong>
       </b-tooltip>
-      <b-button 
-        :id="'addToFavoritesBtn' + id"
-        v-bind:style= "[favorite ? {'title':'Dodaj do ulubionych'} : {'title':'Usuń z ulubionych'}]" 
+      <b-button
+        :id="'addToFavoritesBtn' + product.id"
+        v-bind:style= "[product.favorite ? {'title':'Dodaj do ulubionych'} : {'title':'Usuń z ulubionych'}]" 
         @click="favoriteToggle" 
         class="addToFavorites">
-        <img v-if="!favorite" class="addToFavoritesIco" src="../assets/Icons/heart-red.png" height="30" alt="">
-        <img v-if="favorite" class="addToFavoritesIco" src="../assets/Icons/heart-red-fill.png" height="30" alt="">
+        <img v-if="!product.favorite" class="addToFavoritesIco" src="../assets/Icons/heart-red.png" height="30" alt="">
+        <img v-if="product.favorite" class="addToFavoritesIco" src="../assets/Icons/heart-red-fill.png" height="30" alt="">
       </b-button>
-      <b-tooltip :target="'addToFavoritesBtn' + id" placement="bottomright" variant="danger" triggers="hover" :delay="{show: 800, hide: 50}" noninteractive>
-        <span v-if="!favorite"><strong>Dodaj do ulubionych</strong></span>
-        <span v-if="favorite"><strong>Usuń z ulubionych</strong></span>
+      <b-tooltip :target="'addToFavoritesBtn' + product.id" placement="bottomright" variant="danger" triggers="hover" :delay="{show: 800, hide: 50}" noninteractive>
+        <span v-if="!product.favorite"><strong>Dodaj do ulubionych</strong></span>
+        <span v-if="product.favorite"><strong>Usuń z ulubionych</strong></span>
       </b-tooltip>
     </div>
   </div>
+  </div>
+  </b-row>
+  </b-container>
 </template>
 
 <script>
@@ -44,27 +53,45 @@ export default {
   name: "product",
   data () {
     return {
-      basketValue: 1,
-      hover: false
+      basketValue: [],
+      hover: false,
     }
   },
   mounted () {
     window.scrollTo(0, 0);
+    this.setBasketValue();
   },
-  props: ["id", "title", "author", "cover", "price", "flag", "genere", "rate", "quantityInCart", "favorite", "description", "sendModalOpen"],
+  computed: {
+    categories() {
+      return this.$store.getters.categories || null;
+    },
+    products() {
+      return this.$store.getters.products;
+    },
+  },
   methods: {
-    addToCart(id, amount) {
-      this.$store.dispatch("addToCart", { id, amount });
-      this.basketValue = 1;
+    addToCart(id, amount, index) {
+      console.log(amount);
+      this.$store.dispatch('addToCart', { id, amount });
+      this.basketValue[index] = 1;
+      this.$forceUpdate();
     },
     favoriteToggle() {
       this.$store.dispatch("addToFavorite", this.id);
+    },
+    setBasketValue() {
+      for (let i = 0; i < this.products.length; i++) {
+        this.basketValue.push(1);
+      }
     },
   }
 };
 </script>
 
 <style lang="scss" scoped>
+.addToCartSection {
+  margin-bottom: 5px;
+}
 .productWrapper {
   position: relative;
   padding: 10px;
@@ -76,6 +103,7 @@ export default {
   justify-content: center;
   align-items: center;
   width: 250px;
+  height: 450px;
   text-align: center;
 }
 .addToCart {
