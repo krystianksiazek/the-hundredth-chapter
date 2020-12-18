@@ -3,24 +3,24 @@
     <div class="modalWrapper">
       <div class="titleAndClose">
         <span class="title">
-          {{ book[id].title }}
+          {{ products[id].title }}
         </span>
         <a class="close" @click="$emit('close-modal')" />
       </div>
       <div class="content">
         <a class="photoLink" target="_blank">
           <div class="photo"
-          v-bind:style="{ backgroundImage: 'url(' + book[id].cover + ')' }">
+          v-bind:style="{ backgroundImage: 'url(' + products[id].cover + ')' }">
           </div>
         </a>
         <div class="aboutPhoto">
-          <h1>{{ book[id].title }}</h1>
-          <p v-html="book[id].description" class="description">
+          <h1>{{ products[id].title }}</h1>
+          <p v-html="products[id].description" class="description">
           </p>
-          {{ book[id].rate }}/5
-          {{ book[id].price }}
-          <router-link :to="{ name: 'kategoria', params: { id: book[id].genere }, query: { podkategoria: book[id].genere }}" >
-            {{ book[id].genere }}
+          {{ products[id].rate }}/5
+          {{ products[id].price }}
+          <router-link :to="{ name: 'kategoria', params: { category: 'beletrystyka', id: getIndex(products[id].genere) }, query: { podkategoria: validLink(fullSubcategory) }}" >
+            {{ products[id].genere }}
           </router-link>
           <b-form-spinbutton class="quantity" v-model="basketValue" id="sb-small" min="0" max="99"></b-form-spinbutton>
           <b-button
@@ -33,17 +33,17 @@
           <b-tooltip :target="'addToCartBtnModal' + id" placement="bottomleft" variant="success" triggers="hover" :delay="{show: 800, hide: 50}" noninteractive>
             <strong>Dodaj do koszyka</strong>
           </b-tooltip>
-          <b-button 
+          <b-button
             :id="'addToFavoritesBtnModal' + id"
-            v-bind:style= "[book[id].favorite ? {'title':'Dodaj do ulubionych'} : {'title':'Usuń z ulubionych'}]" 
+            v-bind:style= "[products[id].favorite ? {'title':'Dodaj do ulubionych'} : {'title':'Usuń z ulubionych'}]" 
             @click="favoriteToggle(id)"
             class="addToFavorites">
-            <img v-if="!book[id].favorite" class="addToFavoritesIco" src="../assets/Icons/heart-red.png" height="30" alt="">
-            <img v-if="book[id].favorite" class="addToFavoritesIco" src="../assets/Icons/heart-red-fill.png" height="30" alt="">
+            <img v-if="!products[id].favorite" class="addToFavoritesIco" src="../assets/Icons/heart-red.png" height="30" alt="">
+            <img v-if="products[id].favorite" class="addToFavoritesIco" src="../assets/Icons/heart-red-fill.png" height="30" alt="">
           </b-button>
           <b-tooltip :target="'addToFavoritesBtnModal' + id" placement="bottomright" variant="danger" triggers="hover" :delay="{show: 800, hide: 50}" noninteractive>
-            <span v-if="!book[id].favorite"><strong>Dodaj do ulubionych</strong></span>
-            <span v-if="book[id].favorite"><strong>Usuń z ulubionych</strong></span>
+            <span v-if="!products[id].favorite"><strong>Dodaj do ulubionych</strong></span>
+            <span v-if="products[id].favorite"><strong>Usuń z ulubionych</strong></span>
           </b-tooltip>
         </div>
       </div>
@@ -51,10 +51,13 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   data() {
     return {
       basketValue: 1,
+      fullSubcategory: '',
     };
   },
   name: 'Modal',
@@ -65,9 +68,7 @@ export default {
     }
   },
   computed: {
-    book() {
-      return this.$store.getters.products;
-    }
+    ...mapGetters(['products', 'categories']),
   },
   methods: {
     addToCart(id, amount) {
@@ -76,9 +77,27 @@ export default {
     },
     favoriteToggle(id) {
       this.$store.dispatch("addToFavorite", id);
-    }
+    },
+    getFullSubcat(id) {
+      // let patch = (this.getIndex(id)).join('.');
+      // console.log(patch[0], patch[1]);
+
+    },
+    getIndex(id) {
+      for (let i = 0; i < this.categories.length; i++) {
+        for (let j = 0; j < this.categories[i].subCat.length; j++) {
+          if (((this.categories[i].subCat[j]).toLowerCase()).includes((id).toLowerCase())) {
+            this.fullSubcategory = this.categories[i].subCat[j];
+            return `${i + 1}.${j + 1}`;
+          }
+        }
+      }
+    },
+    validLink(id) {
+      if (id === undefined) return 'err';
+      return encodeURI((id.split(',').join('-')).split(' ').join('').toLowerCase());
+    },
   },
-  
 }
 </script>
 <style lang="scss" scoped>
