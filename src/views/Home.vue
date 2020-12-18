@@ -20,11 +20,6 @@ export default {
       modalData: null,
     };
   },
-  computed: {
-    products() {
-      return this.$store.getters.products;
-    },
-  },
   methods: {
     runModal(id) {
       this.modalOpen = true;
