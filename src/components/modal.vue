@@ -19,6 +19,9 @@
           </p>
           {{ book[id].rate }}/5
           {{ book[id].price }}
+          <router-link :to="{ name: 'kategoria', params: { id: book[id].genere }, query: { podkategoria: book[id].genere }}" >
+            {{ book[id].genere }}
+          </router-link>
           <b-form-spinbutton class="quantity" v-model="basketValue" id="sb-small" min="0" max="99"></b-form-spinbutton>
           <b-button
             :id="'addToCartBtnModal' + id"
@@ -33,7 +36,7 @@
           <b-button 
             :id="'addToFavoritesBtnModal' + id"
             v-bind:style= "[book[id].favorite ? {'title':'Dodaj do ulubionych'} : {'title':'Usuń z ulubionych'}]" 
-            @click="favoriteToggle(id)" 
+            @click="favoriteToggle(id)"
             class="addToFavorites">
             <img v-if="!book[id].favorite" class="addToFavoritesIco" src="../assets/Icons/heart-red.png" height="30" alt="">
             <img v-if="book[id].favorite" class="addToFavoritesIco" src="../assets/Icons/heart-red-fill.png" height="30" alt="">
@@ -49,6 +52,11 @@
 </template>
 <script>
 export default {
+  data() {
+    return {
+      basketValue: 1,
+    };
+  },
   name: 'Modal',
   props: {
     id: {
@@ -70,11 +78,7 @@ export default {
       this.$store.dispatch("addToFavorite", id);
     }
   },
-  data() {
-    return {
-      basketValue: 1,
-    };
-  },
+  
 }
 </script>
 <style lang="scss" scoped>
