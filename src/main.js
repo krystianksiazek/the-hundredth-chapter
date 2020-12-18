@@ -1,22 +1,20 @@
 import Vue from 'vue';
-import Vuex from "vuex";
-import jQuery from 'jquery';
-import BootstrapVue from 'bootstrap-vue'
+import Vuex from 'vuex';
+import BootstrapVue from 'bootstrap-vue';
 import Popper from 'vue-popperjs';
 import 'vue-popperjs/dist/vue-popper.css';
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
-import App from './App.vue';
-import router from './router';
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap-vue/dist/bootstrap-vue.css';
 import store from './store/products';
-import 'simplebar';
-import 'simplebar/dist/simplebar.css';
-global.jQuery = jQuery;
-global.Popper = Popper;
+import router from './router';
+import App from './App.vue';
+import Modal from './components/modal.vue';
 
 Vue.config.productionTip = false;
-Vue.use(BootstrapVue)
-Vue.use(Popper)
+
+Vue.component('Modal', Modal);
+Vue.use(BootstrapVue);
+Vue.use(Popper);
 
 new Vue({
   router,
