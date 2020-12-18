@@ -1,18 +1,20 @@
 <template>
   <div class="categoriesWrapper">
     <h1>Categories</h1>
-    <div v-for="category in categories" :key="category.cat">
+    <div v-for="(category, index) in categories" :key="category.cat">
       <ul>
-        <!-- <router-link :to="{ name: 'kategoria', params: { id: getCategoryIndex(category.cat) }, query: { kategoria: category.cat}}" > -->
-          <li><strong>{{ category.cat }}</strong></li>
-        <!-- </router-link> -->
-          <ul>
-            <li v-for="subCat in category.subCat" :key="subCat">
-              <router-link :to="{ name: 'kategoria', params: { id: getIndex(subCat) }, query: { podkategoria: validLink(subCat) }}" >
-                {{ subCat }}
-              </router-link>
-            </li>
-          </ul>
+        <li>
+          <router-link :to="{ name: 'kategoria', params: { category: validLink(category.cat), id: getCategoryIndex(category.cat) }}" >
+            <strong>{{ category.cat }}</strong>
+          </router-link>
+        </li>
+        <ul>
+          <li v-for="(subCat, index) in category.subCat" :key="subCat">
+            <router-link :to="{ name: 'kategoria', params: { category: validLink(category.cat), id: getIndex(subCat) }, query: { podkategoria: validLink(subCat) }}" >
+              {{ subCat }}
+            </router-link>
+          </li>
+        </ul>
       </ul>
     </div>
   </div>
@@ -23,39 +25,36 @@
 
 export default {
   name: 'categories',
-  data () {
-    return {
-    }
-  },
-  mounted () {
+  mounted() {
     window.scrollTo(0, 0);
-    this.$store.dispatch('loadCategories');
   },
   computed: {
     categories() {
-      return this.$store.getters.getCategories;
-    }
+      return this.$store.getters.categories;
+    },
   },
   methods: {
     getCategoryIndex(id) {
-      for(let i = 0; i < this.categories.length; i++) {
-          if(this.categories[i].cat === id) {
-            return (i+1);
+      if (id === undefined) return 'err';
+      for (let i = 0; i < this.categories.length; i++) {
+        if (this.categories[i].cat === id) {
+          return `${i + 1}.0`;
         }
       }
     },
     getIndex(id) {
-      for(let i = 0; i < this.categories.length; i++) {
-        for(let j = 0; j < this.categories[i].subCat.length; j++) {
-          if(this.categories[i].subCat[j] === id) {
-            return (i+1)+"."+(j+1);
+      for (let i = 0; i < this.categories.length; i++) {
+        for (let j = 0; j < this.categories[i].subCat.length; j++) {
+          if (this.categories[i].subCat[j] === id) {
+            return `${i + 1}.${j + 1}`;
           }
         }
       }
     },
     validLink(id) {
-      return (id.split(',').join('-')).split(' ').join('')
-    }
+      if (id === undefined) return 'err';
+      return (id.split(',').join('-')).split(' ').join('').toLowerCase();
+    },
   },
 };
 </script>
