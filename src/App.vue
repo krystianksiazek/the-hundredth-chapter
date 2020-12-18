@@ -18,7 +18,10 @@ export default {
   data() {
     return {
       isMobile: null,
-    }
+    };
+  },
+  mounted() {
+    this.$store.dispatch('loadCategories');
   },
   created() {
     this.mobileChecker();
@@ -26,11 +29,11 @@ export default {
   },
   methods: {
     mobileChecker() {
-      if(window.innerWidth > 991) {
+      if (window.innerWidth > 991) {
         this.isMobile = false;
       } else this.isMobile = true;
-    }
-  }
+    },
+  },
 };
 </script>
 
