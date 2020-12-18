@@ -21,7 +21,7 @@
 </template>
 
 <script>
-// import Api from "../service/api.js";
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'categories',
@@ -29,9 +29,7 @@ export default {
     window.scrollTo(0, 0);
   },
   computed: {
-    categories() {
-      return this.$store.getters.categories;
-    },
+    ...mapGetters(['categories']),
   },
   methods: {
     getCategoryIndex(id) {
@@ -53,7 +51,7 @@ export default {
     },
     validLink(id) {
       if (id === undefined) return 'err';
-      return (id.split(',').join('-')).split(' ').join('').toLowerCase();
+      return encodeURI((id.split(',').join('-')).split(' ').join('').toLowerCase());
     },
   },
 };
