@@ -32,7 +32,7 @@
       <b-button
         :id="'addToFavoritesBtn' + product.id"
         v-bind:style= "[product.favorite ? {'title':'Dodaj do ulubionych'} : {'title':'Usuń z ulubionych'}]" 
-        @click="favoriteToggle" 
+        @click="favoriteToggle(product.id)"
         class="addToFavorites">
         <img v-if="!product.favorite" class="addToFavoritesIco" src="../assets/Icons/heart-red.png" height="30" alt="">
         <img v-if="product.favorite" class="addToFavoritesIco" src="../assets/Icons/heart-red-fill.png" height="30" alt="">
@@ -49,35 +49,31 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
-  name: "product",
-  data () {
+  name: 'product',
+  data() {
     return {
       basketValue: [],
       hover: false,
-    }
+    };
   },
-  mounted () {
+  mounted() {
     window.scrollTo(0, 0);
     this.setBasketValue();
   },
   computed: {
-    categories() {
-      return this.$store.getters.categories || null;
-    },
-    products() {
-      return this.$store.getters.products;
-    },
+    ...mapGetters(['products', 'categories']),
   },
   methods: {
     addToCart(id, amount, index) {
-      console.log(amount);
       this.$store.dispatch('addToCart', { id, amount });
       this.basketValue[index] = 1;
       this.$forceUpdate();
     },
-    favoriteToggle() {
-      this.$store.dispatch("addToFavorite", this.id);
+    favoriteToggle(id) {
+      this.$store.dispatch('addToFavorite', id);
     },
     setBasketValue() {
       for (let i = 0; i < this.products.length; i++) {
