@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import home from '../views/home.vue';
+import home from '../views/Home.vue';
 import login from '../views/login.vue';
 import register from '../views/register.vue';
 import categories from '../views/categories.vue';
@@ -30,7 +30,7 @@ const routes = [
     component: categories,
   },
   {
-    path: '/kategorie/kategoria/:id',
+    path: '/kategorie/:id/kategoria=:category',
     name: 'kategoria',
     component: category,
     params: true,
