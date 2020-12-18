@@ -240,7 +240,7 @@ export default {
         console.log($('#email').val());
         console.log($('#password').val());
         this.showError(0);
-      } else if (this.isValidName === true  && this.isValidSurname === true
+      } else if (this.isValidName === true && this.isValidSurname === true
        && this.isValidEmail === true && this.isValidPassword === true 
        && this.isValidRepeatPassword === true && this.isPasswordMatch === true 
        && this.isRegulationsChecked === false) {
