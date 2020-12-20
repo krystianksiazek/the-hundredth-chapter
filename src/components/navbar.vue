@@ -18,9 +18,9 @@
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto">
           <div v-click-outside="outsideFavorite" class="dropdown">
-            <button @click="dropMenu('favoriteDropdown', 'toggle'), 
-            dropMenu('basketDropdown', 'close'), 
-            dropMenu('userDropdown', 'close')
+            <button @click="dropMenu('favoriteDropdown', 'toggle'),
+            dropMenu('basketDropdown', 'close'),
+            dropMenu('userDropdown', 'close'),
             dropdownExtendedChecker('favoriteDropdown')"
             class="dropbtn">
               <span class="favorite"></span>
@@ -51,10 +51,10 @@
             </div>
           </div>
           <div v-click-outside="outsideBasket" class="dropdown">
-            <button @click="dropMenu('basketDropdown', 'toggle'), 
-            dropMenu('userDropdown', 'close'), 
-            dropMenu('favoriteDropdown', 'close')
-            dropdownExtendedChecker('basketDropdown')" 
+            <button @click="dropMenu('basketDropdown', 'toggle'),
+            dropMenu('userDropdown', 'close'),
+            dropMenu('favoriteDropdown', 'close'),
+            dropdownExtendedChecker('basketDropdown')"
             class="dropbtn">
               <span class="basket">
                 <span v-if="cartCount > 0 && sendIsMobile === true">
@@ -102,7 +102,7 @@
               <a @click="clearCart(),
               toggle(2),
               dropMenu('basketDropdown', 'close'),
-              dropdownExtendedChecker('closing')" 
+              dropdownExtendedChecker('closing')"
               v-if="cartCount !== 0" class="clearCart">
                 <span class="cross">
                   ✖
@@ -112,10 +112,10 @@
             </div>
           </div>
           <div v-click-outside="outsideUser" class="dropdown">
-            <button @click="dropMenu('userDropdown', 'toggle'), 
-            dropMenu('basketDropdown', 'close'), 
-            dropMenu('favoriteDropdown', 'close')
-            dropdownExtendedChecker('userDropdown')" 
+            <button @click="dropMenu('userDropdown', 'toggle'),
+            dropMenu('basketDropdown', 'close'),
+            dropMenu('favoriteDropdown', 'close'),
+            dropdownExtendedChecker('userDropdown')"
             class="dropbtn">
               <span class="user"></span>
               <span v-if="sendIsMobile === true">
@@ -125,15 +125,15 @@
               <img class="userImg" src="..\assets\Icons\user.png">
             </button>
             <div id="userDropdown" class="dropdown-content">
-              <router-link @click.native="toggle(2), 
-              dropMenu('userDropdown', 'close'), 
-              dropdownExtendedChecker('closing')" 
+              <router-link @click.native="toggle(2),
+              dropMenu('userDropdown', 'close'),
+              dropdownExtendedChecker('closing')"
               to="/">
                 Logowanie
               </router-link>
-              <router-link @click.native="toggle(2), 
-              dropMenu('userDropdown', 'close'), 
-              dropdownExtendedChecker('closing')" 
+              <router-link @click.native="toggle(2),
+              dropMenu('userDropdown', 'close'),
+              dropdownExtendedChecker('closing')"
               to="/rejestracja">
                 Rejestracja
               </router-link>
@@ -184,37 +184,34 @@ export default {
   },
   directives: {
     'click-outside': {
-      bind: function(el, binding, vNode) {
-        if(typeof binding.value !== 'function') {
-        	const compName = vNode.context.name;
-        }
-        const bubble = binding.modifiers.bubble;
+      bind(el, binding) {
+        const { bubble } = binding.modifiers;
         const handler = (e) => {
-          if(bubble || (!el.contains(e.target) && el !== e.target)) {
-          	binding.value(e);
+          if (bubble || (!el.contains(e.target) && el !== e.target)) {
+            binding.value(e);
           }
-        }
+        };
         el.clickOutside = handler;
         document.addEventListener('click', handler);
-			},
-      unbind: function(el, binding) {
+      },
+      unbind(el) {
         document.removeEventListener('click', el.clickOutside);
         el.clickOutside = null;
-      }
-    }
+      },
+    },
   },
   computed: {
     cartCount() {
       let counter = 0;
-      for(let i = 0; i < this.$store.getters.products.length; i++) {
+      for (let i = 0; i < this.$store.getters.products.length; i++) {
         counter += this.$store.getters.products[i].quantityInCart;
       }
       return counter;
     },
     favoriteBooks() {
       let counter = 0;
-      for(let i = 0; i < this.$store.getters.products.length; i++) {
-        if(this.$store.getters.products[i].favorite === true) {
+      for (let i = 0; i < this.$store.getters.products.length; i++) {
+        if (this.$store.getters.products[i].favorite === true) {
           counter += 1;
         }
       }
@@ -222,10 +219,10 @@ export default {
     },
     summaryPrice() {
       let summary = 0;
-      for(let i = 0; i < this.$store.getters.products.length; i++) {
-        if(this.$store.getters.products[i].quantityInCart >= 1) {
-          let multiply = this.$store.getters.products[i].quantityInCart;
-          summary += multiply*this.$store.getters.products[i].price;
+      for (let i = 0; i < this.$store.getters.products.length; i++) {
+        if (this.$store.getters.products[i].quantityInCart >= 1) {
+          const multiply = this.$store.getters.products[i].quantityInCart;
+          summary += multiply * this.$store.getters.products[i].price;
         }
       }
       return summary;
@@ -235,43 +232,46 @@ export default {
     },
   },
   methods: {
-    outsideFavorite: function(e) {
-      let dropdowns = document.getElementById('favoriteDropdown');
+    outsideFavorite() {
+      const dropdowns = document.getElementById('favoriteDropdown');
       dropdowns.classList.remove('showDropdown');
       this.isExtendedFav = false;
     },
-    outsideBasket: function(e) {
-      let dropdowns = document.getElementById('basketDropdown');
+    outsideBasket() {
+      const dropdowns = document.getElementById('basketDropdown');
       dropdowns.classList.remove('showDropdown');
       this.isExtendedBas = false;
     },
-    outsideUser: function(e) {
-      let dropdowns = document.getElementById('userDropdown');
+    outsideUser() {
+      const dropdowns = document.getElementById('userDropdown');
       dropdowns.classList.remove('showDropdown');
       this.isExtendedUsr = false;
     },
     toggle(code) {
-      switch(code) {
+      switch (code) {
         case 1:
-         this.secondExtended = false;
-        break;
+          this.secondExtended = false;
+          break;
         case 2:
           this.firstExtended = false;
-        break;
+          break;
         case 3:
           this.firstExtended = false;
           this.secondExtended = false;
-        break;
+          break;
+        default:
+          this.firstExtended = null;
+          this.secondExtended = null;
       }
     },
     dropMenu(section, action) {
-      if(action == 'close') document.getElementById(section).classList.remove("showDropdown");
-      else if(action == 'toggle') document.getElementById(section).classList.toggle("showDropdown");
-      else document.getElementById(section).classList.add("showDropdown");
+      if (action === 'close') document.getElementById(section).classList.remove('showDropdown');
+      else if (action === 'toggle') document.getElementById(section).classList.toggle('showDropdown');
+      else document.getElementById(section).classList.add('showDropdown');
     },
     scrollListener() {
-      let $ = require('jquery');
-      if(document.body.scrollTop > 0 || document.documentElement.scrollTop > 0 && this.sendIsMobile === false) {
+      const $ = require('jquery');
+      if (document.body.scrollTop > 0 || document.documentElement.scrollTop > 0 && this.sendIsMobile === false) {
         $('.lowerNavbar').addClass('lowerNavbarHider');
         $('.navButton').addClass('navButtonHider');
       } else {
@@ -280,23 +280,27 @@ export default {
       }
     },
     dropdownExtendedChecker(id) {
-      let $ = require('jquery');
+      const $ = require('jquery');
       let target = $('#'+id);
-      if(id === 'closing') {
+      if (id === 'closing') {
         this.whihDropdownIsExtended = 'none';
         this.isExtended = false;
-      } else target = $('#'+id);
-      if(target.hasClass('showDropdown')) {
-        switch(id) {
+      } else target = $(`#${id}`);
+      if (target.hasClass('showDropdown')) {
+        switch (id) {
           case 'favoriteDropdown':
             this.isExtendedFav = true;
-          break;
+            break;
           case 'basketDropdown':
             this.isExtendedBas = true;
-          break;
+            break;
           case 'userDropdown':
             this.isExtendedUsr = true;
-          break;
+            break;
+          default:
+            this.isExtendedUsr = null;
+            this.isExtendedBas = null;
+            this.isExtendedFav = null;
         }
         this.whihDropdownIsExtended = id;
         this.isExtended = true;
@@ -307,14 +311,14 @@ export default {
       }
     },
     clearCart() {
-      for(let i = 0; i < this.$store.getters.products.length; i++) {
+      for (let i = 0; i < this.$store.getters.products.length; i++) {
         this.$store.getters.products[i].quantityInCart = 0;
       }
     },
     removeItem(id) {
-      this.$store.dispatch("removeFromCart", id);
+      this.$store.dispatch('removeFromCart', id);
     },
-  }
+  },
 };
 </script>
 
