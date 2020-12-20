@@ -9,7 +9,7 @@
      <div v-for="(product, index) in filterProducts" :key="product.id">
       <div class="productWrapper">
         <div @click="runModal(product.id)">
-          <div class="bookTitle">{{ product.title }}</div>
+          <span :title='product.title' class="bookTitle">{{ product.title }}</span>
           <div class="hoverImage">
             <div v-if="hover === product.id" class="hoverGenere">{{ product.genere }}</div>
             <img @mouseover="hover = product.id"
@@ -101,7 +101,6 @@ export default {
       const productReturn = [];
       if (this.suffix === null) {
         for (let i = 0; i < this.categories[this.$route.params.id[0] - 1].subCat.length; i++) {
-          // console.log(this.categories[this.$route.params.id[0] - 1].subCat[i]);
           for (let j = 0; j < this.products.length; j++) {
             if (((this.categories[this.$route.params.id[0] - 1].subCat[i]).toLowerCase()).includes((this.products[j].genere).toLowerCase())) {
               productReturn[j] = this.products[j];
@@ -112,7 +111,13 @@ export default {
       else {
         for (let i = 0; i < this.products.length; i++) {
           if (((this.suffix).toLowerCase()).includes((this.products[i].genere).toLowerCase())) {
-            productReturn[i] = this.products[i];
+            if (((this.suffix).toLowerCase()).includes(' ') && !((this.suffix).toLowerCase()).includes(',')) {
+              if ((this.categories[this.$route.params.id[0] - 1].subCat[i]).toLowerCase() == ((this.products[i].genere).toLowerCase())) {
+                productReturn[i] = this.products[i];
+              }
+            } else {
+              productReturn[i] = this.products[i];
+            }
           }
         }
       }
@@ -191,7 +196,11 @@ export default {
   margin-bottom: 5px;
 }
 .bookTitle {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   font-weight: bold;
+  height: 48px;
 }
 .hoverImage {
   position: relative;
