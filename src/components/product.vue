@@ -4,7 +4,7 @@
     <div v-for="(product, index) in products" :key="product.id">
   <div class="productWrapper">
     <div @click="$emit('run-modal', product.id)">
-      <div class="bookTitle">{{ product.title }}</div>
+      <span :title='product.title' class="bookTitle">{{ product.title }}</span>
       <div class="hoverImage">
         <div v-if="hover === product.id" class="hoverGenere">{{ product.genere }}</div>
         <img @mouseover="hover = product.id"
@@ -109,7 +109,11 @@ export default {
   margin-bottom: 5px;
 }
 .bookTitle {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   font-weight: bold;
+  height: 48px;
 }
 .hoverImage {
   position: relative;
