@@ -31,11 +31,11 @@
               <span id="arrowFavorite" v-if="sendIsMobile === true"></span>
               <img class="favoriteImg" src="..\assets\Icons\heart.png">
             </button>
-            <div id="favoriteDropdown" class="dropdown-content" v-bind:style= "[favoriteBooks > 1 ? {overflow: 'auto'} : {overflow: 'hidden'}]">
+            <div id="favoriteDropdown" class="dropdown-content" v-bind:style= "[favoriteBooksCounter > 1 ? {overflow: 'auto'} : {overflow: 'hidden'}]">
               <b-container>
                 <b-row class="products">
-                  <span v-if="favoriteBooks === 0">Nic tu nie ma</span>
-                  <div class="loopProducts" v-for="(book, index) in cart" :key="index" v-if="book.favorite === true">
+                  <span v-if="favoriteBooksCounter === 0">Nic tu nie ma</span>
+                  <div class="loopProducts" v-for="(book, index) in favoriteBooks" :key="index">
                     <div class="singleProduct">
                       <div>{{ book.title }}</div>
                       <div>
@@ -82,14 +82,14 @@
                 <b-row class="products">
                   <span v-if="cartCount === 0">Koszyk jest pusty</span>
                   <!-- it’s not recommended to use v-if and v-for together... blah blah blah -->
-                  <div class="loopProducts" v-for="(book, index) in cart" :key="index" v-if="book.quantityInCart > 0">
+                  <div class="loopProducts" v-for="(book, index) in cart" :key="index">
                     <div class="singleProduct">
                     <div>{{ book.title }}</div>
                     <div>
                       <img class="coverProduct" :src="book.cover" /> 
                     </div>
                     <div>
-                      <span v-if="book.quantityInCart > 1">x{{ book.quantityInCart }} = </span>{{ (book.price*book.quantityInCart).toFixed(2) + " zł"}}
+                      <span v-if="book.quantityInCart > 1">x{{ book.quantityInCart }} = </span>{{ (book.price).toFixed(2) + " zł"}}
                     </div>
                     <div class="removeAllButtonWrapper">
                       <b-button @click="removeItem(book.id)">Usuń z koszyka</b-button>
@@ -202,33 +202,26 @@ export default {
   },
   computed: {
     cartCount() {
-      let counter = 0;
-      for (let i = 0; i < this.$store.getters.products.length; i++) {
-        counter += this.$store.getters.products[i].quantityInCart;
-      }
-      return counter;
+      return this.$store.getters.cart.length;
     },
     favoriteBooks() {
-      let counter = 0;
-      for (let i = 0; i < this.$store.getters.products.length; i++) {
-        if (this.$store.getters.products[i].favorite === true) {
-          counter += 1;
-        }
-      }
-      return counter;
+      return this.$store.getters.favorites;
+    },
+    favoriteBooksCounter() {
+      return this.$store.getters.favorites.length;
     },
     summaryPrice() {
       let summary = 0;
-      for (let i = 0; i < this.$store.getters.products.length; i++) {
-        if (this.$store.getters.products[i].quantityInCart >= 1) {
-          const multiply = this.$store.getters.products[i].quantityInCart;
-          summary += multiply * this.$store.getters.products[i].price;
+      for (let i = 0; i < this.$store.getters.books.length; i++) {
+        if (this.$store.getters.books[i].quantityInCart >= 1) {
+          const multiply = this.$store.getters.books[i].quantityInCart;
+          summary += multiply * this.$store.getters.books[i].price;
         }
       }
       return summary;
     },
     cart() {
-      return this.$store.getters.products;
+      return this.$store.getters.cart;
     },
   },
   methods: {
@@ -311,9 +304,7 @@ export default {
       }
     },
     clearCart() {
-      for (let i = 0; i < this.$store.getters.products.length; i++) {
-        this.$store.getters.products[i].quantityInCart = 0;
-      }
+      this.$store.dispatch('clearCart');
     },
     removeItem(id) {
       this.$store.dispatch('removeFromCart', id);
