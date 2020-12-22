@@ -22,6 +22,7 @@ export default {
   },
   mounted() {
     this.$store.dispatch('loadCategories');
+    this.$store.dispatch('loadBooks');
   },
   created() {
     this.mobileChecker();
