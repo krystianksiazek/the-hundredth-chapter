@@ -24,7 +24,7 @@
         </div>
         {{ product.author }}
         <div class="addToCartSection">
-          <span class="bookPrice">{{ product.price.toFixed(2) + " zł" }}</span>
+          <span class="bookPrice">{{ product.price ? product.price.toFixed(2) : null + " zł" }}</span>
           <b-form-spinbutton
             class="quantity"
             v-model="basketValue[index]"
@@ -96,27 +96,26 @@ export default {
     this.category();
   },
   computed: {
-    ...mapGetters(['products', 'categories']),
+    ...mapGetters(['books', 'categories']),
     filterProducts() {
       const productReturn = [];
       if (this.suffix === null) {
         for (let i = 0; i < this.categories[this.$route.params.id[0] - 1].subCat.length; i++) {
-          for (let j = 0; j < this.products.length; j++) {
-            if (((this.categories[this.$route.params.id[0] - 1].subCat[i]).toLowerCase()).includes((this.products[j].genere).toLowerCase())) {
-              productReturn[j] = this.products[j];
+          for (let j = 0; j < this.books.length; j++) {
+            if (((this.categories[this.$route.params.id[0] - 1].subCat[i]).toLowerCase()).includes((this.books[j].genere).toLowerCase())) {
+              productReturn[j] = this.books[j];
             }
           }
         }
-      }
-      else {
-        for (let i = 0; i < this.products.length; i++) {
-          if (((this.suffix).toLowerCase()).includes((this.products[i].genere).toLowerCase())) {
+      } else {
+        for (let i = 0; i < this.books.length; i++) {
+          if (((this.suffix).toLowerCase()).includes((this.books[i].genere || '').toLowerCase())) {
             if (((this.suffix).toLowerCase()).includes(' ') && !((this.suffix).toLowerCase()).includes(',')) {
-              if ((this.categories[this.$route.params.id[0] - 1].subCat[i]).toLowerCase() == ((this.products[i].genere).toLowerCase())) {
-                productReturn[i] = this.products[i];
+              if ((this.categories[this.$route.params.id[0] - 1].subCat[i]).toLowerCase() == ((this.books[i].genere).toLowerCase())) {
+                productReturn[i] = this.books[i];
               }
             } else {
-              productReturn[i] = this.products[i];
+              productReturn[i] = this.books[i];
             }
           }
         }
