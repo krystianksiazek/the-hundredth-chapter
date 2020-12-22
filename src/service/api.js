@@ -1,12 +1,10 @@
 import axios from 'axios';
 
-export default () => {
-  return axios.create({
-    baseURL: 'http://localhost:3000/',
-    withCredentials: false,
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'aplication/json'
-    }
-  })
-}
+export default () => axios.create({
+  baseURL: 'https://krystianksiazek.github.io/hundredthchapterdata/db.json',
+  withCredentials: false,
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'aplication/json',
+  },
+});
