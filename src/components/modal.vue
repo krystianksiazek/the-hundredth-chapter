@@ -3,24 +3,24 @@
     <div class="modalWrapper">
       <div class="titleAndClose">
         <span class="title">
-          {{ products[id].title }}
+          {{ books[id].title }}
         </span>
         <a class="close" @click="$emit('close-modal')" />
       </div>
       <div class="content">
         <a class="photoLink" target="_blank">
           <div class="photo"
-          v-bind:style="{ backgroundImage: 'url(' + products[id].cover + ')' }">
+          v-bind:style="{ backgroundImage: 'url(' + books[id].cover + ')' }">
           </div>
         </a>
         <div class="aboutPhoto">
-          <h1>{{ products[id].title }}</h1>
-          <p v-html="products[id].description" class="description">
+          <h1>{{ books[id].title }}</h1>
+          <p v-html="books[id].description" class="description">
           </p>
-          {{ products[id].rate }}/5
-          {{ products[id].price }}
-          <router-link :to="{ name: 'kategoria', params: { category: 'beletrystyka', id: getIndex(products[id].genere) }, query: { podkategoria: validLink(fullSubcategory) }}" >
-            {{ products[id].genere }}
+          {{ books[id].rate }}/5
+          {{ books[id].price }}
+          <router-link :to="{ name: 'kategoria', params: { category: 'beletrystyka', id: getIndex(books[id].genere) }, query: { podkategoria: validLink(fullSubcategory) }}" >
+            {{ books[id].genere }}
           </router-link>
           <b-form-spinbutton class="quantity" v-model="basketValue" id="sb-small" min="0" max="99"></b-form-spinbutton>
           <b-button
@@ -35,15 +35,15 @@
           </b-tooltip>
           <b-button
             :id="'addToFavoritesBtnModal' + id"
-            v-bind:style= "[products[id].favorite ? {'title':'Dodaj do ulubionych'} : {'title':'Usuń z ulubionych'}]" 
+            v-bind:style= "[books[id].favorite ? {'title':'Dodaj do ulubionych'} : {'title':'Usuń z ulubionych'}]" 
             @click="favoriteToggle(id)"
             class="addToFavorites">
-            <img v-if="!products[id].favorite" class="addToFavoritesIco" src="../assets/Icons/heart-red.png" height="30" alt="">
-            <img v-if="products[id].favorite" class="addToFavoritesIco" src="../assets/Icons/heart-red-fill.png" height="30" alt="">
+            <img v-if="!books[id].favorite" class="addToFavoritesIco" src="../assets/Icons/heart-red.png" height="30" alt="">
+            <img v-if="books[id].favorite" class="addToFavoritesIco" src="../assets/Icons/heart-red-fill.png" height="30" alt="">
           </b-button>
           <b-tooltip :target="'addToFavoritesBtnModal' + id" placement="bottomright" variant="danger" triggers="hover" :delay="{show: 800, hide: 50}" noninteractive>
-            <span v-if="!products[id].favorite"><strong>Dodaj do ulubionych</strong></span>
-            <span v-if="products[id].favorite"><strong>Usuń z ulubionych</strong></span>
+            <span v-if="!books[id].favorite"><strong>Dodaj do ulubionych</strong></span>
+            <span v-if="books[id].favorite"><strong>Usuń z ulubionych</strong></span>
           </b-tooltip>
         </div>
       </div>
@@ -68,7 +68,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['products', 'categories']),
+    ...mapGetters(['books', 'categories']),
   },
   methods: {
     addToCart(id, amount) {
