@@ -63,7 +63,7 @@ export default {
     window.scrollTo(0, 0);
     setTimeout(() => {
       this.setBasketValue();
-    }, 1000);
+    }, 1500);
   },
   computed: {
     ...mapGetters(['categories', 'books', 'favorites']),
@@ -85,9 +85,7 @@ export default {
     isBookFavorite(id) {
       if (this.favorites.indexOf(this.books[id]) === -1) {
         return false;
-      } else {
-        return true;
-      }
+      } return true;
     },
   },
 };
