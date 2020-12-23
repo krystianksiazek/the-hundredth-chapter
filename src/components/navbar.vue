@@ -35,7 +35,7 @@
               <b-container>
                 <b-row class="products">
                   <span v-if="favoriteBooksCounter === 0">Nic tu nie ma</span>
-                  <div class="loopProducts" v-for="(book, index) in favoriteBooks" :key="index">
+                  <div class="loopProducts" v-for="(book, index) in favorites" :key="index">
                     <div class="singleProduct">
                       <div>{{ book.title }}</div>
                       <div>
@@ -81,24 +81,23 @@
               <b-container>
                 <b-row class="products">
                   <span v-if="cartCount === 0">Koszyk jest pusty</span>
-                  <!-- it’s not recommended to use v-if and v-for together... blah blah blah -->
-                  <div class="loopProducts" v-for="(book, index) in cart" :key="index">
+                  <div class="loopProducts" v-for="(book, index) in getBasket()" :key="book.index">
                     <div class="singleProduct">
-                    <div>{{ book.title }}</div>
-                    <div>
-                      <img class="coverProduct" :src="book.cover" /> 
+                      <div>{{ books[book.id].title }}</div>
+                      <div>
+                        <img class="coverProduct" :src="books[book.id].cover" />
+                      </div>
+                      <div>
+                        <span v-if="book.count > 1">x{{ book.count }} = </span>{{ (books[book.id].price*book.count).toFixed(2) + " zł"}}
+                      </div>
+                      <div class="removeAllButtonWrapper">
+                        <b-button @click="removeItem(books[book.id].id)">Usuń z koszyka</b-button>
+                      </div>
                     </div>
-                    <div>
-                      <span v-if="book.quantityInCart > 1">x{{ book.quantityInCart }} = </span>{{ (book.price).toFixed(2) + " zł"}}
-                    </div>
-                    <div class="removeAllButtonWrapper">
-                      <b-button @click="removeItem(book.id)">Usuń z koszyka</b-button>
-                    </div>
-                  </div>
                   </div>
                 </b-row>
               </b-container>
-              <span v-if="cartCount > 0" class="basketSummary">Suma koszyka: {{ summaryPrice.toFixed(2) }}</span>
+              <span v-if="cartCount > 0" class="basketSummary">Suma koszyka: {{ summaryPrice.toFixed(2) + " zł"}}</span>
               <a @click="clearCart(),
               toggle(2),
               dropMenu('basketDropdown', 'close'),
@@ -106,7 +105,7 @@
               v-if="cartCount !== 0" class="clearCart">
                 <span class="cross">
                   ✖
-                </span> 
+                </span>
                 Wyczyść koszyk
               </a>
             </div>
@@ -162,6 +161,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   name: 'navbar',
   props: [
@@ -201,27 +202,19 @@ export default {
     },
   },
   computed: {
+    ...mapGetters(['categories', 'books', 'favorites', 'cart']),
     cartCount() {
       return this.$store.getters.cart.length;
-    },
-    favoriteBooks() {
-      return this.$store.getters.favorites;
     },
     favoriteBooksCounter() {
       return this.$store.getters.favorites.length;
     },
     summaryPrice() {
       let summary = 0;
-      for (let i = 0; i < this.$store.getters.books.length; i++) {
-        if (this.$store.getters.books[i].quantityInCart >= 1) {
-          const multiply = this.$store.getters.books[i].quantityInCart;
-          summary += multiply * this.$store.getters.books[i].price;
-        }
+      for (let i = 0; i < this.cartCount; i++) {
+        summary += this.cart[i].price;
       }
       return summary;
-    },
-    cart() {
-      return this.$store.getters.cart;
     },
   },
   methods: {
@@ -308,6 +301,29 @@ export default {
     },
     removeItem(id) {
       this.$store.dispatch('removeFromCart', id);
+    },
+    getBasket() {
+      return this.countDuplicates(this.cart);
+    },
+    countDuplicates(cart) {
+      const duplicates = [];
+      const cartCopy = cart.slice(0);
+      for (let i = 0; i < cart.length; i++) {
+        let counter = 0;
+        for (let j = 0; j < cartCopy.length; j++) {
+          if (cart[i] == cartCopy[j]) {
+            counter++;
+            delete cartCopy[j];
+          }
+        }
+        if (counter > 0) {
+          const data = {};
+          data.id = cart[i].id;
+          data.count = counter;
+          duplicates.push(data);
+        }
+      }
+      return duplicates;
     },
   },
 };
