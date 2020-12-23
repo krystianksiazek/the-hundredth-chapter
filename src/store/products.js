@@ -36,7 +36,7 @@ export default new Vuex.Store({
       }
     },
     REMOVE_FROM_CART(state, id) {
-      store.state.c[id].quantityInCart -= 1;
+      store.state.d.splice(store.state.d.indexOf(store.state.c[id]), 1);
     },
     CLEAR_CART() {
       store.state.d = [];
