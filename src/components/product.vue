@@ -1,9 +1,9 @@
 <template>
   <b-container>
+    <Modal v-if="modalOpen" :id = "modalData" @close-modal="modalOpen = false;" />
     <b-row class="justify-content-center">
-      <div v-for="(book, index) in books" :key="book.id">
         <div class="productWrapper">
-          <div @click="$emit('run-modal', book.id)">
+          <div v-on:click="runModal(book.id)">
             <span :title='book.title' class="bookTitle">{{ book.title }}</span>
             <div class="hoverImage">
               <div v-if="hover === book.id" class="hoverGenere">{{ book.genere }}</div>
@@ -16,14 +16,13 @@
           </div>
           {{ book.author }}
           <div class="addToCartSection">
-            <span class="bookPrice">{{ book.price ? book.price.toFixed(2) : null + " zł" }}</span>
-            <!-- //TODO delete spinbutton and replace it with normal buttons -->
-            <b-form-spinbutton class="quantity" v-model="basketValue[index]" id="sb-small" min="1" max="99"></b-form-spinbutton>
+            <span class="bookPrice">{{ book.price ? book.price.toFixed(2) : null }} zł</span>
+            <b-form-spinbutton class="quantity" v-model="basketValue" id="sb-small" min="1" max="99"></b-form-spinbutton>
             <b-button
               :id="'addToCartBtn' + book.id"
               class="addToCart"
-              @click="addToCart(book.id, basketValue[index], index)"
-              :disabled="basketValue[index] <= 0">
+              @click="addToCart(book.id, basketValue)"
+              :disabled="basketValue <= 0">
               <img class="addToCartIco" src="../assets/Icons/basket-green.png" height="30" alt="">
             </b-button>
             <b-tooltip :target="'addToCartBtn'+book.id" placement="bottomleft" variant="success" triggers="hover" :delay="{show: 800, hide: 50}" noninteractive>
@@ -31,19 +30,18 @@
             </b-tooltip>
             <b-button
               :id="'addToFavoritesBtn' + book.id"
-              v-bind:style= "[isBookFavorite(book.id) ? {'title':'Dodaj do ulubionych'} : {'title':'Usuń z ulubionych'}]" 
+              v-bind:style= "[isBookFavorite(book.id) ? {'title':'Dodaj do ulubionych'} : {'title':'Usuń z ulubionych'}]"
               @click="favoriteToggle(book.id)"
               class="addToFavorites">
               <img v-if="!isBookFavorite(book.id)" class="addToFavoritesIco" src="../assets/Icons/heart-red.png" height="30" alt="">
               <img v-if="isBookFavorite(book.id)" class="addToFavoritesIco" src="../assets/Icons/heart-red-fill.png" height="30" alt="">
             </b-button>
             <b-tooltip :target="'addToFavoritesBtn' + book.id" placement="bottomright" variant="danger" triggers="hover" :delay="{show: 800, hide: 50}" noninteractive>
-              <span v-if="!book.favorite"><strong>Dodaj do ulubionych</strong></span>
-              <span v-if="book.favorite"><strong>Usuń z ulubionych</strong></span>
+              <span v-if="!isBookFavorite(book.id)"><strong>Dodaj do ulubionych</strong></span>
+              <span v-if="isBookFavorite(book.id)"><strong>Usuń z ulubionych</strong></span>
             </b-tooltip>
           </div>
         </div>
-      </div>
     </b-row>
   </b-container>
 </template>
@@ -52,35 +50,34 @@
 import { mapGetters } from 'vuex';
 
 export default {
-  name: 'product',
+  name: 'Product',
   data() {
     return {
-      basketValue: [],
+      basketValue: 1,
       hover: false,
+      modalOpen: false,
+      modalData: null,
     };
   },
   mounted() {
     window.scrollTo(0, 0);
-    setTimeout(() => {
-      this.setBasketValue();
-    }, 1500);
   },
+  props: ['book', 'index'],
   computed: {
-    ...mapGetters(['categories', 'books', 'favorites']),
+    ...mapGetters(['books', 'categories', 'favorites']),
   },
   methods: {
-    addToCart(id, amount, index) {
+    runModal(id) {
+      this.modalOpen = true;
+      this.modalData = id;
+    },
+    addToCart(id, amount) {
       this.$store.dispatch('addToCart', { id, amount });
-      this.basketValue[index] = 1;
+      this.basketValue = 1;
       this.$forceUpdate();
     },
     favoriteToggle(id) {
       this.$store.dispatch('addToFavorite', id);
-    },
-    setBasketValue() {
-      for (let i = 0; i < this.books.length; i++) {
-        this.basketValue.push(1);
-      }
     },
     isBookFavorite(id) {
       if (this.favorites.indexOf(this.books[id]) === -1) {
