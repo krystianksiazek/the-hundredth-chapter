@@ -21,6 +21,7 @@
           {{ books[id].price }}
           <router-link :to="{ name: 'kategoria', params: { category: 'beletrystyka', id: getIndex(books[id].genere) }, query: { podkategoria: validLink(fullSubcategory) }}" >
             {{ books[id].genere }}
+            {{validLink(fullSubcategory)}}
           </router-link>
           <b-form-spinbutton class="quantity" v-model="basketValue" id="sb-small" min="0" max="99"></b-form-spinbutton>
           <b-button
@@ -38,12 +39,12 @@
             v-bind:style= "[books[id].favorite ? {'title':'Dodaj do ulubionych'} : {'title':'Usuń z ulubionych'}]" 
             @click="favoriteToggle(id)"
             class="addToFavorites">
-            <img v-if="!books[id].favorite" class="addToFavoritesIco" src="../assets/Icons/heart-red.png" height="30" alt="">
-            <img v-if="books[id].favorite" class="addToFavoritesIco" src="../assets/Icons/heart-red-fill.png" height="30" alt="">
+            <img v-if="!isBookFavorite(id)" class="addToFavoritesIco" src="../assets/Icons/heart-red.png" height="30" alt="">
+            <img v-if="isBookFavorite(id)" class="addToFavoritesIco" src="../assets/Icons/heart-red-fill.png" height="30" alt="">
           </b-button>
           <b-tooltip :target="'addToFavoritesBtnModal' + id" placement="bottomright" variant="danger" triggers="hover" :delay="{show: 800, hide: 50}" noninteractive>
-            <span v-if="!books[id].favorite"><strong>Dodaj do ulubionych</strong></span>
-            <span v-if="books[id].favorite"><strong>Usuń z ulubionych</strong></span>
+            <span v-if="!isBookFavorite(id)"><strong>Dodaj do ulubionych</strong></span>
+            <span v-if="isBookFavorite(id)"><strong>Usuń z ulubionych</strong></span>
           </b-tooltip>
         </div>
       </div>
@@ -68,7 +69,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['books', 'categories']),
+    ...mapGetters(['books', 'categories', 'favorites']),
   },
   methods: {
     addToCart(id, amount) {
@@ -78,15 +79,20 @@ export default {
     favoriteToggle(id) {
       this.$store.dispatch("addToFavorite", id);
     },
-    getFullSubcat(id) {
-      // let patch = (this.getIndex(id)).join('.');
-      // console.log(patch[0], patch[1]);
-
+    isBookFavorite(id) {
+      if (this.favorites.indexOf(this.books[id]) === -1) {
+        return false;
+      } return true;
     },
     getIndex(id) {
       for (let i = 0; i < this.categories.length; i++) {
         for (let j = 0; j < this.categories[i].subCat.length; j++) {
-          if (((this.categories[i].subCat[j]).toLowerCase()).includes((id).toLowerCase())) {
+          if ((this.categories[i].subCat[j]).includes(' ')) {
+            if (((this.categories[i].subCat[j]).toLowerCase()) === (id).toLowerCase()) {
+              this.fullSubcategory = this.categories[i].subCat[j];
+              return `${i + 1}.${j + 1}`;
+            }
+          } else if (((this.categories[i].subCat[j]).toLowerCase()).includes((id).toLowerCase())) {
             this.fullSubcategory = this.categories[i].subCat[j];
             return `${i + 1}.${j + 1}`;
           }
