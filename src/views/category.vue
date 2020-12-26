@@ -1,74 +1,11 @@
 <template>
   <div>
-    <Modal v-if="modalOpen" :id = "modalData" @close-modal="modalOpen = false;" />
     <h3 v-if="!componentLoading">{{ prefix }} <span v-if="suffix != null"> => {{ suffix }} </span> ({{filterProducts.length}})</h3>
     <h4 v-if="componentLoading">Ładowanie...</h4>
     <h4 v-if="!componentLoading && filterProducts.length === 0">Brak książek tej katergorii</h4>
-    <b-container>
-    <b-row class="justify-content-center">
-     <div v-for="(product, index) in filterProducts" :key="product.id">
-      <div class="productWrapper">
-        <div @click="runModal(product.id)">
-          <span :title='product.title' class="bookTitle">{{ product.title }}</span>
-          <div class="hoverImage">
-            <div v-if="hover === product.id" class="hoverGenere">{{ product.genere }}</div>
-            <img @mouseover="hover = product.id"
-              @mouseleave="hover = null"
-              :src="product.cover"
-              height="250" />
-            <div v-if="hover === product.id" class="hoverRate">
-              <img src="../assets/Icons/star-fill.png" height="20" alt="">
-                {{ product.rate }}/5
-            </div>
-          </div>
-        </div>
-        {{ product.author }}
-        <div class="addToCartSection">
-          <span class="bookPrice">{{ product.price ? product.price.toFixed(2) : null + " zł" }}</span>
-          <b-form-spinbutton
-            class="quantity"
-            v-model="basketValue[index]"
-            id="sb-small" min="1" max="99">
-          </b-form-spinbutton>
-          <b-button
-            :id="'addToCartBtn' + product.id"
-            class="addToCart"
-            @click="addToCart(product.id, basketValue[index], index)"
-            :disabled="basketValue[index] <= 0">
-            <img class="addToCartIco" src="../assets/Icons/basket-green.png" height="30" alt="">
-          </b-button>
-          <b-tooltip
-            :target="'addToCartBtn' + product.id"
-            placement="bottomleft"
-            variant="success"
-            triggers="hover"
-            :delay="{show: 800, hide: 50}"
-            noninteractive>
-            <strong>Dodaj do koszyka</strong>
-          </b-tooltip>
-          <b-button
-            :id="'addToFavoritesBtn' + product.id"
-            v-bind:style = "[product.favorite ? {'title':'Dodaj do ulubionych'} : {'title':'Usuń z ulubionych'}]"
-            @click="favoriteToggle(product.id)"
-            class="addToFavorites">
-            <img v-if="!product.favorite" class="addToFavoritesIco" src="../assets/Icons/heart-red.png" height="30" alt="">
-            <img v-if="product.favorite" class="addToFavoritesIco" src="../assets/Icons/heart-red-fill.png" height="30" alt="">
-          </b-button>
-          <b-tooltip
-            :target="'addToFavoritesBtn' + product.id"
-            placement="bottomright"
-            variant="danger"
-            triggers="hover"
-            :delay="{show: 800, hide: 50}"
-            noninteractive>
-            <span v-if="!product.favorite"><strong>Dodaj do ulubionych</strong></span>
-            <span v-if="product.favorite"><strong>Usuń z ulubionych</strong></span>
-          </b-tooltip>
-        </div>
-      </div>
+    <div v-for="(book, index) in filterProducts" :key="book.id">
+      <Product :book='book' :index='index'/>
     </div>
-    </b-row>
-  </b-container>
   </div>
 </template>
 
@@ -79,13 +16,11 @@ export default {
   name: 'category',
   data() {
     return {
-      basketValue: [],
+      basketValue: 1,
       hover: null,
       componentLoading: true,
       prefix: '',
       suffix: '',
-      modalOpen: false,
-      modalData: null,
     };
   },
   props: {
@@ -103,15 +38,22 @@ export default {
         for (let i = 0; i < this.categories[this.$route.params.id[0] - 1].subCat.length; i++) {
           for (let j = 0; j < this.books.length; j++) {
             if (((this.categories[this.$route.params.id[0] - 1].subCat[i]).toLowerCase()).includes((this.books[j].genere).toLowerCase())) {
-              productReturn[j] = this.books[j];
+              if (this.categories[this.$route.params.id[0] - 1].subCat[i].includes(' ') && !this.categories[this.$route.params.id[0] - 1].subCat[i].includes(',')) {
+                if (((this.categories[this.$route.params.id[0] - 1].subCat[i]).toLowerCase()) === ((this.books[j].genere).toLowerCase())) {
+                  console.log(this.categories[this.$route.params.id[0] - 1].subCat[i]);
+                  productReturn[j] = this.books[j];
+                }
+              } else {
+                productReturn[j] = this.books[j];
+              }
             }
           }
         }
       } else {
         for (let i = 0; i < this.books.length; i++) {
-          if (((this.suffix).toLowerCase()).includes((this.books[i].genere || '').toLowerCase())) {
+          if (((this.suffix).toLowerCase()).includes((this.books[i].genere || ' ').toLowerCase())) {
             if (((this.suffix).toLowerCase()).includes(' ') && !((this.suffix).toLowerCase()).includes(',')) {
-              if ((this.categories[this.$route.params.id[0] - 1].subCat[i]).toLowerCase() == ((this.books[i].genere).toLowerCase())) {
+              if ((this.categories[this.$route.params.id[0] - 1].subCat[i]).toLowerCase() === ((this.books[i].genere).toLowerCase())) {
                 productReturn[i] = this.books[i];
               }
             } else {
@@ -124,10 +66,6 @@ export default {
     },
   },
   methods: {
-    runModal(id) {
-      this.modalOpen = true;
-      this.modalData = id;
-    },
     category() {
       let subCategory = null;
       const split = this.$route.params.id.split('.').join('');
@@ -137,21 +75,18 @@ export default {
       } else {
         subCategory = (split[1] + split[2]) - 1;
       }
-      setTimeout(() => {
-        this.prefix = this.categories[category].cat;
-        if (split[1] > 0) {
-          this.suffix = this.categories[category].subCat[subCategory];
-        } else {
-          this.suffix = null;
+      setInterval(() => {
+        // simple checking if categories is loaded
+        if (this.categories.length > 1) {
+          this.prefix = this.categories[category].cat;
+          if (split[1] > 0) {
+            this.suffix = this.categories[category].subCat[subCategory];
+          } else {
+            this.suffix = null;
+          }
+          this.componentLoading = false;
         }
-        this.componentLoading = false;
-        this.setBasketValue();
-      }, 1500);
-    },
-    setBasketValue() {
-      for (let i = 0; i < this.filterProducts.length; i++) {
-        this.basketValue.push(1);
-      }
+      }, 100);
     },
     addToCart(id, amount, index) {
       this.$store.dispatch('addToCart', { id, amount });
