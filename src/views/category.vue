@@ -40,7 +40,6 @@ export default {
             if (((this.categories[this.$route.params.id[0] - 1].subCat[i]).toLowerCase()).includes((this.books[j].genere).toLowerCase())) {
               if (this.categories[this.$route.params.id[0] - 1].subCat[i].includes(' ') && !this.categories[this.$route.params.id[0] - 1].subCat[i].includes(',')) {
                 if (((this.categories[this.$route.params.id[0] - 1].subCat[i]).toLowerCase()) === ((this.books[j].genere).toLowerCase())) {
-                  console.log(this.categories[this.$route.params.id[0] - 1].subCat[i]);
                   productReturn[j] = this.books[j];
                 }
               } else {
@@ -68,7 +67,8 @@ export default {
   methods: {
     category() {
       let subCategory = null;
-      const split = this.$route.params.id.split('.').join('');
+      let link = this.$route.params.id + '';
+      const split = link.split('.').join('');
       const category = split[0] - 1;
       if (split[2] === undefined) {
         subCategory = split[1] - 1;
