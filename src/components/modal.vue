@@ -19,10 +19,12 @@
           </p>
           {{ books[id].rate }}/5
           {{ books[id].price }}
-          <router-link :to="{ name: 'kategoria', params: { category: 'beletrystyka', id: getIndex(books[id].genere) }, query: { podkategoria: validLink(fullSubcategory) }}" >
-            {{ books[id].genere }}
-            {{validLink(fullSubcategory)}}
+          <router-link v-if="books[id].genere" :to="{ name: 'kategoria', params: { category: getCategory(books[id].genere), id: getIndex(books[id].genere) }, query: { podkategoria: subCatValidate(books[id].genere) }}" >
+            {{ books[id].genere }} {{ this.getIndex(books[id].genere) }} {{ subCatValidate(books[id].genere) }} {{ getCategory(books[id].genere) }}
           </router-link>
+          <!-- <router-link :to="{ name: 'kategoria', params: { category: 'beletrystyka', id: 1.1}, query: { podkategoria: 'horror' }}" >
+            {{ books[id].genere }}
+          </router-link> -->
           <b-form-spinbutton class="quantity" v-model="basketValue" id="sb-small" min="0" max="99"></b-form-spinbutton>
           <b-button
             :id="'addToCartBtnModal' + id"
@@ -58,7 +60,6 @@ export default {
   data() {
     return {
       basketValue: 1,
-      fullSubcategory: '',
     };
   },
   name: 'Modal',
@@ -84,25 +85,45 @@ export default {
         return false;
       } return true;
     },
+    getCategory(id) {
+      for (let i = 0; i < this.categories.length; i++) {
+        for (let j = 0; j < this.categories[i].subCat.length; j++) {
+          if ((this.categories[i].subCat[j]).includes(' ')) {
+            if (((this.categories[i].subCat[j]).toLowerCase()).includes((id).toLowerCase())) {
+              return (this.categories[i].cat).toLowerCase();
+            }
+          } else if (((this.categories[i].subCat[j]).toLowerCase()) === (id).toLowerCase()) {
+            return (this.categories[i].cat).toLowerCase();
+          }
+        }
+      }
+    },
     getIndex(id) {
       for (let i = 0; i < this.categories.length; i++) {
         for (let j = 0; j < this.categories[i].subCat.length; j++) {
           if ((this.categories[i].subCat[j]).includes(' ')) {
-            if (((this.categories[i].subCat[j]).toLowerCase()) === (id).toLowerCase()) {
-              this.fullSubcategory = this.categories[i].subCat[j];
+            if (((this.categories[i].subCat[j]).toLowerCase()).includes((id).toLowerCase())) {
               return `${i + 1}.${j + 1}`;
             }
-          } else if (((this.categories[i].subCat[j]).toLowerCase()).includes((id).toLowerCase())) {
-            this.fullSubcategory = this.categories[i].subCat[j];
+          } else if (((this.categories[i].subCat[j]).toLowerCase()) === (id).toLowerCase()) {
             return `${i + 1}.${j + 1}`;
           }
         }
       }
     },
-    validLink(id) {
-      if (id === undefined) return 'err';
-      return encodeURI((id.split(',').join('-')).split(' ').join('').toLowerCase());
-    },
+    subCatValidate(id) {
+      for (let i = 0; i < this.categories.length; i++) {
+        for (let j = 0; j < this.categories[i].subCat.length; j++) {
+          if ((this.categories[i].subCat[j]).includes(' ')) {
+            if (((this.categories[i].subCat[j]).toLowerCase()).includes((id).toLowerCase())) {
+              return encodeURI((this.categories[i].subCat[j].split(',').join('-')).split(' ').join('').toLowerCase());
+            }
+          } else if (((this.categories[i].subCat[j]).toLowerCase()) === (id).toLowerCase()) {
+            return encodeURI((this.categories[i].subCat[j].split(',').join('-')).split(' ').join('').toLowerCase());
+          }
+        }
+      }
+    }
   },
 }
 </script>
