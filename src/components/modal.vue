@@ -19,12 +19,9 @@
           </p>
           {{ books[id].rate }}/5
           {{ books[id].price }}
-          <router-link v-if="books[id].genere" :to="{ name: 'kategoria', params: { category: getCategory(books[id].genere), id: getIndex(books[id].genere) }, query: { podkategoria: subCatValidate(books[id].genere) }}" >
-            {{ books[id].genere }} {{ this.getIndex(books[id].genere) }} {{ subCatValidate(books[id].genere) }} {{ getCategory(books[id].genere) }}
-          </router-link>
-          <!-- <router-link :to="{ name: 'kategoria', params: { category: 'beletrystyka', id: 1.1}, query: { podkategoria: 'horror' }}" >
+          <router-link v-if="books[id].genere" :to="{ name: 'kategoria', params: { category: getAllLinkParams(books[id].genere, 'category'), id: getAllLinkParams(books[id].genere, 'index') }, query: { podkategoria: getAllLinkParams(books[id].genere, 'subCategory') }}" >
             {{ books[id].genere }}
-          </router-link> -->
+          </router-link>
           <b-form-spinbutton class="quantity" v-model="basketValue" id="sb-small" min="0" max="99"></b-form-spinbutton>
           <b-button
             :id="'addToCartBtnModal' + id"
@@ -85,45 +82,29 @@ export default {
         return false;
       } return true;
     },
-    getCategory(id) {
+    getAllLinkParams(id, need) {
       for (let i = 0; i < this.categories.length; i++) {
         for (let j = 0; j < this.categories[i].subCat.length; j++) {
-          if ((this.categories[i].subCat[j]).includes(' ')) {
+          if ((this.categories[i].subCat[j]).includes(' ') && (this.categories[i].subCat[j]).includes(',') || ((this.categories[i].subCat[j]).toLowerCase()) == (id).toLowerCase()) {
             if (((this.categories[i].subCat[j]).toLowerCase()).includes((id).toLowerCase())) {
-              return (this.categories[i].cat).toLowerCase();
+              switch (need) {
+                case 'category':
+                  return encodeURI((this.categories[i].cat.split(',').join('-')).split(' ').join('').toLowerCase());
+                  break;
+                case 'index':
+                  return `${i + 1}.${j + 1}`;
+                  break;
+                case 'subCategory':
+                  return encodeURI((this.categories[i].subCat[j].split(',').join('-')).split(' ').join('').toLowerCase());
+                  break;
+                default:
+                  return 'Error! Bad getAllLinkParams caller!';
+              }
             }
-          } else if (((this.categories[i].subCat[j]).toLowerCase()) === (id).toLowerCase()) {
-            return (this.categories[i].cat).toLowerCase();
           }
         }
       }
     },
-    getIndex(id) {
-      for (let i = 0; i < this.categories.length; i++) {
-        for (let j = 0; j < this.categories[i].subCat.length; j++) {
-          if ((this.categories[i].subCat[j]).includes(' ')) {
-            if (((this.categories[i].subCat[j]).toLowerCase()).includes((id).toLowerCase())) {
-              return `${i + 1}.${j + 1}`;
-            }
-          } else if (((this.categories[i].subCat[j]).toLowerCase()) === (id).toLowerCase()) {
-            return `${i + 1}.${j + 1}`;
-          }
-        }
-      }
-    },
-    subCatValidate(id) {
-      for (let i = 0; i < this.categories.length; i++) {
-        for (let j = 0; j < this.categories[i].subCat.length; j++) {
-          if ((this.categories[i].subCat[j]).includes(' ')) {
-            if (((this.categories[i].subCat[j]).toLowerCase()).includes((id).toLowerCase())) {
-              return encodeURI((this.categories[i].subCat[j].split(',').join('-')).split(' ').join('').toLowerCase());
-            }
-          } else if (((this.categories[i].subCat[j]).toLowerCase()) === (id).toLowerCase()) {
-            return encodeURI((this.categories[i].subCat[j].split(',').join('-')).split(' ').join('').toLowerCase());
-          }
-        }
-      }
-    }
   },
 }
 </script>
