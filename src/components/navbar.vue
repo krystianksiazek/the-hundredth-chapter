@@ -152,7 +152,7 @@
         <b-nav-item class="navButton" :to="'/kategorie'">Kategorie</b-nav-item>
         <b-nav-item class="navButton" :to="'/'">Nowości</b-nav-item>
         <b-nav-item class="navButton" :to="'/'">Bestsellery</b-nav-item>
-        <b-nav-item class="navButton" :to="'/'">Najlepiej oceniane</b-nav-item>
+        <b-nav-item class="navButton" :to="'/najlepiej-oceniane'">Najlepiej oceniane</b-nav-item>
         <b-nav-item class="navButton" :to="'/'">Rekomendacje</b-nav-item>
         <b-nav-item class="navButton" :to="'/'">Promocje</b-nav-item>
         </b-collapse>
