@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import home from '../views/Home.vue';
+import home from '../views/home.vue';
+import rate from '../views/rate.vue';
 import login from '../views/login.vue';
 import register from '../views/register.vue';
 import categories from '../views/categories.vue';
@@ -11,8 +12,13 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: '/',
-    name: 'Home',
+    name: 'home',
     component: home,
+  },
+  {
+    path: '/najlepiej-oceniane',
+    name: 'rate',
+    component: rate,
   },
   {
     path: '/login',
