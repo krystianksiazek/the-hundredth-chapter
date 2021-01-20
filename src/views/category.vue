@@ -1,12 +1,14 @@
 <template>
-  <div>
-    <h3 v-if="!componentLoading">{{ prefix }} <span v-if="suffix != null"> => {{ suffix }} </span> ({{filterProducts.length}})</h3>
-    <h4 v-if="componentLoading">Ładowanie...</h4>
-    <h4 v-if="!componentLoading && filterProducts.length === 0">Brak książek tej katergorii</h4>
+<div>
+  <h3 v-if="!componentLoading">{{ prefix }} <span v-if="suffix != null"> => {{ suffix }} </span> ({{filterProducts.length}})</h3>
+  <h4 v-if="componentLoading">Ładowanie...</h4>
+  <h4 v-if="!componentLoading && filterProducts.length === 0">Brak książek tej katergorii</h4>
+  <div class="filtredBooks">
     <div v-for="(book, index) in filterProducts" :key="book.id">
       <Product :book='book' :index='index'/>
     </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -110,62 +112,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.productWrapper {
-  position: relative;
-  padding: 10px;
-  background-color: #557a95;
-  border-radius: 5px;
-  margin: 10px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 250px;
-  text-align: center;
-}
-.addToCart {
-  margin-right: 10px;
-}
-.quantity {
-  margin-bottom: 5px;
-}
-.bookTitle {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  font-weight: bold;
-  height: 48px;
-}
-.hoverImage {
-  position: relative;
-  display: inline-block;
-}
-.hoverGenere, .hoverRate {
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%);
-  width: 100%;
-  background-color: #7395ae;
-}
-.hoverGenere {
-  top: 0;
-}
-.hoverRate {
-  bottom: 0;
-}
-.bookPrice {
-  font-size: 20px;
-}
-.addToFavoritesIco, .addToCartIco {
-  filter: brightness(0);
-  opacity: 0.5;
-  transition: 0.25s ease-in-out;
-}
-.addToFavorites:hover > .addToFavoritesIco,
-.addToCart:hover > .addToCartIco {
-  filter: brightness(100%);
-  opacity: 1;
-  transition: 0.25s ease-in-out;
-}
-
+  .filtredBooks {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 </style>
