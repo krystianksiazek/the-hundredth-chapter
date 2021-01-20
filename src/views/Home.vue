@@ -1,9 +1,22 @@
 <template>
 <div>
-  <Modal v-if="modalOpen" :id = "modalData" @close-modal="modalOpen = false;" />
-  <h1>Produkty</h1>
-  <div v-for="(book, index) in books" :key="book.id">
-    <Product :book='book' :index='index'/>
+  <div class="bestBooksWrapper">
+    <h1>Niektóre najlepiej oceniane</h1>
+    <h6>Książki z oceną co najmniej <strong>{{ rateFilterSelect }}</strong></h6>
+    <div class="bestBooks">
+      <div v-for="(book, index) in getBestBooks" :key="book.id">
+        <Product :book='book' :index='index'/>
+      </div>
+    </div>
+    <router-link :to="'/najlepiej-oceniane'">
+      Wszystkie najlepiej oceniane
+    </router-link>
+  </div>
+  <h1>Wszystkie książki</h1>
+  <div class="allBooks">
+    <div v-for="(book, index) in books" :key="book.id">
+      <Product :book='book' :index='index'/>
+    </div>
   </div>
 </div>
 </template>
@@ -15,22 +28,30 @@ export default {
   name: 'home',
   data() {
     return {
-      modalOpen: false,
-      modalData: null,
+      rateFilterSelect: (Math.random() * (5 - 4) + 4).toFixed(2),
     };
   },
   computed: {
     ...mapGetters(['books', 'categories', 'favorites']),
-  },
-  methods: {
-    runModal(id) {
-      this.modalOpen = true;
-      this.modalData = id;
+    getBestBooks() {
+      return this.books.filter(book => book.rate > this.rateFilterSelect);
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-
+  h1, h6 {
+    text-align: center;
+  }
+  .bestBooks {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .allBooks {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 </style>
