@@ -350,7 +350,7 @@ h5 {
 #navbarWrapper {
   top: -1px;
   margin-top: -1px;
-  z-index: 100;
+  z-index: 4;
 }
 .upperNavbar, .lowerNavbar {
   background-color: #557a95;
