@@ -1,14 +1,14 @@
 <template>
-<div>
-  <h3 v-if="!componentLoading">{{ prefix }} <span v-if="suffix != null"> => {{ suffix }} </span> ({{filterProducts.length}})</h3>
-  <h4 v-if="componentLoading">Ładowanie...</h4>
-  <h4 v-if="!componentLoading && filterProducts.length === 0">Brak książek tej katergorii</h4>
-  <div class="filtredBooks">
-    <div v-for="(book, index) in filterProducts" :key="book.id">
-      <Product :book='book' :index='index'/>
+  <b-container>
+    <h3 v-if="!componentLoading">{{ prefix }} <span v-if="suffix != null"> => {{ suffix }} </span> ({{filterProducts.length}})</h3>
+    <h4 v-if="componentLoading">Ładowanie...</h4>
+    <h4 v-if="!componentLoading && filterProducts.length === 0">Brak książek tej katergorii</h4>
+    <div class="filtredBooks">
+      <div v-for="(book, index) in filterProducts" :key="book.id">
+        <Product :book='book' :index='index'/>
+      </div>
     </div>
-  </div>
-</div>
+  </b-container>
 </template>
 
 <script>
