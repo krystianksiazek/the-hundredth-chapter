@@ -9,11 +9,13 @@ import store from './store/products';
 import router from './router';
 import App from './App.vue';
 import Modal from './components/modal.vue';
+import Filters from './components/filters.vue';
 import Product from './components/product.vue';
 
 Vue.config.productionTip = false;
 
 Vue.component('Modal', Modal);
+Vue.component('Filters', Filters);
 Vue.component('Product', Product);
 Vue.use(BootstrapVue);
 Vue.use(Popper);
