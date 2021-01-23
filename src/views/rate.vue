@@ -1,47 +1,12 @@
 <template>
-  <div>
+  <b-container>
     <div class="bestBooksWrapper">
       <h1>Najlepiej oceniane książki</h1>
-      <div v-b-toggle.filters>
-        <span class="when-open">Ukryj</span><span class="when-closed">Pokaż</span> filtry
-      </div>
-      <div class="filtersWrapper">
-        <b-collapse id="filters">
-          <div class="filters">
-            <label for="sb-step">Ocena powyżej: </label>
-            <b-form-spinbutton
-              class="rateSpinbutton"
-              id="sb-small"
-              v-model="rateFilterSelect"
-              min="0"
-              max="4.9"
-              step="0.10">
-            </b-form-spinbutton>
-            <!-- <b-dropdown>
-              <template #button-content>
-                Ocena powyżej: <strong>{{ rateFilterSelect }}</strong>
-              </template>
-              <b-dropdown-item v-for="option in rateFilter" 
-                              :key="option" 
-                              :value="option"
-                              @click="rateFilterSelect = option">
-                {{ option }}
-              </b-dropdown-item>
-            </b-dropdown> -->
-            <b-dropdown class="ml-2">
-              <template #button-content>
-                Sortowanie wg: <strong>{{ sortingSelect }}</strong>
-              </template>
-              <b-dropdown-item v-for="option in sorting" 
-                              :key="option" 
-                              :value="option"
-                              @click="sortingSelect = option">
-                {{ option }}
-              </b-dropdown-item>
-            </b-dropdown>
-          </div>
-        </b-collapse>
-      </div>
+      <Filters 
+        :rateFilterSelectSend = 'rateFilterSelect'
+        :sortingSelectSend = 'sortingSelect'
+        @update-sorting="updateSorting"
+        @update-rate="updateRate" />
       </div>
       <!-- <b-form-select v-model="rateFilterSelect" :options="rateFilter"></b-form-select> -->
       <div class="overflow-auto">
@@ -51,15 +16,17 @@
           </div>
         </div>
       </div>
-      <b-pagination
-          v-model="currentPage"
-          :total-rows="getBestBooksFilter.length"
-          :per-page="perPage"
-          aria-controls="bestBooks"
-          first-number
-          last-number>
-      </b-pagination>
-    </div>
+      <div class="pagination">
+        <b-pagination
+            v-model="currentPage"
+            :total-rows="getBestBooksFilter.length"
+            :per-page="perPage"
+            aria-controls="bestBooks"
+            first-number
+            last-number>
+        </b-pagination>
+      </div>
+  </b-container>
 </template>
 
 <script>
@@ -69,20 +36,20 @@ export default {
   name: 'home',
   data() {
     return {
-      perPage: 6,
+      number: 20,
+      perPage: 12,
       currentPage: 1,
       rateFilterSelect: 4,
       sortingSelect: 'oceny malejąco',
-      sorting: [
-        'oceny rosnąco',
-        'oceny malejąco',
-        'tytyłu rosnąco',
-        'tytyłu malejąco',
-        'ceny rosnąco',
-        'ceny malejąco',
-        'domyślnie',
-      ],
     };
+  },
+  methods: {
+    updateSorting (sortingSelectRecived) {
+      this.sortingSelect = sortingSelectRecived;
+    },
+    updateRate (rateFilterSelectRecived) {
+      this.rateFilterSelect = rateFilterSelectRecived;
+    }
   },
   computed: {
     ...mapGetters(['books', 'categories', 'favorites']),
@@ -142,6 +109,10 @@ export default {
   .allBooks {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
+  }
+  .pagination {
+    display: flex;
     justify-content: center;
   }
 </style>
