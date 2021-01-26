@@ -6,13 +6,13 @@
     <div class="filtersWrapper">
       <b-collapse id="filters">
         <div class="filters">
-          <label for="sb-step">Ocena powyżej: </label>
+          <label for="sb-step">Ocena minimum: </label>
           <b-form-spinbutton
             class="rateSpinbutton"
             id="sb-small"
             v-model="rateFilterSelect"
             min="0"
-            max="4.9"
+            max="5"
             step="0.10">
           </b-form-spinbutton>
           <!-- <b-dropdown>
@@ -45,10 +45,8 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
-
 export default {
-  name: 'home',
+  name: 'filters',
   data() {
     return {
       sorting: [
