@@ -29,7 +29,6 @@
             last-number>
         </b-pagination>
       </div>
-      {{rateFilterSelect}}
   </b-container>
 </template>
 
@@ -89,9 +88,7 @@ export default {
           }
         }
       }
-      this.rateFilterSelect = 0;
-      console.log(productReturn.map(book => book.rate));
-      this.rateFilterSelect = Math.floor(Math.min(...productReturn.map(book => book.rate).flat())* 1) / 1;//Do naprawy
+      this.rateFilterSelect = Math.floor(Math.min(...productReturn.map(book => book.rate).flat())* 1) / 1;
       return productReturn.flat();
     },
     sortBooks() {
