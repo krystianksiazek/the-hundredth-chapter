@@ -3,11 +3,33 @@
     <h3 v-if="!componentLoading">{{ prefix }} <span v-if="suffix != null"> => {{ suffix }} </span> ({{filterProducts.length}})</h3>
     <h4 v-if="componentLoading">Ładowanie...</h4>
     <h4 v-if="!componentLoading && filterProducts.length === 0">Brak książek tej katergorii</h4>
-    <div class="filtredBooks">
-      <div v-for="(book, index) in filterProducts" :key="book.id">
-        <Product :book='book' :index='index'/>
+    <div v-if="!componentLoading && filterProducts.length > 0" class="byCategoryBooksWrapper">
+      <Filters 
+        :rateFilterSelectSend = 'rateFilterSelect'
+        :sortingSelectSend = 'sortingSelect'
+        @update-sorting="updateSorting"
+        @update-rate="updateRate" />
+      <!-- <b-form-select v-model="rateFilterSelect" :options="rateFilter"></b-form-select> -->
+      <h4 v-if="!componentLoading && sortBooks.length === 0">Brak wyników dla tego ustawienia filtrów</h4>
+      <div class="overflow-auto">
+        <div id="byCategoryBooks" class="byCategoryBooks">
+          <div v-for="(book, index) in itemsForList" :key="book.id">
+            <Product :book='book' :index='index'/>
+          </div>
+        </div>
       </div>
     </div>
+    <div v-if="!componentLoading && filterProducts.length > 0" class="pagination">
+        <b-pagination
+            v-model="currentPage"
+            :total-rows="sortBooks.length"
+            :per-page="perPage"
+            aria-controls="byCategoryBooks"
+            first-number
+            last-number>
+        </b-pagination>
+      </div>
+      {{rateFilterSelect}}
   </b-container>
 </template>
 
@@ -23,6 +45,10 @@ export default {
       componentLoading: true,
       prefix: '',
       suffix: '',
+      perPage: 12,
+      currentPage: 1,
+      rateFilterSelect: 0,
+      sortingSelect: 'tytyłu rosnąco',
     };
   },
   props: {
@@ -63,8 +89,43 @@ export default {
           }
         }
       }
+      this.rateFilterSelect = 0;
+      console.log(productReturn.map(book => book.rate));
+      this.rateFilterSelect = Math.floor(Math.min(...productReturn.map(book => book.rate).flat())* 1) / 1;//Do naprawy
       return productReturn.flat();
     },
+    sortBooks() {
+      const bestBooks = this.filterProducts.filter(book => book.rate >= this.rateFilterSelect);
+      switch (this.sortingSelect) {
+        case 'oceny rosnąco':
+          return bestBooks.sort((a, b) => a.rate < b.rate ? -1 : 1);
+          break;
+        case 'oceny malejąco':
+          return bestBooks.sort((a, b) => a.rate < b.rate ? -1 : 1).reverse();
+          break;
+        case 'tytyłu rosnąco':
+          return bestBooks.sort((a, b) => a.title < b.title ? -1 : 1);
+          break;
+        case 'tytyłu malejąco':
+          return bestBooks.sort((a, b) => a.title < b.title ? -1 : 1).reverse();
+          break;
+        case 'ceny rosnąco':
+          return bestBooks.sort((a, b) => a.price < b.price ? -1 : 1);
+          break;
+        case 'ceny malejąco':
+          return bestBooks.sort((a, b) => a.price < b.price ? -1 : 1).reverse();
+          break;
+        case 'domyślnie':
+          return bestBooks;
+          break;
+      }
+    },
+    itemsForList() {
+      return this.sortBooks.slice(
+        (this.currentPage - 1) * this.perPage,
+        this.currentPage * this.perPage);
+    },
+    
   },
   methods: {
     category() {
@@ -107,14 +168,36 @@ export default {
         }
       }
     },
+    updateSorting (sortingSelectRecived) {
+      this.sortingSelect = sortingSelectRecived;
+    },
+    updateRate (rateFilterSelectRecived) {
+      this.rateFilterSelect = rateFilterSelectRecived;
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-  .filtredBooks {
+  .collapsed > .when-open,
+  .not-collapsed > .when-closed {
+    display: none;
+  }
+  h1 {
+    text-align: center;
+  }
+  .byCategoryBooksWrapper {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
+  }
+  .byCategoryBooks {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .pagination {
+    display: flex;
     justify-content: center;
   }
 </style>
