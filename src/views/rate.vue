@@ -10,6 +10,7 @@
       </div>
       <!-- <b-form-select v-model="rateFilterSelect" :options="rateFilter"></b-form-select> -->
       <div class="overflow-auto">
+        <h4 v-if="getBestBooksFilter.length === 0">Brak wyników dla tego ustawienia filtrów</h4>
         <div id="bestBooks" class="bestBooks">
           <div v-for="(book, index) in itemsForList" :key="book.id">
             <Product :book='book' :index='index'/>
@@ -33,10 +34,9 @@
 import { mapGetters } from 'vuex';
 
 export default {
-  name: 'home',
+  name: 'rate',
   data() {
     return {
-      number: 20,
       perPage: 12,
       currentPage: 1,
       rateFilterSelect: 4,
@@ -54,7 +54,7 @@ export default {
   computed: {
     ...mapGetters(['books', 'categories', 'favorites']),
     getBestBooksFilter() {
-      const bestBooks = this.books.filter(book => book.rate > this.rateFilterSelect);
+      const bestBooks = this.books.filter(book => book.rate >= this.rateFilterSelect);
       switch (this.sortingSelect) {
         case 'oceny rosnąco':
           return bestBooks.sort((a, b) => a.rate < b.rate ? -1 : 1);
@@ -83,7 +83,7 @@ export default {
       return this.getBestBooksFilter.slice(
         (this.currentPage - 1) * this.perPage,
         this.currentPage * this.perPage);
-    }
+    },
   },
 };
 </script>
@@ -97,16 +97,6 @@ export default {
     text-align: center;
   }
   .bestBooks {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .filtersWrapper {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .allBooks {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
