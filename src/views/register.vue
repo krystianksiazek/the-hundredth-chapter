@@ -33,6 +33,24 @@
           <span class="labelContent">Nazwisko <span id="surnameError" class="error"></span></span>
         </label>
       </div>
+      <div class="searchWrapper">
+        <div class="registerFormPart">
+          <input id="favorites" type="text" name="favorites" v-model="search" required />
+          <label for="favorites" class="labelWrapper">
+            <span class="labelContent">Trzy ulubione gatunki książek <span id="surnameError" class="error"></span></span>
+          </label>
+        </div>
+        <div class="searchBox" v-if="search">
+            <div class="searchList" v-if="subCategoriesSelected.length < 3">
+              <div v-for="category in filteredList" :key="category" class="category" ><a class="size5" v-if="preventDuplicates(category)" @click="selectSubCategory(category)"> {{category}} </a></div>
+            </div>
+          </div>
+      </div>
+      <div>
+        <ul class="categoriesShower" v-for="category in subCategoriesSelected" :key="category">
+          <li class="category"><a class="size5" @click="removeSubCategory(category)"> {{category}} </a></li>
+        </ul>
+      </div>
       <div class="registerRegulations">
         <b-form-checkbox v-model="isRegulationsChecked" name="check-button" switch>
          <b v-if="isRegulationsChecked === false">Nie akceptuję regulaminu</b>
@@ -44,19 +62,41 @@
         <p id="regulationsError" class="error"></p>
         <p id="errorOnSubmit" class="error"></p>
       </div>
+      <!-- <multiselect v-model="value" :options="cat" :multiple="true" :max='3'></multiselect> -->
     </div>
-    <b-button v-b-popover.hover.bottom="{ variant: 'info',  content: 'Popover content' }" title="Info variant">
-      Test        
-    </b-button>
+    <!-- <div class="categoriesWrapper">
+      <ul class="categoriesShower" v-for="category in cat" :key="category">
+        <li class="category"><a class="size5"> {{category}} </a></li>
+      </ul>
+    </div> -->
+    <!-- {{subCategoriesSelected}}
+    <div class="categoriesWrapper">
+      <ul class="categoriesShower" v-for="category in filteredList" :key="category">
+        <li class="category" v-if="subCategoriesSelected.length < 3"><a class="size5" v-if="preventDuplicates(category)" @click="selectSubCategory(category)"> {{category}} </a></li>
+      </ul>
+    </div> -->
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+import Multiselect from 'vue-multiselect';
 
 export default {
   name: 'register',
+  computed: {
+    ...mapGetters(['categories']),
+    filteredList() {
+      return this.subCategories.filter(cat => {
+        return cat.toLowerCase().includes(this.search.toLowerCase())
+      })
+    }
+  },
+  components: { Multiselect },
   data() {
     return {
+      value: null,
+      search: '',
       isValidEmail: false,
       isValidPassword: false,
       isValidRepeatPassword: false,
@@ -64,9 +104,22 @@ export default {
       isValidName: false,
       isValidSurname: false,
       isRegulationsChecked: false,
+      subCategories: [],
+      subCategoriesSelected: []
     };
   },
   mounted() {
+      var check = setInterval(() => {
+        // simple checking if categories is loaded
+        if (this.categories.length > 1) {
+          for (let i = 0; i < this.categories.length; i++) {
+            for (let j = 0; j < this.categories[i].subCat.length; j++) {
+              this.subCategories.push(this.categories[i].subCat[j]);
+              clearInterval(check);
+            }
+          }
+        }
+      }, 100);    
     /* eslint-disable global-require */
     const $ = require('jquery');
     const email = $('#email');
@@ -220,6 +273,19 @@ export default {
     });
   },
   methods: {
+    selectSubCategory(category) {
+      this.subCategoriesSelected.push(category);
+      document.getElementById("favorites").focus();
+      this.search = '';
+    },
+    removeSubCategory(category) {
+      this.subCategoriesSelected.splice(this.subCategoriesSelected.indexOf(category), 1);
+    },
+    preventDuplicates(category) {
+      if(this.subCategoriesSelected.indexOf(category) >= 0) {
+        return false;
+      } else return true;
+    },
     validName(name) {
       const tester = /^([a-zA-Z])+$/;
       return (tester.test(name));
@@ -258,15 +324,15 @@ export default {
           break;
         case 1:
           errorOnSubmit.text('Proszę wypełnić wszystkie pola poprawnie!');
-        setTimeout(() => {
-          errorOnSubmit.text('');
-        }, 5000);
+          setTimeout(() => {
+            errorOnSubmit.text('');
+          }, 5000);
           break;
         case 2:
           errorOnSubmit.text('Proszę zaakceptować regulamin');
-        setTimeout(() => {
-          errorOnSubmit.text('');
-        }, 5000);
+          setTimeout(() => {
+            errorOnSubmit.text('');
+          }, 5000);
           break;
         default:
           break;
@@ -276,15 +342,16 @@ export default {
 };
 </script>
 
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 <style lang="scss" scoped>
 h1 {
   text-align: center;
 }
 .registerForm {
-  background-color: #b0a295;
-  border: 1px solid grey;
-  border-radius: 10px;
   padding: 20px;
+  width: 500px;
+  display: flex;
+  flex-direction: column;
 }
 .registerWrapper {
   // height: 450px;
@@ -294,20 +361,21 @@ h1 {
   flex-direction: column;
 }
 .registerFormPart {
-  width: 350px;
+  // width: 350px;
   position: relative;
-  height: 50px;
+  height: 55px;
   overflow: hidden;
   margin-top: 15px;
+  font-size: 20px;
 }
 .registerFormPart input {
   // height: 100%;
   width: 100%;
   background-color: rgba($color: #000000, $alpha: 0);
-  padding-top: 20px;
+  padding-top: 10px;
   color: white;
   border: none;
-  font-size: 20px;
+  font-size: 30px;
   outline: none;
 }
 .registerFormPart label {
@@ -317,8 +385,8 @@ h1 {
   height: 100%;
   width: 100%;
   pointer-events: none;
-  border-bottom: 1px solid grey;
-  color: grey;
+  border-bottom: 1px solid rgb(200, 200, 200);
+  color: rgb(200, 200, 200);
 }
 .valid + label[for=email],
 .valid + label[for=password],
@@ -332,7 +400,7 @@ h1 {
 .invalid + label[for=repeatPassword],
 .invalid + label[for=name],
 .invalid + label[for=surname] {
-  border-bottom: 2px solid red;
+  border-bottom: 2px solid rgb(255, 55, 55);
 }
 .registerFormPart label::after {
   content: "";
@@ -350,21 +418,26 @@ h1 {
   bottom: 5px;
   left: 0;
   transition: all .3s ease;
+  white-space: nowrap;
 }
 .registerFormPart input:focus + .labelWrapper .labelContent,
 .registerFormPart input:valid + .labelWrapper .labelContent,
 .registerFormPart .hasValue + .labelWrapper .labelContent {
-  transform: translateY(-80%);
-  font-size: 14px;
+  transform: translateY(-160%);
+  font-size: 12px;
   color: white;
 }
 .registerFormPart input:focus + .labelWrapper::after {
   transform: translateX(0);
 }
+.registerRegulations {
+  margin-top: 10px;
+  text-align: center;
+}
 .errorAndSubmit {
   text-align: center;
   // display: none;
-  width: 350px;
+  width: 100%;
   position: relative;
   height: 50px;
   margin-top: 15px;
@@ -374,5 +447,45 @@ h1 {
 }
 .labelWrapper {
   margin-bottom: 2px;
+}
+.categoriesWrapper {
+  width: 500px;
+}
+ul {
+	margin-top: 50px;
+	list-style-type: none;
+}
+li {
+	float: left;
+}
+ul li a {
+	text-decoration: none;
+	line-height: 2.3em;
+  font-weight: bold;
+}
+ul li a.size5 {
+	color: #004e6b;
+	padding: 6px;
+  border: 1px solid white;
+  border-radius: 20px;
+}
+ul li a.size5:hover {
+  border: 1px solid #007ead;
+}
+.searchBox {
+  background: aliceblue;
+  overflow: auto;
+  height: min-content;
+  position: absolute;
+  z-index: 10;
+  width: 100%;
+  max-height: 200px;
+}
+.searchList {
+  display: flex;
+  flex-direction: column;
+}
+.searchWrapper {
+  position: relative;
 }
 </style>
