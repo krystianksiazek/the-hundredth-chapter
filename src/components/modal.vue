@@ -1,11 +1,11 @@
 <template>
-  <div class="dimmer">
+  <div class="dimmer" @click.self="$emit('close-modal')">
     <div class="modalWrapper">
       <div class="titleAndClose">
         <span class="title">
           {{ books[id].title }}
         </span>
-        <a class="close" @click="$emit('close-modal')" />
+        <a class="close" @click.self="$emit('close-modal')" />
       </div>
       <div class="content">
         <a class="photoLink" target="_blank">
