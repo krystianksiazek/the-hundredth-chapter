@@ -10,7 +10,7 @@
       </div>
       <!-- <b-form-select v-model="rateFilterSelect" :options="rateFilter"></b-form-select> -->
       <div class="overflow-auto">
-        <h4 v-if="getBestBooksFilter.length === 0">Brak wyników dla tego ustawienia filtrów</h4>
+        <h4 v-if="getBestBooksFilter.length === 0 && componentLoading == false">Brak wyników dla tego ustawienia filtrów</h4>
         <div id="bestBooks" class="bestBooks">
           <div v-for="(book, index) in itemsForList" :key="book.id">
             <Product :book='book' :index='index'/>
@@ -37,6 +37,7 @@ export default {
   name: 'rate',
   data() {
     return {
+      componentLoading: true,
       perPage: 12,
       currentPage: 1,
       rateFilterSelect: 4,
@@ -49,7 +50,7 @@ export default {
     },
     updateRate (rateFilterSelectRecived) {
       this.rateFilterSelect = rateFilterSelectRecived;
-    }
+    },
   },
   computed: {
     ...mapGetters(['books', 'categories', 'favorites']),
@@ -58,25 +59,18 @@ export default {
       switch (this.sortingSelect) {
         case 'oceny rosnąco':
           return bestBooks.sort((a, b) => a.rate < b.rate ? -1 : 1);
-          break;
         case 'oceny malejąco':
           return bestBooks.sort((a, b) => a.rate < b.rate ? -1 : 1).reverse();
-          break;
         case 'tytyłu rosnąco':
           return bestBooks.sort((a, b) => a.title < b.title ? -1 : 1);
-          break;
         case 'tytyłu malejąco':
           return bestBooks.sort((a, b) => a.title < b.title ? -1 : 1).reverse();
-          break;
         case 'ceny rosnąco':
           return bestBooks.sort((a, b) => a.price < b.price ? -1 : 1);
-          break;
         case 'ceny malejąco':
           return bestBooks.sort((a, b) => a.price < b.price ? -1 : 1).reverse();
-          break;
         case 'domyślnie':
           return bestBooks;
-          break;
       }
     },
     itemsForList() {
@@ -84,7 +78,7 @@ export default {
         (this.currentPage - 1) * this.perPage,
         this.currentPage * this.perPage);
     },
-  },
+  }
 };
 </script>
 
@@ -104,20 +98,5 @@ export default {
   .pagination {
     display: flex;
     justify-content: center;
-  }
-</style>
-<style lang="scss">
-//UNSCOPED CSS!
-  .dropdown-menu {
-    text-align: center;
-    width: 100%;
-  }
-  .rateSpinbutton {
-    width: 150px;
-    position: relative;
-  }
-  .filters {
-    display: flex;
-    align-items: center;
   }
 </style>
