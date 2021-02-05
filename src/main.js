@@ -5,6 +5,7 @@ import Popper from 'vue-popperjs';
 import 'vue-popperjs/dist/vue-popper.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
+import './assets/global.css';
 import store from './store/products';
 import router from './router';
 import App from './App.vue';
