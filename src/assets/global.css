@@ -1,0 +1,12 @@
+.dropdown-menu {
+  text-align: center;
+  width: 100%;
+}
+.rateSpinbutton {
+  width: 150px;
+  position: relative;
+}
+.filters {
+  display: flex;
+  align-items: center;
+}
