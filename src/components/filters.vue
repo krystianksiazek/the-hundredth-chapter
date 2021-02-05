@@ -116,18 +116,3 @@ export default {
     justify-content: center;
   }
 </style>
-<style lang="scss">
-//UNSCOPED CSS!
-  .dropdown-menu {
-    text-align: center;
-    width: 100%;
-  }
-  .rateSpinbutton {
-    width: 150px;
-    position: relative;
-  }
-  .filters {
-    display: flex;
-    align-items: center;
-  }
-</style>
