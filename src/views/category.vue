@@ -135,8 +135,8 @@ export default {
       } else {
         subCategory = (split[1] + split[2]) - 1;
       }
-      setInterval(() => {
-        // simple checking if categories is loaded
+      if (this.categories[category] != undefined) {
+        setInterval(() => {
         if (this.categories.length > 1) {
           this.prefix = this.categories[category].cat;
           if (split[1] > 0) {
@@ -147,6 +147,8 @@ export default {
           this.componentLoading = false;
         }
       }, 100);
+      }
+      else this.$router.push({ path: '/505' });
     },
     addToCart(id, amount, index) {
       this.$store.dispatch('addToCart', { id, amount });
