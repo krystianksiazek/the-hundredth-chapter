@@ -1,5 +1,6 @@
 <template>
   <div class="registerWrapper">
+    {{validForm()}}
     <div class="registerForm">
       <h1>Rejestracja</h1>
       <div class="registerFormPart">
@@ -33,23 +34,41 @@
           <span class="labelContent">Nazwisko <span id="surnameError" class="error"></span></span>
         </label>
       </div>
+      <!-- <div>
+        <div class="categoriesShower" v-for="category in subCategoriesSelected" :key="category">
+          <div class="category"><a class="size5" @click="removeSubCategory(category)"> {{category}} </a></div>
+        </div>
+      </div>
       <div class="searchWrapper">
         <div class="registerFormPart">
-          <input id="favorites" type="text" name="favorites" v-model="search" required />
+          <input id="favorites" type="text" name="favorites" v-model="search" @focus="listVisible = true" @blur="listVisible = false" required />
           <label for="favorites" class="labelWrapper">
             <span class="labelContent">Trzy ulubione gatunki książek <span id="surnameError" class="error"></span></span>
           </label>
         </div>
-        <div class="searchBox" v-if="search">
+        <div class="searchBox" v-if="listVisible">
             <div class="searchList" v-if="subCategoriesSelected.length < 3">
-              <div v-for="category in filteredList" :key="category" class="category" ><a class="size5" v-if="preventDuplicates(category)" @click="selectSubCategory(category)"> {{category}} </a></div>
+              <div v-for="category in filteredList" :key="category" class="categoryOnList" ><a class="size5" v-if="preventDuplicates(category)" @click="selectSubCategory(category)"> {{category}} </a></div>
             </div>
           </div>
-      </div>
-      <div>
-        <ul class="categoriesShower" v-for="category in subCategoriesSelected" :key="category">
-          <li class="category"><a class="size5" @click="removeSubCategory(category)"> {{category}} </a></li>
-        </ul>
+      </div> -->
+      <div class="registerFormPart multiselect">
+        <multiselect 
+          v-model="subCategoriesSelected" 
+          :options="subCategories" 
+          :multiple="true" 
+          :max='3'
+          :close-on-select='false'
+          :close-on-reach-max='true'
+          :max-height="150"
+          placeholder='Trzy ulubione kategorie książek'
+          selectedLabel='✓'
+          selectLabel='✓'
+          deselectLabel='✗'>
+          <template v-slot:maxElements>Wybrano wymaganą liczbę kategorii ({{subCategoriesSelected.length}})</template>
+          <template v-slot:noResult>Nie znaleziono</template>
+          <template v-slot:noOptions>Lista jest pusta lub jest w trakcie ładowania</template>
+        </multiselect>
       </div>
       <div class="registerRegulations">
         <b-form-checkbox v-model="isRegulationsChecked" name="check-button" switch>
@@ -62,7 +81,6 @@
         <p id="regulationsError" class="error"></p>
         <p id="errorOnSubmit" class="error"></p>
       </div>
-      <!-- <multiselect v-model="value" :options="cat" :multiple="true" :max='3'></multiselect> -->
     </div>
     <!-- <div class="categoriesWrapper">
       <ul class="categoriesShower" v-for="category in cat" :key="category">
@@ -80,7 +98,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import Multiselect from 'vue-multiselect';
+import Multiselect from '../components/multiselect/Multiselect';
 
 export default {
   name: 'register',
@@ -95,7 +113,6 @@ export default {
   components: { Multiselect },
   data() {
     return {
-      value: null,
       search: '',
       isValidEmail: false,
       isValidPassword: false,
@@ -105,7 +122,8 @@ export default {
       isValidSurname: false,
       isRegulationsChecked: false,
       subCategories: [],
-      subCategoriesSelected: []
+      subCategoriesSelected: [],
+      listVisible: false,
     };
   },
   mounted() {
@@ -267,6 +285,7 @@ export default {
       } else {
         surname.removeClass('valid');
         surname.removeClass('invalid');
+        surname.addClass('default');
         this.isValidSurname = false;
         errorFieldSurname.text('');
       }
@@ -278,14 +297,6 @@ export default {
       document.getElementById("favorites").focus();
       this.search = '';
     },
-    removeSubCategory(category) {
-      this.subCategoriesSelected.splice(this.subCategoriesSelected.indexOf(category), 1);
-    },
-    preventDuplicates(category) {
-      if(this.subCategoriesSelected.indexOf(category) >= 0) {
-        return false;
-      } else return true;
-    },
     validName(name) {
       const tester = /^([a-zA-Z])+$/;
       return (tester.test(name));
@@ -295,25 +306,41 @@ export default {
       const tester = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
       return (tester.test(email));
     },
-    onSubmit() {
-      const $ = require('jquery');
-      
+    validForm() {
       if (this.isValidName === true && this.isValidSurname === true 
       && this.isValidEmail === true && this.isValidPassword === true 
-      && this.isValidRepeatPassword === true && this.isPasswordMatch === true 
-      && this.isRegulationsChecked === true) {
-        console.log($('#name').val());
-        console.log($('#email').val());
-        console.log($('#password').val());
-        this.showError(0);
-      } else if (this.isValidName === true && this.isValidSurname === true
-       && this.isValidEmail === true && this.isValidPassword === true 
-       && this.isValidRepeatPassword === true && this.isPasswordMatch === true 
-       && this.isRegulationsChecked === false) {
-        this.showError(2);
-      } else {
+      && this.isValidRepeatPassword === true && this.isPasswordMatch === true) {
+        return true;
+      } else return false;
+    },
+    onSubmit() {
+      if (!this.validForm()) {
         this.showError(1);
+      } else if (!this.isRegulationsChecked) {
+        this.showError(2);
+      } else if (this.subCategoriesSelected.length != 3) {
+        this.showError(3);
+      } else if (this.validForm && this.isRegulationsChecked && this.subCategoriesSelected.length === 3 ) {
+        this.submit();
       }
+
+
+      // if (this.validForm && this.isRegulationsChecked && this.subCategoriesSelected.length === 3) {
+      //   this.submit();
+      // } else if (!this.validForm) {
+      //   this.showError(1);
+      // } else if (this.isRegulationsChecked) {
+      //   this.showError(2);
+      // } else if (this.subCategoriesSelected.length != 3) {
+      //   this.showError(3);
+      // }
+    },
+    submit() {
+      const $ = require('jquery');
+      console.log($('#name').val());
+      console.log($('#email').val());
+      console.log($('#password').val());
+      this.showError(0);
     },
     showError(errCode) {
       const $ = require('jquery');
@@ -334,6 +361,12 @@ export default {
             errorOnSubmit.text('');
           }, 5000);
           break;
+        case 3:
+          errorOnSubmit.text('Proszę wybrać 3 kategorie');
+          setTimeout(() => {
+            errorOnSubmit.text('');
+          }, 5000);
+          break;
         default:
           break;
       }
@@ -342,14 +375,13 @@ export default {
 };
 </script>
 
-<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 <style lang="scss" scoped>
 h1 {
   text-align: center;
 }
 .registerForm {
   padding: 20px;
-  width: 500px;
+  // width: 500px;
   display: flex;
   flex-direction: column;
 }
@@ -361,11 +393,11 @@ h1 {
   flex-direction: column;
 }
 .registerFormPart {
-  // width: 350px;
+  width: 350px;
   position: relative;
-  height: 55px;
+  height: 65px;
   overflow: hidden;
-  margin-top: 15px;
+  margin-top: 10px;
   font-size: 20px;
 }
 .registerFormPart input {
@@ -377,6 +409,7 @@ h1 {
   border: none;
   font-size: 30px;
   outline: none;
+  box-shadow: none;
 }
 .registerFormPart label {
   position: absolute;
@@ -400,7 +433,7 @@ h1 {
 .invalid + label[for=repeatPassword],
 .invalid + label[for=name],
 .invalid + label[for=surname] {
-  border-bottom: 2px solid rgb(255, 55, 55);
+  border-bottom: 2px solid #df4040;
 }
 .registerFormPart label::after {
   content: "";
@@ -423,7 +456,7 @@ h1 {
 .registerFormPart input:focus + .labelWrapper .labelContent,
 .registerFormPart input:valid + .labelWrapper .labelContent,
 .registerFormPart .hasValue + .labelWrapper .labelContent {
-  transform: translateY(-160%);
+  transform: translateY(-180%);
   font-size: 12px;
   color: white;
 }
@@ -445,47 +478,41 @@ h1 {
 .error {
   color: red;
 }
-.labelWrapper {
-  margin-bottom: 2px;
+.multiselect {
+  overflow: unset;
+  height: unset;
 }
-.categoriesWrapper {
-  width: 500px;
-}
-ul {
-	margin-top: 50px;
-	list-style-type: none;
-}
-li {
-	float: left;
-}
-ul li a {
-	text-decoration: none;
-	line-height: 2.3em;
-  font-weight: bold;
-}
-ul li a.size5 {
-	color: #004e6b;
-	padding: 6px;
-  border: 1px solid white;
-  border-radius: 20px;
-}
-ul li a.size5:hover {
-  border: 1px solid #007ead;
-}
-.searchBox {
-  background: aliceblue;
-  overflow: auto;
-  height: min-content;
-  position: absolute;
-  z-index: 10;
-  width: 100%;
-  max-height: 200px;
-}
-.searchList {
-  display: flex;
-  flex-direction: column;
-}
-.searchWrapper {
-  position: relative;
-}
+// .labelWrapper {
+//   margin-bottom: 2px;
+// }
+// .categoriesWrapper {
+//   width: 500px;
+// }
+// .category {
+// 	color: #004e6b;
+// 	padding: 2px;
+//   border: 1px solid white;
+//   border-radius: 20px;
+//   width: max-content;
+//   text-align: center;
+// }
+// .category:hover {
+//   border: 1px solid #007ead;
+// }
+// .searchBox {
+//   background: aliceblue;
+//   overflow: auto;
+//   height: min-content;
+//   position: absolute;
+//   z-index: 10;
+//   width: 100%;
+//   max-height: 200px;
+// }
+// .searchList {
+//   display: flex;
+//   flex-direction: column;
+// }
+// .searchWrapper {
+//   position: relative;
+// }
 </style>
