@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import notFound from '../views/notFound.vue';
 import home from '../views/home.vue';
 import rate from '../views/rate.vue';
 import login from '../views/login.vue';
@@ -40,6 +41,26 @@ const routes = [
     name: 'kategoria',
     component: category,
     params: true,
+  },
+  {
+    path: '/505',
+    name: 'notFound',
+    component: notFound,
+  },
+  {
+    path: '/:catchAll(.*)',
+    name: 'notFoundAll',
+    component: notFound,
+  },
+  {
+    path: '/kategorie/:catchAll(.*)',
+    name: 'notFoundID',
+    component: notFound,
+  },
+  {
+    path: '/kategorie/:id/:catchAll(.*)',
+    name: 'notFoundCategory',
+    component: notFound,
   },
 ];
 
