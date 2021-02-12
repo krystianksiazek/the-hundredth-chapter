@@ -1,6 +1,8 @@
 <template>
   <b-container>
-    <Modal v-if="modalOpen" :id = "modalData" @close-modal="modalOpen = false;" />
+    <transition name="modal">
+      <Modal v-if="modalOpen" :id="modalData" @close-modal="modalOpen = false;" />
+    </transition>
     <b-row class="justify-content-center">
         <div class="productWrapper">
           <div v-on:click="runModal(book.id)">
@@ -89,65 +91,82 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.addToCartSection {
-  margin-bottom: 5px;
-}
-.productWrapper {
-  position: relative;
-  padding: 10px;
-  background-color: #557a95;
-  border-radius: 5px;
-  margin: 10px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 250px;
-  height: 450px;
-  text-align: center;
-}
-.addToCart {
-  margin-right: 10px;
-}
-.quantity {
-  margin-bottom: 5px;
-}
-.bookTitle {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  font-weight: bold;
-  height: 48px;
-}
-.hoverImage {
-  position: relative;
-  display: inline-block;
-}
-.hoverGenere, .hoverRate {
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%);
-  width: 100%;
-  background-color: #7395ae;
-}
-.hoverGenere {
-  top: 0;
-}
-.hoverRate {
-  bottom: 0;
-}
-.bookPrice {
-  font-size: 20px;
-}
-.addToFavoritesIco, .addToCartIco {
-  filter: brightness(0);
-  opacity: 0.5;
-  transition: 0.25s ease-in-out;
-}
-.addToFavorites:hover > .addToFavoritesIco,
-.addToCart:hover > .addToCartIco {
-  filter: brightness(100%);
-  opacity: 1;
-  transition: 0.25s ease-in-out;
-}
+  .addToCartSection {
+    margin-bottom: 5px;
+  }
+  .productWrapper {
+    position: relative;
+    padding: 10px;
+    background-color: #557a95;
+    border-radius: 5px;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 250px;
+    height: 450px;
+    text-align: center;
+  }
+  .addToCart {
+    margin-right: 10px;
+  }
+  .quantity {
+    margin-bottom: 5px;
+  }
+  .bookTitle {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    font-weight: bold;
+    height: 48px;
+  }
+  .hoverImage {
+    position: relative;
+    display: inline-block;
+  }
+  .hoverGenere, .hoverRate {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%);
+    width: 100%;
+    background-color: #7395ae;
+  }
+  .hoverGenere {
+    top: 0;
+  }
+  .hoverRate {
+    bottom: 0;
+  }
+  .bookPrice {
+    font-size: 20px;
+  }
+  .addToFavoritesIco, .addToCartIco {
+    filter: brightness(0);
+    opacity: 0.5;
+    transition: 0.25s ease-in-out;
+  }
+  .addToFavorites:hover > .addToFavoritesIco,
+  .addToCart:hover > .addToCartIco {
+    filter: brightness(100%);
+    opacity: 1;
+    transition: 0.25s ease-in-out;
+  }
+
+  .modal-enter-active {
+    animation: modal-show 0.5s ease;
+  }
+  .modal-leave-from {
+    opacity: 1;
+  }
+  .modal-leave-to {
+    opacity: 0;
+  }
+  .modal-leave-active {
+    transition: all 0.5s ease;
+  }
+  @keyframes modal-show {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
 </style>
